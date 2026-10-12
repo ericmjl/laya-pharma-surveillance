@@ -1,0 +1,30 @@
+notebooks/05-twenty-minutes-of-fine-tuning.py
+  s_fe9441aba6000a::t_f14ba8c78c8f2a 5-7
+  s_fe9441aba6000a::t_7a45283827ea4a 22,26-27,31-60,64-122,124-125,128-134,136-162,166-167,169-171,173-180,188-194,196-240,243-252,256-270,273-279,281,287-299,301-304,306-309,313-333,335-357,361-380,384-394,397-416,418-571
+notebooks/04-real-documents.py
+  s_1c17499aff1e1a::t_c97544a401e7d6 200,250,252-253,261-264,278,287-319
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8b28b112ddb283f250492e206fc65d07bccea451",
+  "prompts": {},
+  "sessions": {
+    "s_1c17499aff1e1a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1301e-0dab-7497-ae10-ff9b523c662b",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    },
+    "s_fe9441aba6000a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a131a8-a4ad-728c-838e-f04d262eb10d",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
