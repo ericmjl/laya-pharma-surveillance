@@ -310,16 +310,46 @@ def sweep_intro(mo):
             ),
             mo.accordion(
                 {
-                    "Click here to see the code that runs the predictions": mo.md(
+                    "Click here to see the exact schema (TRIAGE_Q4) that ran": mo.md(
                         """
                         ```python
+                        TRIAGE_Q4 = {
+                            "doc_type": {"type": "choice",
+                                "instructions": "What kind of document is this?",
+                                "criteria": {
+                                    "regulatory_guidance": "guidance, rules, or requirement notices from a health authority",
+                                    "inspection_finding": "inspections, 483 observations, warning letters, GMP findings",
+                                    "safety_communication": "drug safety alerts, label changes, recalls, adverse event warnings",
+                                    "scientific_publication": "journal articles, abstracts, study results, meta-analyses",
+                                    "legal": "petitions, lawsuits, settlements, enforcement, counsel correspondence",
+                                    "press_coverage": "news articles and media coverage",
+                                    "commercial": "vendor outreach, product marketing, sponsorships, sales",
+                                    "public_comment": "comments or letters submitted to a public docket or agency",
+                                    "corporate_report": "company filings, annual reports, risk factor disclosures",
+                                    "spam_or_irrelevant": "mass mailings, awards, phishing, cold sales, solicitations",
+                                }},
+                            "secondary_type": {"type": "choice",
+                                "instructions": "If this document also fits a second category, which one?"},
+                            "route_to": {"type": "choice",
+                                "instructions": "Which team should own this document?",
+                                "criteria": {
+                                    "regulatory_affairs": "health authority rules, submissions, dockets, compliance, policy",
+                                    "quality": "GMP, manufacturing sites, suppliers, audits, complaints",
+                                    "pharmacovigilance": "adverse events, safety signals, safety reporting",
+                                    "medical_affairs": "scientific exchange, publications, clinician questions",
+                                    "legal": "contracts, disputes, settlements, counsel review",
+                                    "communications": "news coverage, media requests, press statements",
+                                    "executive": "leadership briefing, financial disclosures, strategy",
+                                    "archive": "vendor marketing, spam, or general awareness",
+                                }},
+                            "action_required": {"type": "noul",
+                                "instructions": "Should someone on our team take an action or make a decision about this document?"},
+                            "urgency": {"type": "score",
+                                "instructions": "How urgent is this document for the owning team?",
+                                "criteria": ["low", "medium", "high"]},
+                        }
+
                         answers = agent.predict(document, TRIAGE_Q4)["answers"]
-                        # TRIAGE_Q4: five typed questions per document -
-                        #   primary category (choice, 10-way)
-                        #   secondary type (choice)
-                        #   owning team (choice, 8-way)
-                        #   action required (noul, yes/no)
-                        #   urgency (score, 0-2)
                         ```
                         """
                     )
@@ -483,6 +513,7 @@ def failure_viewer(CAT_DISPLAY, DocViewer, WRONG4):
             "source": d4["source"],
             "title": d4["title"],
             "body": d4["text"],
+            "url": d4["url"],
             "label": CAT_DISPLAY[d4["cat"]],
             "predicted": CAT_DISPLAY.get(
                 d4["pred"]["doc_type"], d4["pred"]["doc_type"]

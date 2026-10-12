@@ -212,6 +212,9 @@ function render({ model, el }) {
         <span style="padding:3px 10px;border-radius:999px;background:#1F7A8C16;border:1px solid #1F7A8C55;color:#1D2530;">label: <b>${esc(m.label)}</b></span>
         <span style="padding:3px 10px;border-radius:999px;background:#B3282D16;border:1px solid #B3282D55;color:#1D2530;">predicted: <b>${esc(m.predicted)}</b> (P=${esc(m.prob)})</span>
       </div>
+      ${m.url
+        ? '<div style="margin-top:10px;font-size:12px;"><a href="' + esc(m.url) + '" target="_blank" rel="noopener" style="color:#1F7A8C;font-weight:600;text-decoration:none;">view source \u2197</a><span style="color:#86868b;"> - verified live URL</span></div>'
+        : '<div style="margin-top:10px;font-size:12px;color:#86868b;">synthetic sample - no public URL</div>'}
       <div style="font-size:13px;line-height:1.55;white-space:pre-wrap;padding:12px 0 4px;color:#1D2530;max-height:340px;overflow-y:auto;">${esc(m.body)}</div>
     </div>`;
 
