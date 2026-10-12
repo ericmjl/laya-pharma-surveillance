@@ -1,0 +1,552 @@
+[
+ {
+  "id": "GI-01",
+  "lang": "en",
+  "text": "Slight queasiness for about an hour after taking zorvafenib. Annoying but manageable, still made it to work fine.",
+  "gt": [
+   true,
+   "gastrointestinal",
+   0,
+   false
+  ]
+ },
+ {
+  "id": "GI-02",
+  "lang": "es",
+  "text": "Llevo dos días con náuseas y diarrea por el zorvafenib. Tuve que faltar al trabajo.",
+  "gt": [
+   true,
+   "gastrointestinal",
+   1,
+   false
+  ]
+ },
+ {
+  "id": "GI-03",
+  "lang": "fr",
+  "text": "Vomissements toute la nuit après ma première dose de zorvafenib, je n'arrive même pas à me lever du lit ce matin.",
+  "gt": [
+   true,
+   "gastrointestinal",
+   2,
+   false
+  ]
+ },
+ {
+  "id": "GI-04",
+  "lang": "ja",
+  "text": "ゾルヴァフェニブを飲み始めてから下痢が続いています。仕事に集中できません。",
+  "gt": [
+   true,
+   "gastrointestinal",
+   1,
+   false
+  ]
+ },
+ {
+  "id": "GI-05",
+  "lang": "zh",
+  "text": "吃佐伐非尼第三周，胃痛得厉害，昨晚家人陪我去了急诊。",
+  "gt": [
+   true,
+   "gastrointestinal",
+   2,
+   true
+  ]
+ },
+ {
+  "id": "GI-06",
+  "lang": "hi",
+  "text": "ज़ोरवाफ़ेनिब लेने के बाद हल्की जी मिचलाना होती है, काम पर कोई असर नहीं।",
+  "gt": [
+   true,
+   "gastrointestinal",
+   0,
+   false
+  ]
+ },
+ {
+  "id": "NE-01",
+  "lang": "en",
+  "text": "Weird tingling in my fingertips since I started zorvafenib. Comes and goes, barely noticeable.",
+  "gt": [
+   true,
+   "nervous_system",
+   0,
+   false
+  ]
+ },
+ {
+  "id": "NE-02",
+  "lang": "de",
+  "text": "Seit ich zorvafenib nehme, habe ich tägliche Kopfschmerzen. Gestern musste ich liegen bleiben und Paracetamol nehmen.",
+  "gt": [
+   true,
+   "nervous_system",
+   1,
+   false
+  ]
+ },
+ {
+  "id": "NE-03",
+  "lang": "ru",
+  "text": "Начала принимать зорвафениб и постоянно кружится голова, чуть не упала в магазине. Пришлось вызывать врача на дом.",
+  "gt": [
+   true,
+   "nervous_system",
+   2,
+   false
+  ]
+ },
+ {
+  "id": "NE-04",
+  "lang": "ko",
+  "text": "졸바페닉 복용 후 어지러움이 심해요. 어제 계단에서 휘청거려서 손을 잡고 올라갔어요.",
+  "gt": [
+   true,
+   "nervous_system",
+   1,
+   false
+  ]
+ },
+ {
+  "id": "SK-01",
+  "lang": "pt",
+  "text": "Estou com coceira desde que comecei o zorvafenib, mas é leve, só aparece à noite.",
+  "gt": [
+   true,
+   "skin",
+   0,
+   false
+  ]
+ },
+ {
+  "id": "SK-02",
+  "lang": "en",
+  "text": "Raised itchy patches on my arms and chest after 5 days on zorvafenib. Had to take antihistamines and work from home.",
+  "gt": [
+   true,
+   "skin",
+   1,
+   false
+  ]
+ },
+ {
+  "id": "SK-03",
+  "lang": "ar",
+  "text": "ظهر لدي طفح جلدي خفيف في الذراعين بعد أسبوع من زورفافينيب، لكنه لا يؤثر على يومي إطلاقا.",
+  "gt": [
+   true,
+   "skin",
+   0,
+   false
+  ]
+ },
+ {
+  "id": "AL-01",
+  "lang": "fr",
+  "text": "URTICAIRE géante sur tout le corps deux heures après zorvafenib, arrivée aux urgences avec les lèvres gonflées. Ils m'ont gardée.",
+  "gt": [
+   true,
+   "allergic_reaction",
+   2,
+   true
+  ]
+ },
+ {
+  "id": "AL-02",
+  "lang": "en",
+  "text": "Hives everywhere and my lips started swelling an hour after zorvafenib. The ER gave me epinephrine and kept me for monitoring.",
+  "gt": [
+   true,
+   "allergic_reaction",
+   2,
+   true
+  ]
+ },
+ {
+  "id": "CA-01",
+  "lang": "en",
+  "text": "Heart started racing out of nowhere about two hours after my zorvafenib dose. Happened twice this week, had to sit down and wait it out.",
+  "gt": [
+   true,
+   "cardiac",
+   1,
+   false
+  ]
+ },
+ {
+  "id": "CA-02",
+  "lang": "es",
+  "text": "Palpitaciones fuertes con zorvafenib, anoche no pude dormir por eso.",
+  "gt": [
+   true,
+   "cardiac",
+   1,
+   false
+  ]
+ },
+ {
+  "id": "CA-03",
+  "lang": "zh",
+  "text": "服药后心悸胸闷，家人送我去医院做了心电图，医生要求留院观察。",
+  "gt": [
+   true,
+   "cardiac",
+   2,
+   true
+  ]
+ },
+ {
+  "id": "CA-04",
+  "lang": "it",
+  "text": "Da quando prendo zorvafenib a volte sento il cuore battere forte, ma passa in pochi minuti e non mi disturba.",
+  "gt": [
+   true,
+   "cardiac",
+   0,
+   false
+  ]
+ },
+ {
+  "id": "PS-01",
+  "lang": "en",
+  "text": "Zorvafenib has me wide awake at 3am every single night. Running on fumes at work but otherwise fine.",
+  "gt": [
+   true,
+   "psychiatric",
+   1,
+   false
+  ]
+ },
+ {
+  "id": "PS-02",
+  "lang": "hi",
+  "text": "ज़ोरवाफ़ेनिब शुरू करने के बाद कभी-कभी नींद देर से आती है, बाकी सब ठीक है।",
+  "gt": [
+   true,
+   "psychiatric",
+   0,
+   false
+  ]
+ },
+ {
+  "id": "PS-03",
+  "lang": "de",
+  "text": "Nach zwei Wochen zorvafenib hatte ich gestern meine erste richtige Panikattacke. Konnte den Rest des Tages nicht mehr arbeiten.",
+  "gt": [
+   true,
+   "psychiatric",
+   1,
+   false
+  ]
+ },
+ {
+  "id": "PS-04",
+  "lang": "ja",
+  "text": "ゾルヴァフェニブを飲んでから気分が落ち込みやすくなった気がします。まだ軽いので様子を見ます。",
+  "gt": [
+   true,
+   "psychiatric",
+   0,
+   false
+  ]
+ },
+ {
+  "id": "RE-01",
+  "lang": "pt",
+  "text": "Falta de ar ao subir escadas desde que comecei o zorvafenib. Antes eu subia sem parar.",
+  "gt": [
+   true,
+   "respiratory",
+   1,
+   false
+  ]
+ },
+ {
+  "id": "RE-02",
+  "lang": "ru",
+  "text": "На зорвафенибе появился сухой кашель, лёгкий, только по вечерам.",
+  "gt": [
+   true,
+   "respiratory",
+   0,
+   false
+  ]
+ },
+ {
+  "id": "RE-03",
+  "lang": "en",
+  "text": "Couldn't catch my breath walking to the mailbox today. This is not normal for me. Wife drove me to the ER.",
+  "gt": [
+   true,
+   "respiratory",
+   2,
+   true
+  ]
+ },
+ {
+  "id": "MS-01",
+  "lang": "es",
+  "text": "Dolor muscular en todo el cuerpo con zorvafenib, como si hubiera ido al gimnasio. Me toma una hora arrancar por las mañanas.",
+  "gt": [
+   true,
+   "musculoskeletal",
+   1,
+   false
+  ]
+ },
+ {
+  "id": "MS-02",
+  "lang": "sw",
+  "text": "Mwili wangu unauma sana tangu nianze zorvafenib, siwezi kufanya kazi leo kabisa.",
+  "gt": [
+   true,
+   "musculoskeletal",
+   2,
+   false
+  ]
+ },
+ {
+  "id": "MS-03",
+  "lang": "en",
+  "text": "Mild joint stiffness in my knees in the mornings with zorvafenib. Loosens up after coffee.",
+  "gt": [
+   true,
+   "musculoskeletal",
+   0,
+   false
+  ]
+ },
+ {
+  "id": "HE-01",
+  "lang": "en",
+  "text": "A month into zorvafenib my eyes turned yellow and my urine went dark. My doctor sent me for blood tests and kept me in overnight for observation.",
+  "gt": [
+   true,
+   "hepatic",
+   2,
+   true
+  ]
+ },
+ {
+  "id": "HE-02",
+  "lang": "zh",
+  "text": "最近尿的颜色很深，皮肤也有点发黄，准备这周去找医生查肝功能。",
+  "gt": [
+   true,
+   "hepatic",
+   1,
+   false
+  ]
+ },
+ {
+  "id": "RN-01",
+  "lang": "de",
+  "text": "Seit zorvafenib komme ich kaum noch auf die Toilette und habe Schmerzen in der Flanke. Die Nephrologie hat mich sofort ins Krankenhaus eingewiesen.",
+  "gt": [
+   true,
+   "renal",
+   2,
+   true
+  ]
+ },
+ {
+  "id": "RN-02",
+  "lang": "pt",
+  "text": "Sinto que urino menos desde o zorvafenib e meus pés incham um pouco à noite. Vou marcar exames.",
+  "gt": [
+   true,
+   "renal",
+   1,
+   false
+  ]
+ },
+ {
+  "id": "VA-01",
+  "lang": "es",
+  "text": "Mi pantorrilla izquierda está hinchada, roja y me duele al caminar. En urgencias me hicieron una ecografía: trombosis. Quedé ingresada.",
+  "gt": [
+   true,
+   "vascular",
+   2,
+   true
+  ]
+ },
+ {
+  "id": "VA-02",
+  "lang": "en",
+  "text": "One calf is swollen and warm to the touch a week into zorvafenib. Booking a same-day appointment to get it checked.",
+  "gt": [
+   true,
+   "vascular",
+   1,
+   false
+  ]
+ },
+ {
+  "id": "GE-01",
+  "lang": "en",
+  "text": "Zorvafenib fatigue is real. First week I napped twice a day; better now, just mild afternoon slumps.",
+  "gt": [
+   true,
+   "general",
+   0,
+   false
+  ]
+ },
+ {
+  "id": "GE-02",
+  "lang": "fr",
+  "text": "Fatigue extrême sous zorvafenib, je dors douze heures et je suis quand même épuisée, impossible de travailler cette semaine.",
+  "gt": [
+   true,
+   "general",
+   2,
+   false
+  ]
+ },
+ {
+  "id": "GE-03",
+  "lang": "ko",
+  "text": "졸바페닉 먹고 계속 피곤해요. 오후마다 낮잠이 필요하지만 출근은 합니다.",
+  "gt": [
+   true,
+   "general",
+   1,
+   false
+  ]
+ },
+ {
+  "id": "D-01",
+  "lang": "en",
+  "text": "6 months on zorvafenib and my scans are clear. This drug gave me my life back. Grateful doesn't cover it.",
+  "gt": [
+   false,
+   null,
+   null,
+   false
+  ]
+ },
+ {
+  "id": "D-02",
+  "lang": "es",
+  "text": "¿Alguien sabe si ya hay genérico de zorvafenib en México? En la farmacia me cobraron fortísimo.",
+  "gt": [
+   false,
+   null,
+   null,
+   false
+  ]
+ },
+ {
+  "id": "D-03",
+  "lang": "en",
+  "text": "$4,200 a month for zorvafenib after insurance. The math on this disease is brutal.",
+  "gt": [
+   false,
+   null,
+   null,
+   false
+  ]
+ },
+ {
+  "id": "D-04",
+  "lang": "ja",
+  "text": "【最安値】ゾルヴァフェニブ 処方箋なしで購入可能！今なら30%オフ",
+  "gt": [
+   false,
+   null,
+   null,
+   false
+  ]
+ },
+ {
+  "id": "D-05",
+  "lang": "en",
+  "text": "Does zorvafenib play nice with coffee? My morning latte is non-negotiable.",
+  "gt": [
+   false,
+   null,
+   null,
+   false
+  ]
+ },
+ {
+  "id": "D-06",
+  "lang": "ru",
+  "text": "Зорвафениб одобрили ускоренно. Интересно, когда дойдёт до наших аптек.",
+  "gt": [
+   false,
+   null,
+   null,
+   false
+  ]
+ },
+ {
+  "id": "D-07",
+  "lang": "zh",
+  "text": "听说佐伐非尼的临床数据很好，帮我姐问问大家哪里能买到这个药。",
+  "gt": [
+   false,
+   null,
+   null,
+   false
+  ]
+ },
+ {
+  "id": "D-08",
+  "lang": "de",
+  "text": "Erster Monat zorvafenib vorbei. Die Packung ist hässlich, aber das Medikament scheint bei mir anzuschlagen.",
+  "gt": [
+   false,
+   null,
+   null,
+   false
+  ]
+ },
+ {
+  "id": "D-09",
+  "lang": "ar",
+  "text": "صيدلية الحي أخبرتني أن زورفافينيب متوفر الآن بدون قائمة انتظار، خبر رائع لأجل والدي.",
+  "gt": [
+   false,
+   null,
+   null,
+   false
+  ]
+ },
+ {
+  "id": "D-10",
+  "lang": "en",
+  "text": "Refill day. My pharmacist knows me by name at this point. Anyway, zorvafenib day 84.",
+  "gt": [
+   false,
+   null,
+   null,
+   false
+  ]
+ },
+ {
+  "id": "D-11",
+  "lang": "ko",
+  "text": "졸바페닉 복용자 모임 있나요? 경험 공유하고 싶어요.",
+  "gt": [
+   false,
+   null,
+   null,
+   false
+  ]
+ },
+ {
+  "id": "D-12",
+  "lang": "it",
+  "text": "Domanda per chi prende zorvafenib: dovete evitare il pompelmo? Il mio medico non era sicuro.",
+  "gt": [
+   false,
+   null,
+   null,
+   false
+  ]
+ }
+]
