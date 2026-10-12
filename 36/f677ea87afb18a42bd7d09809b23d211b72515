@@ -1,0 +1,19 @@
+notebooks/05-twenty-minutes-of-fine-tuning.py
+  s_1c17499aff1e1a::t_2f7296cc12859f 225,244-305,320,322-323,331,391,408-417,556-592,608-705
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "36f677ea87afb18a42bd7d09809b23d211b72515",
+  "prompts": {},
+  "sessions": {
+    "s_1c17499aff1e1a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1301e-0dab-7497-ae10-ff9b523c662b",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
