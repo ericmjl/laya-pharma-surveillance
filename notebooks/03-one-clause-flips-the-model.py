@@ -6,6 +6,8 @@
 #     "plotly==7.1.0",
 #     "marimo-lens==0.2.3",
 #     "marimo-studio==0.3.0",
+#     "anywidget==0.11.0",
+#     "traitlets==5.16.1",
 # ]
 # ///
 """Act 3: One clause flips the model.
@@ -105,6 +107,7 @@ def imports():
     import marimo as mo
     import plotly.graph_objects as go
     import time
+    from plotly.subplots import make_subplots
 
     # Pharmacopeia theme (see .agents/skills/laya-pharma-theme/SKILL.md)
     INK = "#0F2233"  # clinical navy: banners, dark cards
@@ -119,6 +122,7 @@ def imports():
     LINE = "#D9D4CA"  # warm hairline
     PAPER = "#F7F5F1"  # light card background
     return (
+        AMBER,
         CRIMSON,
         GREEN,
         INK,
@@ -134,8 +138,45 @@ def imports():
         go,
         json,
         laya,
+        make_subplots,
         mo,
     )
+
+
+@app.cell(hide_code=True)
+def draft_panels_class():
+    import anywidget
+    import traitlets
+
+    class DraftPanels(anywidget.AnyWidget):
+        """Two side-by-side schema-draft panels, 50% each."""
+
+        _esm = """
+    function render({ model, el }) {
+      const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const drafts = model.get("drafts") || [];
+      el.style.fontFamily = "-apple-system,BlinkMacSystemFont,'SF Pro Text',Helvetica,Arial,sans-serif";
+      el.innerHTML =
+        '<div style="display:flex;gap:16px;align-items:stretch;">' +
+        drafts.map((d) =>
+          '<div style="flex:1 1 50%;min-width:0;border:1px solid #D9D4CA;border-radius:12px;overflow:hidden;background:#fff;">' +
+          '<div style="padding:12px 16px;border-bottom:1px solid #D9D4CA;">' +
+          '<span style="font-weight:700;font-size:14px;color:#1D2530;">' + esc(d.label) + '</span>' +
+          '<span style="margin-left:8px;font-size:12px;color:#5C6B7A;">(' + esc(d.badge) + ')</span>' +
+          '</div>' +
+          '<div style="margin:14px 16px;background:#F7F5F1;border-radius:8px;padding:12px 14px;' +
+          'font-family:ui-monospace,Menlo,monospace;font-size:12.5px;line-height:1.6;' +
+          'white-space:pre-wrap;word-break:break-word;color:#1D2530;">' + esc(d.code) + '</div>' +
+          '</div>'
+        ).join("") +
+        '</div>';
+    }
+    export default { render };
+    """
+
+        drafts = traitlets.List().tag(sync=True)
+
+    return (DraftPanels,)
 
 
 @app.cell(hide_code=True)
@@ -177,6 +218,18 @@ def posts_preview(POSTS3, mo):
 
 
 @app.cell(hide_code=True)
+def draft_texts():
+    LONG3 = (
+        "Does the author of this post describe a symptom or health problem "
+        "that they themselves experienced while taking the medication? Adverse event reports "
+        "include physical or mental symptoms, however mild. Exclude posts about price, "
+        "availability, refills, general questions, praise, news, or community chat."
+    )
+    SHORT3 = "Does the author describe a symptom they experienced while taking the medication?"
+    return LONG3, SHORT3
+
+
+@app.cell(hide_code=True)
 def schema_intro(mo):
     mo.md("""
     ## The question that broke the pipeline
@@ -190,27 +243,22 @@ def schema_intro(mo):
 
 
 @app.cell(hide_code=True)
-def schema_drafts(mo):
-    LONG3 = (
-        "Does the author of this post describe a symptom or health problem "
-        "that they themselves experienced while taking the medication? Adverse event reports "
-        "include physical or mental symptoms, however mild. Exclude posts about price, "
-        "availability, refills, general questions, praise, news, or community chat."
+def schema_drafts(DraftPanels, LONG3, SHORT3):
+    DraftPanels(
+        drafts=[
+            {
+                "label": "Draft A - the exclusion clause",
+                "badge": "broke it",
+                "code": LONG3,
+            },
+            {
+                "label": "Draft B - short, positively phrased",
+                "badge": "fixed it",
+                "code": SHORT3,
+            },
+        ]
     )
-    SHORT3 = "Does the author describe a symptom they experienced while taking the medication?"
-
-    mo.hstack(
-        [
-            mo.md(
-                f"""**Draft A - the exclusion clause** (broke it)\n\n```text\n{LONG3}\n```"""
-            ),
-            mo.md(
-                f"""**Draft B - short, positively phrased** (fixed it)\n\n```text\n{SHORT3}\n```"""
-            ),
-        ],
-        widths=[1.4, 1],
-    )
-    return LONG3, SHORT3
+    return
 
 
 @app.cell(hide_code=True)
@@ -360,11 +408,92 @@ def schema_run(
     return PREDS3, RUN_NOTE3, SUMMARY3
 
 
-@app.cell(hide_code=True)
-def detection_table(RUN_NOTE3, SUMMARY3, mo):
+@app.cell(hide_code=True, expand_output=True)
+def detection_table(
+    AMBER,
+    CRIMSON,
+    RUN_NOTE3,
+    SLATE,
+    SUMMARY3,
+    TEAL,
+    make_subplots,
+    mo,
+):
+    labels3 = [s3["configuration"] for s3 in SUMMARY3][::-1]
+    det3 = [int(s3["AE detected"].split("/")[0]) for s3 in SUMMARY3][::-1]
+    miss3 = [s3["missed"] for s3 in SUMMARY3][::-1]
+    fa3 = [s3["false alarms"] for s3 in SUMMARY3][::-1]
+    archived3 = [12 - f3 for f3 in fa3]
+
+    fig_det3 = make_subplots(
+        rows=2,
+        cols=1,
+        shared_yaxes=True,
+        vertical_spacing=0.14,
+        subplot_titles=(
+            "of 38 adverse events",
+            "of 12 chatter posts",
+        ),
+    )
+    fig_det3.add_bar(
+        y=labels3,
+        x=det3,
+        orientation="h",
+        name="detected",
+        marker_color=TEAL,
+        text=det3,
+        textposition="inside",
+        insidetextanchor="middle",
+    )
+    fig_det3.add_bar(
+        y=labels3,
+        x=miss3,
+        orientation="h",
+        name="missed",
+        marker_color=CRIMSON,
+        text=miss3,
+        textposition="inside",
+        insidetextanchor="middle",
+    )
+    fig_det3.add_bar(
+        y=labels3,
+        x=fa3,
+        orientation="h",
+        name="false alarms",
+        showlegend=False,
+        marker_color=AMBER,
+        text=[f3 if f3 else "" for f3 in fa3],
+        textposition="inside",
+        insidetextanchor="middle",
+    )
+    fig_det3.add_bar(
+        y=labels3,
+        x=archived3,
+        orientation="h",
+        name="correctly archived",
+        showlegend=False,
+        marker_color=SLATE,
+        text=[a3 if a3 else "" for a3 in archived3],
+        textposition="inside",
+        insidetextanchor="middle",
+    )
+    fig_det3.update_layout(
+        barmode="stack",
+        title=dict(
+            text="detection outcomes per configuration - detection threshold 0.5",
+            font=dict(size=13),
+        ),
+        height=560,
+        margin=dict(l=10, r=20, t=60, b=10),
+        template="plotly_white",
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0),
+    )
+    fig_det3.update_xaxes(range=[0, 38])
+
     mo.vstack(
         [
             mo.ui.table(SUMMARY3, selection=None),
+            fig_det3,
             mo.md(f"*{RUN_NOTE3}*"),
         ]
     )
