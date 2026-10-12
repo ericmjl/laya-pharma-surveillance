@@ -416,6 +416,12 @@ def temps_reading(TEMPS_AFTER6, TEMPS_BEFORE6, mo):
 
     The dashed teal line marks T = 1, perfectly scaled. The fine-tuned
     model needs small nudges; the base model needed a two-decade fall.
+
+    What the bucket names mean: the library fits one temperature per group
+    of questions, grouped by answer-option count. `choice:3-5` collects
+    choice questions with 3 to 5 options, `choice:11+` those with more than
+    10, and `noul:2` is every yes/no question. The illustration below
+    borrows those fitted temperatures to flatten one 10-option vector.
     """)
     return
 
@@ -654,8 +660,9 @@ def repair_section(mo):
 
     The repair has two steps. Step one trains on a proper scoring rule, so
     honest probabilities win during training; that was Act 5. Step two fits
-    a temperature per bucket on your own labeled documents, the standard
-    post-hoc patch. Here is what the two steps do to the yes/no head's ECE
+    a temperature per bucket on your own labeled documents:
+    temperature scaling ([Guo et al., 2017](https://arxiv.org/abs/1706.04599)),
+    the standard post-hoc fix. Here is what the two steps do to the yes/no head's ECE
     on the 53 held-out documents.
     """)
     return
@@ -764,6 +771,7 @@ def ece_figure(
     SLATE,
     TEAL,
     go,
+    mo,
 ):
     fig_ece6 = go.Figure()
     ece_values6 = [
@@ -804,7 +812,17 @@ def ece_figure(
         height=380,
         margin=dict(l=10, r=30, t=60, b=10),
     )
-    fig_ece6
+    mo.vstack(
+        [
+            fig_ece6,
+            mo.md(
+                "Source for the Jev number: TypeSafe Jev 1.13.0's published ECE, "
+                "as reported on [Laya's model card](https://huggingface.co/convaiinnovations/laya) "
+                "(benchmark table: Jev 0.144 raw vs Laya 0.081 after temperature fitting). "
+                "All URLs in this notebook verified live."
+            ),
+        ]
+    )
     return
 
 
