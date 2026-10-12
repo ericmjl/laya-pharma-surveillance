@@ -1,7 +1,7 @@
 # /// script
 # requires-python = ">=3.10"
 # dependencies = [
-#     "marimo>=0.13",
+#     "marimo==0.25.1",
 #     "matplotlib",
 #     "numpy",
 # ]
@@ -24,8 +24,8 @@ app = marimo.App(width="medium")
 @app.cell
 def _():
     import marimo as mo
-    import numpy as np
     import matplotlib.pyplot as plt7
+    import numpy as np
 
     plt7.rcParams.update(
         {
@@ -82,14 +82,14 @@ def _(mo):
     rows7 = [
         {
             "profile": name7,
-            "cold start": f'{v7["cold start s"]:.1f} s',
-            "p50 latency": f'{v7["p50 s"]:.2f} s',
+            "cold start": f"{v7['cold start s']:.1f} s",
+            "p50 latency": f"{v7['p50 s']:.2f} s",
             "server-side inference": (
-                f'{v7["server inference s"]*1000:.0f} ms'
+                f"{v7['server inference s'] * 1000:.0f} ms"
                 if v7["server inference s"] < 1
-                else f'{v7["server inference s"]:.1f} s'
+                else f"{v7['server inference s']:.1f} s"
             ),
-            "billable": f'${v7["$ per hour"]:.3f}/h',
+            "billable": f"${v7['$ per hour']:.3f}/h",
         }
         for name7, v7 in PROFILES7.items()
     ]
@@ -112,7 +112,9 @@ def _(PROFILES7, mo):
     cpu7 = PROFILES7["CPU (1 core, 3 GiB)"]
     gpu7 = PROFILES7["T4 GPU (2 cores, 8 GiB)"]
     cpu_cost7 = cost_per_million7(cpu7["$ per hour"], cpu7["throughput req/s (serial)"])
-    gpu_cost7 = cost_per_million7(gpu7["$ per hour"], gpu7["throughput req/s (8 concurrent)"])
+    gpu_cost7 = cost_per_million7(
+        gpu7["$ per hour"], gpu7["throughput req/s (8 concurrent)"]
+    )
     mo.md(
         f"""
         One line of arithmetic, per profile: hourly rate ÷ throughput ×
@@ -161,7 +163,9 @@ def _(PROFILES7, mo, np, plt7):
     x8 = np.arange(2)
     fig_lat7, ax_lat7 = plt7.subplots(figsize=(7.5, 3.4))
     ax_lat7.bar(x8 - 0.19, lat_p50_7, 0.38, label="p50, end to end", color="#a8b2bd")
-    ax_lat7.bar(x8 + 0.19, lat_inf_7, 0.38, label="server-side inference only", color="#4a7ebb")
+    ax_lat7.bar(
+        x8 + 0.19, lat_inf_7, 0.38, label="server-side inference only", color="#4a7ebb"
+    )
     ax_lat7.set_yscale("log")
     ax_lat7.set_ylabel("seconds (log scale)")
     ax_lat7.set_xticks(x8, ["CPU", "T4 GPU"])

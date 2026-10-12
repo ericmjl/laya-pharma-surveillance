@@ -1,7 +1,7 @@
 # /// script
 # requires-python = ">=3.10"
 # dependencies = [
-#     "marimo>=0.13",
+#     "marimo==0.25.1",
 #     "laya==0.3.5",
 #     "matplotlib",
 # ]
