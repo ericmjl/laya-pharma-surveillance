@@ -1,0 +1,23 @@
+notebooks/mail_viewer.py
+  s_1c17499aff1e1a::t_1f539c349f0f73 1-104
+notebooks/01-one-forward-pass.py
+  s_1c17499aff1e1a::t_44c2710ce1c2e2 29-30,39-42,258-259,323,331,589-590
+notebooks/02-the-confidence-trap.py
+  s_1c17499aff1e1a::t_d6d3c2c1f4031b 7,41,46,48-51,53-56,58,65-66,100-104,113-115,125-128,195,197-201,207,213-224,256,324-329,335,344-355,449,453-454,461-488,567,576-579,595,597,605,617,626-627,629,639-643,660-668,677,679,681-705,710-711
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b66cd54dd6fb73470fd4fc3bd68b768317ce15d6",
+  "prompts": {},
+  "sessions": {
+    "s_1c17499aff1e1a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1301e-0dab-7497-ae10-ff9b523c662b",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
