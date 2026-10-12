@@ -109,15 +109,15 @@ export default { render };
 
 
 class SampleDocs(anywidget.AnyWidget):
-    """Random per-category document sampler: reshuffles 3 docs per category, live."""
+    """Category picker + live-random 3-doc sample; click a card for full text."""
 
     _esm = """
 function render({ model, el }) {
   const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   const docs = model.get("docs") || [];
-  const perCat = {};
-  docs.forEach((d) => { (perCat[d.category] = perCat[d.category] || []).push(d); });
-  const cats = Object.keys(perCat).sort();
+  const cats = [...new Set(docs.map((d) => d.category))].sort();
+  let currentCat = cats[0];
+  let expanded = -1;
   el.style.fontFamily = "-apple-system,BlinkMacSystemFont,'SF Pro Text',Helvetica,Arial,sans-serif";
 
   const wrap = document.createElement("div");
@@ -133,22 +133,41 @@ function render({ model, el }) {
   };
 
   const draw = () => {
+    const pool = docs.filter((d) => d.category === currentCat);
+    const picks = sample3(pool);
     wrap.innerHTML =
+      '<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">' +
+      '<select style="cursor:pointer;border:1px solid #D9D4CA;border-radius:8px;padding:7px 10px;font-size:12.5px;background:#fff;color:#1D2530;">' +
+      cats.map((c) => '<option ' + (c === currentCat ? "selected" : "") + '>' + esc(c) + '</option>').join("") +
+      '</select>' +
       '<button style="cursor:pointer;border:1px solid #D9D4CA;background:#fff;border-radius:8px;padding:7px 14px;font-size:12.5px;font-weight:600;color:#1D2530;">Reshuffle sample</button>' +
-      '<div style="margin-top:6px;font-size:11.5px;color:#86868b;">three random documents per category, drawn live in your browser</div>' +
-      cats.map((cat) =>
-        '<div style="margin-top:14px;">' +
-        '<div style="font-size:12px;font-weight:700;color:#5C6B7A;text-transform:uppercase;letter-spacing:.5px;">' + esc(cat) + '</div>' +
-        sample3(perCat[cat]).map((d) =>
-          '<div style="padding:8px 0;border-bottom:1px solid #EFEDE7;">' +
-          '<div style="font-size:13px;font-weight:600;color:#1D2530;">' + esc(d.title) + '</div>' +
-          '<div style="font-size:11.5px;color:#86868b;">' + esc(d.source) + '</div>' +
-          '<div style="font-size:12.5px;color:#3D4450;margin-top:2px;">' + esc(d.snippet) + '</div>' +
-          '</div>'
-        ).join("") +
+      '<span style="font-size:11.5px;color:#86868b;">three random documents, drawn live in your browser - click one for full text</span>' +
+      '</div>' +
+      '<div style="margin-top:10px;">' +
+      picks.map((d, i) =>
+        '<div data-i="' + i + '" style="cursor:pointer;padding:10px 0;border-bottom:1px solid #EFEDE7;">' +
+        '<div style="font-size:13px;font-weight:600;color:#1D2530;">' + esc(d.title) + '</div>' +
+        '<div style="font-size:11.5px;color:#86868b;">' + esc(d.source) + '</div>' +
+        '<div style="font-size:12.5px;color:#3D4450;margin-top:2px;">' + esc(d.snippet) + '</div>' +
+        (expanded === i
+          ? '<div style="font-size:12.5px;color:#3D4450;margin-top:8px;background:#F7F5F1;border-radius:8px;padding:10px 12px;white-space:pre-wrap;">' + esc(d.text) + '</div>'
+          : "") +
         '</div>'
-      ).join("");
-    wrap.querySelector("button").addEventListener("click", draw);
+      ).join("") +
+      '</div>';
+    wrap.querySelector("select").addEventListener("change", (e) => {
+      currentCat = e.target.value;
+      expanded = -1;
+      draw();
+    });
+    wrap.querySelector("button").addEventListener("click", () => draw());
+    wrap.querySelectorAll("[data-i]").forEach((n) =>
+      n.addEventListener("click", () => {
+        const i = parseInt(n.dataset.i, 10);
+        expanded = expanded === i ? -1 : i;
+        draw();
+      })
+    );
   };
 
   draw();
