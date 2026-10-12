@@ -1,0 +1,23 @@
+.agents/skills/laya-notebook-standards/SKILL.md
+  s_1c17499aff1e1a::t_37c53ea79af323 1-98
+data/pv_schema_comparison.json
+  s_1c17499aff1e1a::t_7cc9d8afbf0a37 1
+notebooks/03-one-clause-flips-the-model.py
+  s_1c17499aff1e1a::t_e21c6ba033bf90 6-8,22,26-58,60,63-67,69,71-76,79-90,94-142,147-151,153-165,170-171,173,175-176,179-182,184-188,192-193,200-201,205,208,216-224,227-228,237-246,248-270,273-286,291,295,301,303-309,311-313,317-330,333,335,339,342-351,354,359-360,363-364,367-368,374-386,390-431,434-442,445-448,450-453,456-459,461-476,478-494,499-516
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "58fd257e143875db9e8e9305e34863dd4609efeb",
+  "prompts": {},
+  "sessions": {
+    "s_1c17499aff1e1a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1301e-0dab-7497-ae10-ff9b523c662b",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
