@@ -1,0 +1,20 @@
+notebooks/06-what-calibrated-means.py
+  s_9bfdd77d7c624b::t_cc94af6eba007c 5-7,14-19
+  s_9bfdd77d7c624b::t_3fd6ac41292c02 24,28-29,31,34-64,68-117,119-120,123-128,130-200,205-206,208-212,214-275,280-283,286-336,339-398,401-503,507-576,578-602,604-605,607-613,615,618-622,624-629,632-646,650-660,664-674,678-686,689,693-795,797-850
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "697dd4e08bb9499a4a4d76b5625f3630c331af5f",
+  "prompts": {},
+  "sessions": {
+    "s_9bfdd77d7c624b": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a131a8-a4ad-719a-bb29-c3b5c8cece76",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
