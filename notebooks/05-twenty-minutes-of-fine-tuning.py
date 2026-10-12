@@ -222,6 +222,7 @@ def load_data(Path, json):
         BRIER_BEFORE5,
         BRIER_GAIN_HI5,
         BRIER_GAIN_LO5,
+        DATA5,
         LOG_AFTER5,
         LOG_BEFORE5,
         LOG_GAIN_HI5,
@@ -241,6 +242,68 @@ def load_data(Path, json):
 
 
 @app.cell(hide_code=True)
+def split_viz(N_TEST5, N_TRAIN5, SLATE, TEAL, go):
+    fig_split5 = go.Figure()
+    fig_split5.add_bar(
+        y=["training documents", "held-out test documents"],
+        x=[N_TRAIN5, N_TEST5],
+        orientation="h",
+        marker_color=[TEAL, SLATE],
+        text=[f"{N_TRAIN5} labeled", f"{N_TEST5} held out"],
+        textposition="outside",
+    )
+    fig_split5.update_layout(
+        title=dict(
+            text="the split: 80/20 stratified by category", font=dict(size=13)
+        ),
+        height=180,
+        margin=dict(l=10, r=60, t=30, b=10),
+        template="plotly_white",
+        xaxis=dict(title="documents", range=[0, 260]),
+    )
+    fig_split5
+    return
+
+
+@app.cell(hide_code=True)
+def split_examples(DATA5, R5, json, mo):
+    with open(DATA5 / "doc_triage_real_results.json", encoding="utf-8") as f5b:
+        CORPUS_SMALL5 = {d5["id"]: d5 for d5 in json.load(f5b)}
+    with open(DATA5 / "real_docs_corpus_large.json", encoding="utf-8") as f5c:
+        CORPUS_LARGE5 = {d5["id"]: d5 for d5 in json.load(f5c)}
+    ID_LOOKUP5 = {**CORPUS_SMALL5, **CORPUS_LARGE5}
+
+    def doc_row5(doc_id5):
+        d5 = ID_LOOKUP5[doc_id5]
+        return {
+            "id": doc_id5,
+            "category": d5["cat"],
+            "title": d5["title"][:80],
+        }
+
+    train_sample5 = [
+        doc_row5(sorted(R5["train_docs"])[i5])
+        for i5 in (0, len(R5["train_docs"]) // 2, -1)
+    ]
+    test_sample5 = [
+        doc_row5(sorted(R5["test_docs"])[i5])
+        for i5 in (0, len(R5["test_docs"]) // 2, -1)
+    ]
+
+    mo.vstack(
+        [
+            mo.md("**Three training documents** (the model sees these):"),
+            mo.ui.table(train_sample5, selection=None),
+            mo.md(
+                "**Three held-out documents** (graded below, never trained on):"
+            ),
+            mo.ui.table(test_sample5, selection=None),
+        ]
+    )
+    return
+
+
+@app.cell(hide_code=True)
 def data_reading(N_TEST5, N_TRAIN5, QLABEL_JOINED5, mo):
     mo.md(f"""
         The file holds the split ({N_TRAIN5} training documents, {N_TEST5} test
@@ -254,54 +317,18 @@ def data_reading(N_TEST5, N_TRAIN5, QLABEL_JOINED5, mo):
 
 
 @app.cell(hide_code=True)
-def heldout_intro(N_TEST5, mo):
+def acc_plot_intro(N_TEST5, mo):
     mo.md(f"""
+    ## Accuracy: the headline
+
     ## Held-out results, before and after
 
     {N_TEST5} test documents the model never trained on. Same schema, same
     checkpoint, one fine-tuning run in between. The table shows accuracy,
     Brier, and mean log score side by side; the charts after it plot the
     same numbers as bars.
-    """)
-    return
 
-
-@app.cell(hide_code=True)
-def before_after_table(QLABELS5, QORDER5, R5, mo):
-    table5 = [
-        {
-            "question": QLABELS5[q],
-            "accuracy before": round(R5["before_raw"][q]["acc"], 3),
-            "accuracy after": round(R5["after_raw"][q]["acc"], 3),
-            "Brier before": round(R5["before_raw"][q]["brier"], 3),
-            "Brier after": round(R5["after_raw"][q]["brier"], 3),
-            "log score before": round(R5["before_raw"][q]["log_score"], 3),
-            "log score after": round(R5["after_raw"][q]["log_score"], 3),
-        }
-        for q in QORDER5
-    ]
-    mo.ui.table(table5, selection=None)
-    return
-
-
-@app.cell(hide_code=True)
-def table_reading(ACC_AFTER5, ACC_BEFORE5, SEC_BEFORE5, mo):
-    mo.md(f"""
-        Read the table column by column. Before fine-tuning, accuracy runs from
-        {min(ACC_BEFORE5):.2f} to {max(ACC_BEFORE5):.2f} across the five
-        questions, and secondary type sits at {SEC_BEFORE5:.2f}, close to random
-        for an 11-way pick. After fine-tuning, every question lands between
-        {min(ACC_AFTER5):.2f} and {max(ACC_AFTER5):.2f}. The probability columns
-        move in the same direction on every question, which is what the next two
-        charts show.
-        """)
-    return
-
-
-@app.cell(hide_code=True)
-def acc_plot_intro(mo):
-    mo.md(f"""
-    ## Accuracy: the headline
+    The chart carries the same numbers the table used to: accuracy before and after for all five questions.
 
     Here is the accuracy comparison as a chart. Slate bars are the base
     checkpoint, green bars are after RLCD fine-tuning, and every bar carries
@@ -361,6 +388,7 @@ def acc_plot(
 @app.cell(hide_code=True)
 def acc_plot_reading(
     ACC_AFTER5,
+    ACC_BEFORE5,
     N_TEST5,
     ROUTE_AFTER5,
     ROUTE_BEFORE5,
@@ -377,7 +405,16 @@ def acc_plot_reading(
         One caveat keeps this honest: accuracy on {N_TEST5} documents is grainy,
         and each document moves it by about {1 / N_TEST5:.3f}. That graininess is
         exactly why the probability scores below carry the real story.
-        """)
+
+
+    Read the table column by column. Before fine-tuning, accuracy runs from
+        {min(ACC_BEFORE5):.2f} to {max(ACC_BEFORE5):.2f} across the five
+        questions, and secondary type sits at {SEC_BEFORE5:.2f}, close to random
+        for an 11-way pick. After fine-tuning, every question lands between
+        {min(ACC_AFTER5):.2f} and {max(ACC_AFTER5):.2f}. The probability columns
+        move in the same direction on every question, which is what the next two
+        charts show.
+    """)
     return
 
 
@@ -516,24 +553,43 @@ def loop_intro(N_TRAIN5, mo):
 
 @app.cell(hide_code=True)
 def loop_anatomy(N_TRAIN5, mo):
-    mo.md(f"""
-    ```python
-    EPOCHS = 3        # over {N_TRAIN5} labeled documents
-    LR = 1e-5         # AdamW, full encoder fine-tune
-    G = 4             # noise candidates per question (the "group")
-    SIGMA = 0.3       # Gaussian logit-noise scale (exploration)
+    mo.vstack(
+        [
+            mo.md(
+                f"""
+                ## The loop, all 20 minutes of it
 
-    # inside train_epoch, per batch:
-    #   1. one no-grad forward pass -> option logits z
-    z = z + SIGMA * torch.randn_like(z)     # 2. G noisy candidates
-    #   3. score each candidate with a strictly proper reward:
-    #      proper_reward = log score + spherical score + RPS
-    r = proper_reward(p, tgt, qtg, msk)     # [G, N]
-    #   4. group-normalize r into advantages (GRPO-style),
-    #      weight the differentiable reward, plus a small
-    #      soft-CE anchor (0.3) for stability on tiny data
-    ```
-    """)
+                The full script ships in this repo at
+                [training/finetune_experiment.py](https://github.com/ericmjl/laya-pharma-surveillance/blob/main/training/finetune_experiment.py).
+                The core of it:
+                """
+            ),
+            mo.accordion(
+                {
+                    "Click here to see the training loop": mo.md(
+                        f"""
+                        ```python
+                        EPOCHS = 3        # over {N_TRAIN5} labeled documents
+                        LR = 1e-5         # AdamW, full encoder fine-tune
+                        G = 4             # noise candidates per question (the "group")
+                        SIGMA = 0.3       # Gaussian logit-noise scale (exploration)
+
+                        # inside train_epoch, per batch:
+                        #   1. one no-grad forward pass -> option logits z
+                        z = z + SIGMA * torch.randn_like(z)     # 2. G noisy candidates
+                        #   3. score each candidate with a strictly proper reward:
+                        #      proper_reward = log score + spherical score + RPS
+                        r = proper_reward(p, tgt, qtg, msk)     # [G, N]
+                        #   4. group-normalize r into advantages (GRPO-style),
+                        #      weight the differentiable reward, plus a small
+                        #      soft-CE anchor for stability on tiny data
+                        ```
+                        """
+                    )
+                }
+            ),
+        ]
+    )
     return
 
 
@@ -546,6 +602,104 @@ def reward_reading(mo):
     falls out as a side effect of the objective, which is exactly what Act 6
     measures.
     """)
+    return
+
+
+@app.cell(hide_code=True)
+def curve_section(mo):
+    mo.md("""
+    ## The training curve
+
+    The run below is the same one that produced every number above, with one
+    addition: it now records per-epoch numbers as it trains. Mean training
+    reward (what the policy optimizes) on the left axis; mean held-out
+    accuracy and Brier across the five questions on the right axis. The
+    before-fine-tuning point sits at epoch zero.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def training_curve(CRIMSON, GREEN, R5, TEAL, go, mo):
+    from pathlib import Path as _Path5
+
+    _curve_file5 = (
+        _Path5(__file__).resolve().parent.parent
+        / "data"
+        / "finetune_training_curve.json"
+    )
+
+    if not _curve_file5.exists():
+        mo.callout(
+            mo.md(
+                "The fine-tuning run that records this curve has not written its output yet."
+            ),
+            kind="warn",
+        )
+    else:
+        import json as _json5
+
+        _curve5 = _json5.loads(_curve_file5.read_text())["epochs"]
+        _epochs5 = [0] + [p5["epoch"] for p5 in _curve5]
+        _acc5 = [R5["before_raw"]["doc_type"]["acc"]] + [
+            p5["test_acc_mean"] for p5 in _curve5
+        ]
+        _brier5 = [R5["before_raw"]["doc_type"]["brier"]] + [
+            p5["test_brier_mean"] for p5 in _curve5
+        ]
+        _rew5 = [None] + [p5["train_mean_reward"] for p5 in _curve5]
+
+        fig_curve5 = go.Figure()
+        fig_curve5.add_trace(
+            go.Scatter(
+                x=_epochs5,
+                y=_acc5,
+                name="held-out accuracy (left)",
+                mode="lines+markers",
+                line=dict(color=GREEN, width=3),
+                marker=dict(size=9),
+            )
+        )
+        fig_curve5.add_trace(
+            go.Scatter(
+                x=_epochs5,
+                y=_brier5,
+                name="held-out Brier (left)",
+                mode="lines+markers",
+                line=dict(color=CRIMSON, width=3),
+                marker=dict(size=9),
+            )
+        )
+        fig_curve5.add_trace(
+            go.Scatter(
+                x=_epochs5[1:],
+                y=_rew5[1:],
+                name="train mean reward (right)",
+                mode="lines+markers",
+                line=dict(color=TEAL, width=3, dash="dot"),
+                marker=dict(size=9),
+                yaxis="y2",
+            )
+        )
+        fig_curve5.update_layout(
+            title=dict(
+                text="training curve: reward climbs, held-out accuracy follows",
+                font=dict(size=13),
+            ),
+            height=420,
+            margin=dict(l=10, r=10, t=60, b=10),
+            template="plotly_white",
+            xaxis=dict(title="epoch (0 = before fine-tuning)", dtick=1),
+            yaxis=dict(title="accuracy / Brier", range=[0, 1.05]),
+            yaxis2=dict(
+                title="train mean reward",
+                overlaying="y",
+                side="right",
+                showgrid=False,
+            ),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0),
+        )
+        fig_curve5
     return
 
 
