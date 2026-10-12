@@ -5,6 +5,8 @@
 #     "plotly==7.1.0",
 #     "marimo-lens==0.2.3",
 #     "marimo-studio==0.3.0",
+#     "anywidget==0.11.0",
+#     "traitlets==5.16.1",
 # ]
 # ///
 """Act 4: Real documents.
@@ -111,10 +113,13 @@ def imports():
     from collections import Counter
     from pathlib import Path
 
+    import anywidget
     import marimo as mo
     import plotly.graph_objects as go
+    import traitlets
 
     sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from mail_viewer import DocViewer, SampleDocs
 
     # Pharmacopeia theme (see .agents/skills/laya-pharma-theme/SKILL.md)
     INK = "#0F2233"  # clinical navy: banners, dark cards
@@ -128,18 +133,32 @@ def imports():
     KICK = "#8FB0B8"  # kicker text on ink
     LINE = "#D9D4CA"  # warm hairline
     PAPER = "#F7F5F1"  # light card background
+
+    CAT_DISPLAY = {
+        "legal": "Legal",
+        "public_comment": "Public Comment",
+        "commercial": "Commercial",
+        "inspection_finding": "Inspection Finding",
+        "safety_communication": "Safety Communication",
+        "press_coverage": "Press Coverage",
+        "spam_or_irrelevant": "Spam or Irrelevant *",
+        "regulatory_guidance": "Regulatory Guidance",
+        "corporate_report": "Corporate Report",
+        "scientific_publication": "Scientific Publication",
+    }
     return (
         AMBER,
+        CAT_DISPLAY,
         CRIMSON,
         Counter,
+        DocViewer,
         GREEN,
         INK,
         INK2,
         KICK,
-        LINE,
         MIST,
-        PAPER,
         Path,
+        SampleDocs,
         TEAL,
         go,
         json,
@@ -170,24 +189,41 @@ def load_reading(ALL_DOCS4, FIRST50, LARGE, mo):
 
 
 @app.cell(hide_code=True)
-def corpus_chart(ALL_DOCS4, AMBER, Counter, TEAL, go):
+def corpus_sampler(ALL_DOCS4, CAT_DISPLAY, SampleDocs):
+    sample_docs4 = [
+        {
+            "category": CAT_DISPLAY[d4["cat"]],
+            "title": d4["title"],
+            "source": d4["source"],
+            "snippet": d4["text"][:180]
+            + ("..." if len(d4["text"]) > 180 else ""),
+        }
+        for d4 in ALL_DOCS4
+    ]
+
+    SampleDocs(docs=sample_docs4)
+    return
+
+
+@app.cell(hide_code=True)
+def corpus_chart(ALL_DOCS4, CAT_DISPLAY, Counter, TEAL, go):
     counts4 = Counter(d4["cat"] for d4 in ALL_DOCS4)
     cats4 = sorted(counts4, key=counts4.get)
-    colors4 = [AMBER if c4 == "spam_or_irrelevant" else TEAL for c4 in cats4]
+    labels4 = [CAT_DISPLAY[c4] for c4 in cats4]
 
     fig_cat4 = go.Figure(
         go.Bar(
             x=[counts4[c4] for c4 in cats4],
-            y=cats4,
+            y=labels4,
             orientation="h",
-            marker_color=colors4,
+            marker_color=TEAL,
             text=[counts4[c4] for c4 in cats4],
             textposition="outside",
         )
     )
     fig_cat4.update_layout(
         title=dict(
-            text="documents per category (amber = the spam sample, everything else is real)",
+            text="documents per category (* = the synthetic spam sample; everything else is real)",
             font=dict(size=13),
         ),
         height=420,
@@ -238,7 +274,6 @@ def corpus_browser(ALL_DOCS4, category_pick4, mo):
     ]
     mo.vstack(
         [
-            category_pick4,
             mo.md(
                 f"{len(picked_docs4)} documents in `{category_pick4.value}`"
             ),
@@ -253,10 +288,12 @@ def sweep_intro(mo):
     mo.md("""
     ## Zero-shot on the first 50
 
-    Same schema as the fine-tuning act: primary category, secondary type,
-    owning team, actionability, urgency. One forward pass per document, no
-    training on this distribution, predictions on the 50 hand-curated
-    documents only. The headline first, then the failures.
+    Every document gets one forward pass with five questions: primary
+    category, secondary type, owning team, action required, and urgency.
+    Raw zero-shot: no training on this distribution, and predictions cover
+    only the 50 hand-curated documents. Act 5 fine-tunes this exact schema;
+    here it runs raw. The chart below shows how often each answer matched
+    the label.
     """)
     return
 
@@ -306,11 +343,11 @@ def sweep_chart(
     urg_acc4,
 ):
     sweep_labels4 = [
-        "primary - operational 4 cats",
-        "primary - other 6 cats",
-        "urgency (0-2)",
-        "action required (P >= 0.5)",
-        "owning team",
+        "primary category (operational 4)",
+        "primary category (other 6)",
+        "urgency (exact 0-2 match)",
+        "action required (threshold 0.5)",
+        "owning team (8-way)",
     ]
     sweep_vals4 = [ops_acc4, rest_acc4, urg_acc4, action_acc4, team_acc4]
     sweep_colors4 = [GREEN, TEAL, TEAL, TEAL, TEAL]
@@ -336,6 +373,22 @@ def sweep_chart(
         xaxis=dict(title="accuracy", range=[0, 1.15]),
     )
     fig_sweep4
+    return
+
+
+@app.cell(hide_code=True)
+def sweep_legend(mo):
+    mo.md("""
+    What each row measures:
+
+    - **Primary category**: does the model's 10-way label match? The four
+      operational categories - regulatory guidance, inspection findings,
+      safety communications, scientific publications - are the routes a
+      surveillance pipeline acts on; the other six are everything else.
+    - **Owning team**: did the 8-way team assignment match the label?
+    - **Action required**: does P(action) >= 0.5 match the yes/no label?
+    - **Urgency**: did the 0-2 score match exactly?
+    """)
     return
 
 
@@ -390,37 +443,22 @@ def failure_gallery(WRONG4, mo):
 
 
 @app.cell(hide_code=True)
-def failure_spotlights(LINE, PAPER, WRONG4, mo):
-    def doc_card4(title4, body4, note4):
-        return mo.Html(
-            f"""
-            <div style="border:1px solid {LINE};border-radius:12px;overflow:hidden;background:{PAPER};font-family:-apple-system,BlinkMacSystemFont,sans-serif;">
-              <div style="padding:12px 18px;background:#EFEDE7;border-bottom:1px solid {LINE};font-size:12px;font-weight:600;color:#5C6B7A;">{title4}</div>
-              <div style="padding:14px 18px;">
-                <div style="font-size:13.5px;line-height:1.55;color:#1D2530;white-space:pre-wrap;">{body4}</div>
-                <div style="font-size:12px;color:#5C6B7A;margin-top:10px;">{note4}</div>
-              </div>
-            </div>
-            """
-        )
+def failure_viewer(DocViewer, WRONG4):
+    viewer_docs4 = [
+        {
+            "id": d4["id"],
+            "source": d4["source"],
+            "title": d4["title"],
+            "body": d4["text"][:500]
+            + ("..." if len(d4["text"]) > 500 else ""),
+            "label": d4["cat"],
+            "predicted": d4["pred"]["doc_type"],
+            "prob": f"{d4['pred']['type_probs'].get(d4['pred']['doc_type'], 0):.2f}",
+        }
+        for d4 in WRONG4
+    ]
 
-    collide4 = next(d4 for d4 in WRONG4 if d4["source"] == "Fierce Pharma")
-    spam4 = next(d4 for d4 in WRONG4 if d4["cat"] == "spam_or_irrelevant")
-
-    mo.vstack(
-        [
-            doc_card4(
-                f"{collide4['id']} - press coverage about a warning letter",
-                collide4["title"] + "\n\n" + collide4["text"][:300] + "...",
-                f"Label: {collide4['cat']} (it is coverage, not the letter itself). Predicted: {collide4['pred']['doc_type']}. The genre fits better than the content.",
-            ),
-            doc_card4(
-                f"{spam4['id']} - spam dressed as science",
-                spam4["title"] + "\n\n" + spam4["text"][:300] + "...",
-                f"Label: {spam4['cat']}. Predicted: {spam4['pred']['doc_type']}. The spam never announces itself.",
-            ),
-        ]
-    )
+    DocViewer(docs=viewer_docs4)
     return
 
 
