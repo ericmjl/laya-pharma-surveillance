@@ -87,8 +87,10 @@ function render({ model, el }) {
       avatar.style.background = on ? "rgba(255,255,255,.28)" : "linear-gradient(135deg,#1F7A8C,#0F2233)";
     });
     const m = emails[sel] || {};
-    readerDiv.innerHTML = reader(m);
-    readerDiv.scrollTop = 0;
+    if (readerDiv) {
+      readerDiv.innerHTML = reader(m);
+      readerDiv.scrollTop = 0;
+    }
   };
 
   const build = () => {
@@ -106,18 +108,19 @@ function render({ model, el }) {
           emails.map(rowHTML).join("") + '</div>'
         : "") +
       '<div data-reader style="flex:1;min-width:0;"></div></div>';
-    listDiv = wrap.querySelector("[data-list]");
     readerDiv = wrap.querySelector("[data-reader]");
-    rowEls.length = 0;
-    listDiv.querySelectorAll("[data-i]").forEach((n) => {
-      rowEls[+n.dataset.i] = n;
-      n.addEventListener("click", () => {
-        sel = +n.dataset.i;
-        model.set("selected", sel);
-        model.save_changes();
-        applySelection();
+    const listPane = wrap.querySelector("[data-list]");
+    if (listPane) {
+      listPane.querySelectorAll("[data-i]").forEach((n) => {
+        rowEls[+n.dataset.i] = n;
+        n.addEventListener("click", () => {
+          sel = +n.dataset.i;
+          model.set("selected", sel);
+          model.save_changes();
+          applySelection();
+        });
       });
-    });
+    }
     applySelection();
   };
 
@@ -277,18 +280,19 @@ function render({ model, el }) {
       '<div style="display:flex;min-height:300px;">' +
       '<div data-list style="width:280px;flex-shrink:0;border-right:1px solid #EFEDE7;background:#fbfbfd;max-height:520px;overflow-y:auto;">' + docs.map(rowHTML).join("") + '</div>' +
       '<div data-reader style="flex:1;min-width:0;"></div></div>';
-    listDiv = wrap.querySelector("[data-list]");
     readerDiv = wrap.querySelector("[data-reader]");
-    rowEls.length = 0;
-    listDiv.querySelectorAll("[data-i]").forEach((n) => {
-      rowEls[+n.dataset.i] = n;
-      n.addEventListener("click", () => {
-        sel = +n.dataset.i;
-        model.set("selected", sel);
-        model.save_changes();
-        applySelection();
+    const listPane = wrap.querySelector("[data-list]");
+    if (listPane) {
+      listPane.querySelectorAll("[data-i]").forEach((n) => {
+        rowEls[+n.dataset.i] = n;
+        n.addEventListener("click", () => {
+          sel = +n.dataset.i;
+          model.set("selected", sel);
+          model.save_changes();
+          applySelection();
+        });
       });
-    });
+    }
     applySelection();
   };
 

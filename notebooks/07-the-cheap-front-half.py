@@ -128,6 +128,8 @@ def imports():
     LINE = "#D9D4CA"  # warm hairline
     PAPER = "#F7F5F1"  # light card background
     DLR = "\\$"  # escaped dollar sign: a bare $...$ pair renders as math in markdown
+    from plotly.subplots import make_subplots
+
     return (
         CRIMSON,
         DLR,
@@ -140,6 +142,7 @@ def imports():
         SLATE,
         TEAL,
         go,
+        make_subplots,
         mo,
     )
 
@@ -162,43 +165,114 @@ def profiles_intro(mo):
 
 
 @app.cell(hide_code=True)
-def benchmarks(mo):
-    # Measured by the benchmark harness in nll-ai/laya-demo/modal/benchmark.py
+def endpoint_call(mo):
+    mo.vstack(
+        [
+            mo.md(
+                """
+                Any HTTP client hits it the same way: one POST with the state and
+                the questions, JSON back. Generic client, nothing app-specific:
+                """
+            ),
+            mo.accordion(
+                {
+                    "Click here to see how to call the endpoint": mo.md(
+                        """
+                        ```python
+                        import json
+                        import urllib.request
+
+                        URL = "https://<workspace>--laya-api-<endpoint>.modal.run"
+
+                        payload = {
+                            "state": {"subject": "...", "body": "..."},
+                            "questions": {
+                                "is_phishing": {
+                                    "type": "noul",
+                                    "instructions": "Is this email a phishing or scam attempt?",
+                                }
+                            },
+                        }
+                        request = urllib.request.Request(
+                            URL,
+                            data=json.dumps(payload).encode(),
+                            headers={"Content-Type": "application/json"},
+                        )
+                        result = json.loads(urllib.request.urlopen(request, timeout=60).read())
+                        ```
+                        """
+                    )
+                }
+            ),
+        ]
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def benchmarks(SLATE, TEAL, go, make_subplots):
     PROFILES7 = {
         "CPU (1 core, 3 GiB)": {
             "cold start s": 3.5,
             "p50 s": 3.31,
             "server inference s": 2.9,
-            "throughput req/s": 1.2,
+            "throughput req/s (serial)": 1.2,
             "$ per hour": 0.071,
         },
         "T4 GPU (2 cores, 8 GiB)": {
             "cold start s": 44.3,
             "p50 s": 0.48,
             "server inference s": 0.049,
-            "throughput req/s": 8.0,
+            "throughput req/s (8 concurrent)": 8.0,
             "$ per hour": 0.749,
         },
     }
-    CPU7 = PROFILES7["CPU (1 core, 3 GiB)"]
-    GPU7 = PROFILES7["T4 GPU (2 cores, 8 GiB)"]
-    rows7 = [
-        {
-            "profile": name7,
-            "cold start": f"{v7['cold start s']:.1f} s",
-            "p50 latency": f"{v7['p50 s']:.2f} s",
-            "server inference": (
-                f"{v7['server inference s'] * 1000:.0f} ms"
-                if v7["server inference s"] < 1
-                else f"{v7['server inference s']:.1f} s"
-            ),
-            "throughput": f"{v7['throughput req/s']:.1f} req/s",
-            "billable": f"${v7['$ per hour']:.3f}/h",
-        }
-        for name7, v7 in PROFILES7.items()
-    ]
-    mo.ui.table(rows7, selection=None)
-    return CPU7, GPU7
+
+    fig_prof4 = make_subplots(
+        rows=1,
+        cols=3,
+        subplot_titles=(
+            "cold start (s)",
+            "throughput (req/s)",
+            "billable rate ($/h)",
+        ),
+    )
+    for col4, key4 in enumerate(
+        ["cold start s", "throughput req/s (serial)", "$ per hour"], start=1
+    ):
+        ykey4 = (
+            "throughput req/s (8 concurrent)"
+            if key4 == "throughput req/s (serial)"
+            else key4
+        )
+        for i4, (name4, v4) in enumerate(PROFILES7.items()):
+            val4 = v4[key4] if key4 in v4 else v4[ykey4]
+            fig_prof4.add_trace(
+                go.Bar(
+                    x=[name4.split(" (")[0]],
+                    y=[val4],
+                    marker_color=[SLATE, TEAL][i4 - 1],
+                    showlegend=(col4 == 1),
+                    name=name4.split(" (")[0],
+                ),
+                row=1,
+                col=col4,
+            )
+    fig_prof4.update_layout(
+        title=dict(
+            text="two profiles, three ways that matter", font=dict(size=13)
+        ),
+        height=360,
+        margin=dict(l=10, r=20, t=60, b=10),
+        template="plotly_white",
+        showlegend=True,
+        legend=dict(orientation="h", yanchor="bottom", y=1.0, x=0),
+    )
+    fig_prof4.update_yaxes(title_text="seconds", row=1, col=1)
+    fig_prof4.update_yaxes(title_text="req/s", row=1, col=2)
+    fig_prof4.update_yaxes(title_text="dollars/hour", row=1, col=3)
+    fig_prof4
+    return
 
 
 @app.cell(hide_code=True)
@@ -322,6 +396,46 @@ def cost_plot(SLATE, TEAL, cpu_cost7, go, gpu_cost7):
         yaxis=dict(title="$ per 1M requests", range=[0, gpu_cost7 * 1.2]),
     )
     fig_cost7
+    return
+
+
+@app.cell(hide_code=True)
+def cost_crossover(SLATE, TEAL, cpu_cost7, go, gpu_cost7):
+    cpu_per_req7 = cpu_cost7 / 1e6
+    gpu_per_req7 = gpu_cost7 / 1e6
+    volumes7 = [0, 250e3, 500e3, 1e6, 2e6, 4e6, 8e6]
+
+    fig_cross4 = go.Figure()
+    fig_cross4.add_trace(
+        go.Scatter(
+            x=volumes7,
+            y=[v7 * cpu_per_req7 for v7 in volumes7],
+            mode="lines+markers",
+            name="CPU",
+            line=dict(color=TEAL, width=3),
+        )
+    )
+    fig_cross4.add_trace(
+        go.Scatter(
+            x=volumes7,
+            y=[v7 * gpu_per_req7 for v7 in volumes7],
+            mode="lines+markers",
+            name="T4 GPU",
+            line=dict(color=SLATE, width=3),
+        )
+    )
+    fig_cross4.update_layout(
+        title=dict(
+            text="monthly bill vs monthly requests - the cost lines never cross; the GPU is a latency purchase",
+            font=dict(size=13),
+        ),
+        height=380,
+        margin=dict(l=10, r=20, t=60, b=10),
+        template="plotly_white",
+        xaxis=dict(title="requests per month", tickformat=",.0f"),
+        yaxis=dict(title="dollars per month", tickprefix="$"),
+    )
+    fig_cross4
     return
 
 
