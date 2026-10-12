@@ -402,12 +402,17 @@ def schema_run(
                 "false alarms": fp3,
             }
         )
-    RUN_NOTE3
-    return PREDS3, RUN_NOTE3, SUMMARY3
+    return PREDS3, SUMMARY3
 
 
 @app.cell(hide_code=True, expand_output=True)
-def detection_table(CRIMSON, RUN_NOTE3, SUMMARY3, TEAL, go, mo):
+def detection_table(SUMMARY3, mo):
+    mo.ui.table(SUMMARY3, selection=None)
+    return
+
+
+@app.cell(hide_code=True)
+def detection_chart(CRIMSON, SUMMARY3, TEAL, go):
     labels3 = [s3["configuration"] for s3 in SUMMARY3][::-1]
     det3 = [int(s3["AE detected"].split("/")[0]) for s3 in SUMMARY3][::-1]
     miss3 = [s3["missed"] for s3 in SUMMARY3][::-1]
@@ -447,14 +452,7 @@ def detection_table(CRIMSON, RUN_NOTE3, SUMMARY3, TEAL, go, mo):
         legend=dict(orientation="h", yanchor="bottom", y=1.0, x=0),
         xaxis=dict(range=[0, 38]),
     )
-
-    mo.vstack(
-        [
-            mo.ui.table(SUMMARY3, selection=None),
-            fig_det3,
-            mo.md(f"*{RUN_NOTE3}*"),
-        ]
-    )
+    fig_det3
     return
 
 
@@ -572,7 +570,7 @@ def spotlights(CRIMSON, GREEN, LINE, PAPER, POSTS3, PREDS3, mo):
                 "The clause told the head to treat praise as evidence; the head started finding it everywhere.",
             ),
             post_card3(
-                "GI-05 - emergency-room visit, in Mandarin (I can verify this one)",
+                "GI-05 - emergency-room visit, in Mandarin",
                 er3["text"],
                 PREDS3["multilingual"]["long"]["GI-05"],
                 PREDS3["multilingual"]["short"]["GI-05"],
