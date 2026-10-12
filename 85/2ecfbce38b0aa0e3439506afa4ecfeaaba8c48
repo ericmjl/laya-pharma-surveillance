@@ -1,0 +1,25 @@
+.agents/skills/laya-pharma-theme/SKILL.md
+  s_1c17499aff1e1a::t_5154b70d59e030 1-81
+notebooks/01-one-forward-pass.py
+  s_1c17499aff1e1a::t_f1bee6c65ace08 42-69,73-116,165,168-173,409,417,457,467
+notebooks/02-the-confidence-trap.py
+  s_1c17499aff1e1a::t_d11437c20be1eb 28-71,131-142,144-150,153-154,294,301,307,423,430,469-470,473,482-486,730,732,754,813-816,840-850,856-857,862-865,869,874-877,881,890,895,906
+notebooks/mail_viewer.py
+  s_1c17499aff1e1a::t_4dbe0e9c86e6d9 3-6,32-35,43,52,57-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "852ecfbce38b0aa0e3439506afa4ecfeaaba8c48",
+  "prompts": {},
+  "sessions": {
+    "s_1c17499aff1e1a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1301e-0dab-7497-ae10-ff9b523c662b",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
