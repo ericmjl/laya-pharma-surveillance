@@ -1,0 +1,31 @@
+PLAN.md
+  s_1c17499aff1e1a::t_99e7f1bc20857b 1-58
+README.md
+  s_1c17499aff1e1a::t_cc648cf88e46ae 1-40
+.gitignore
+  s_1c17499aff1e1a::t_9b32c24599d367 1-5
+data/doc_triage_real_results.json
+  s_1c17499aff1e1a::t_54acd6fc420a55 1-3002
+data/finetune_experiment_results.json
+  s_1c17499aff1e1a::t_eeb7583ad9ec07 1-415
+data/real_docs_corpus_large.json
+  s_1c17499aff1e1a::t_032658be7aa6f8 1-2582
+data/synthetic_ae_dataset.json
+  s_1c17499aff1e1a::t_e36571eb70812e 1-552
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9c8578a1ed70296a1b93de0d616ad0ad9ece6d6a",
+  "prompts": {},
+  "sessions": {
+    "s_1c17499aff1e1a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1301e-0dab-7497-ae10-ff9b523c662b",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
