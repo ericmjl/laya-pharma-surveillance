@@ -197,6 +197,7 @@ def corpus_sampler(ALL_DOCS4, CAT_DISPLAY, SampleDocs):
             "source": d4["source"],
             "snippet": d4["text"][:180]
             + ("..." if len(d4["text"]) > 180 else ""),
+            "text": d4["text"],
         }
         for d4 in ALL_DOCS4
     ]
@@ -246,10 +247,10 @@ def corpus_chart_reading(mo):
 
 
 @app.cell(hide_code=True)
-def browser_controls(ALL_DOCS4, mo):
+def browser_controls(ALL_DOCS4, CAT_DISPLAY, mo):
     category_pick4 = mo.ui.dropdown(
-        options=sorted({d4["cat"] for d4 in ALL_DOCS4}),
-        value="inspection_finding",
+        options=sorted({CAT_DISPLAY[d4["cat"]] for d4 in ALL_DOCS4}),
+        value="Inspection Finding",
         label="category: ",
     )
     category_pick4
@@ -257,10 +258,10 @@ def browser_controls(ALL_DOCS4, mo):
 
 
 @app.cell(hide_code=True)
-def corpus_browser(ALL_DOCS4, category_pick4, mo):
-    picked_docs4 = [
-        d4 for d4 in ALL_DOCS4 if d4["cat"] == category_pick4.value
-    ]
+def corpus_browser(ALL_DOCS4, CAT_DISPLAY, category_pick4, mo):
+    slug_by_name4 = {CAT_DISPLAY[d4["cat"]]: d4["cat"] for d4 in ALL_DOCS4}
+    picked_slug4 = slug_by_name4[category_pick4.value]
+    picked_docs4 = [d4 for d4 in ALL_DOCS4 if d4["cat"] == picked_slug4]
     browser_rows4 = [
         {
             "id": d4["id"],
@@ -274,9 +275,7 @@ def corpus_browser(ALL_DOCS4, category_pick4, mo):
     ]
     mo.vstack(
         [
-            mo.md(
-                f"{len(picked_docs4)} documents in `{category_pick4.value}`"
-            ),
+            mo.md(f"{len(picked_docs4)} documents in {category_pick4.value}"),
             mo.ui.table(browser_rows4, selection=None),
         ]
     )
@@ -285,16 +284,39 @@ def corpus_browser(ALL_DOCS4, category_pick4, mo):
 
 @app.cell(hide_code=True)
 def sweep_intro(mo):
-    mo.md("""
-    ## Zero-shot on the first 50
+    mo.vstack(
+        [
+            mo.md(
+                """
+                ## Zero-shot on the first 50
 
-    Every document gets one forward pass with five questions: primary
-    category, secondary type, owning team, action required, and urgency.
-    Raw zero-shot: no training on this distribution, and predictions cover
-    only the 50 hand-curated documents. Act 5 fine-tunes this exact schema;
-    here it runs raw. The chart below shows how often each answer matched
-    the label.
-    """)
+                Every document gets one forward pass with five questions: primary
+                category, secondary type, owning team, action required, and
+                urgency. Raw zero-shot: no training on this distribution, and
+                predictions cover only the 50 hand-curated documents. Act 5
+                fine-tunes this exact schema; here it runs raw. The chart below
+                shows how often each answer matched the label.
+                """
+            ),
+            mo.accordion(
+                {
+                    "Click here to see the code that runs the predictions": mo.md(
+                        """
+                        ```python
+                        answers = agent.predict(document, TRIAGE_Q4)["answers"]
+                        # TRIAGE_Q4: five typed questions per document -
+                        #   primary category (choice, 10-way)
+                        #   secondary type (choice)
+                        #   owning team (choice, 8-way)
+                        #   action required (noul, yes/no)
+                        #   urgency (score, 0-2)
+                        ```
+                        """
+                    )
+                }
+            ),
+        ]
+    )
     return
 
 
