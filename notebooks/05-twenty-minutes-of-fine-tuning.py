@@ -540,13 +540,13 @@ def prob_scores_reading(
 @app.cell(hide_code=True)
 def loop_intro(N_TRAIN5, mo):
     mo.md(f"""
-    ## The loop, all 20 minutes of it
+    ## The training loop
 
     The gains above came from one small training loop, reimplemented at
     laptop scale on top of Laya's own training utilities: group-relative
     policy gradients with Gaussian logit noise, a strictly proper scoring
     reward, and a full encoder fine-tune. Three epochs over {N_TRAIN5}
-    documents. Here is the anatomy.
+    documents.
     """)
     return
 
@@ -557,8 +557,6 @@ def loop_anatomy(N_TRAIN5, mo):
         [
             mo.md(
                 f"""
-                ## The loop, all 20 minutes of it
-
                 The full script ships in this repo at
                 [training/finetune_experiment.py](https://github.com/ericmjl/laya-pharma-surveillance/blob/main/training/finetune_experiment.py).
                 The core of it:
