@@ -809,32 +809,59 @@ def latency_bench(
             samples2.append((time.perf_counter() - t2) * 1000)
         return samples2
 
-    def swarm_offsets2(values2, bin_height2):
-        order2 = sorted(range(len(values2)), key=lambda i2: values2[i2])
-        counts2 = {}
-        offsets2 = [0.0] * len(values2)
-        for i2 in order2:
-            b2 = int(values2[i2] // bin_height2)
-            k2 = counts2.get(b2, 0)
-            side2 = -1 if k2 % 2 else 1
-            offsets2[i2] = side2 * (k2 // 2 + 1) * 0.13
-            counts2[b2] = k2 + 1
-        return offsets2
+    def beeswarm2(values2, center2, y_max2):
+        """Seaborn-style beeswarm: place each point at the offset closest to the
+        category center such that no two marker disks (diameter ~10 px) touch.
+        Pixel metrics approximate the rendered plot: ~280 px of value axis over
+        y_max2 ms, ~300 px per category on the x axis."""
+
+        radius_px2 = 5.0
+        px_per_ms2 = 280.0 / y_max2
+        px_per_x2 = 300.0
+
+        placed2 = []
+        out2 = [0.0] * len(values2)
+        for i2 in sorted(range(len(values2)), key=lambda k2: values2[k2]):
+            v2 = values2[i2]
+            candidates2 = [0.0]
+            for px2, py2 in placed2:
+                dy_px2 = (v2 - py2) * px_per_ms2
+                if abs(dy_px2) < 2 * radius_px2:
+                    dx_px2 = ((2 * radius_px2) ** 2 - dy_px2**2) ** 0.5
+                    dx_units2 = dx_px2 / px_per_x2
+                    candidates2.extend(
+                        [px2 - center2 + dx_units2, px2 - center2 - dx_units2]
+                    )
+            chosen2 = 0.0
+            for cand2 in sorted(candidates2, key=abs):
+                fits2 = all(
+                    (
+                        ((cand2 + center2 - px2) * px_per_x2) ** 2
+                        + ((v2 - py2) * px_per_ms2) ** 2
+                    )
+                    >= (2 * radius_px2) ** 2
+                    for (px2, py2) in placed2
+                )
+                if fits2:
+                    chosen2 = cand2
+                    break
+            out2[i2] = center2 + chosen2
+            placed2.append((center2 + chosen2, v2))
+        return out2
 
     samples_en2 = bench_latency2(english2, STATE_EN2)
     samples_ml2 = bench_latency2(multi2, STATE_EN2)
     mean_en2 = statistics.mean(samples_en2)
     mean_ml2 = statistics.mean(samples_ml2)
-    all_values2 = samples_en2 + samples_ml2
-    bin_height2 = max((max(all_values2) - min(all_values2)) / 10, 0.3)
+    y_top2 = max(samples_en2 + samples_ml2) * 1.15
+
+    xs_en2 = beeswarm2(samples_en2, 0.0, y_top2)
+    xs_ml2 = beeswarm2(samples_ml2, 1.0, y_top2)
 
     fig_lat2 = go.Figure()
     fig_lat2.add_trace(
         go.Scatter(
-            x=[
-                swarm_offsets2(samples_en2, bin_height2)[i2]
-                for i2 in range(len(samples_en2))
-            ],
+            x=xs_en2,
             y=samples_en2,
             mode="markers",
             name="English checkpoint",
@@ -845,10 +872,7 @@ def latency_bench(
     )
     fig_lat2.add_trace(
         go.Scatter(
-            x=[
-                1 + swarm_offsets2(samples_ml2, bin_height2)[i2]
-                for i2 in range(len(samples_ml2))
-            ],
+            x=xs_ml2,
             y=samples_ml2,
             mode="markers",
             name="Multilingual checkpoint",
@@ -868,7 +892,7 @@ def latency_bench(
     )
     fig_lat2.update_layout(
         title=dict(
-            text=f"ms per pass, 4 questions - swarm, n=10 each; means {mean_en2:.1f} vs {mean_ml2:.1f} ms (diamonds)",
+            text=f"ms per pass, 4 questions - beeswarm, n=10 each; means {mean_en2:.1f} vs {mean_ml2:.1f} ms (diamonds)",
             font=dict(size=13),
         ),
         height=340,
@@ -878,8 +902,9 @@ def latency_bench(
             tickmode="array",
             tickvals=[0, 1],
             ticktext=["English checkpoint", "Multilingual checkpoint"],
+            range=[-0.6, 1.6],
         ),
-        yaxis=dict(title="milliseconds", range=[0, max(all_values2) * 1.15]),
+        yaxis=dict(title="milliseconds", range=[0, y_top2]),
     )
     fig_lat2
     return
