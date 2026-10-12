@@ -271,8 +271,31 @@ def benchmarks(SLATE, TEAL, go, make_subplots):
     fig_prof4.update_yaxes(title_text="seconds", row=1, col=1)
     fig_prof4.update_yaxes(title_text="req/s", row=1, col=2)
     fig_prof4.update_yaxes(title_text="dollars/hour", row=1, col=3)
+
+    CPU7 = {
+        "cold start s": PROFILES7["CPU (1 core, 3 GiB)"]["cold start s"],
+        "p50 s": PROFILES7["CPU (1 core, 3 GiB)"]["p50 s"],
+        "server inference s": PROFILES7["CPU (1 core, 3 GiB)"][
+            "server inference s"
+        ],
+        "throughput req/s": PROFILES7["CPU (1 core, 3 GiB)"][
+            "throughput req/s (serial)"
+        ],
+        "$ per hour": PROFILES7["CPU (1 core, 3 GiB)"]["$ per hour"],
+    }
+    GPU7 = {
+        "cold start s": PROFILES7["T4 GPU (2 cores, 8 GiB)"]["cold start s"],
+        "p50 s": PROFILES7["T4 GPU (2 cores, 8 GiB)"]["p50 s"],
+        "server inference s": PROFILES7["T4 GPU (2 cores, 8 GiB)"][
+            "server inference s"
+        ],
+        "throughput req/s": PROFILES7["T4 GPU (2 cores, 8 GiB)"][
+            "throughput req/s (8 concurrent)"
+        ],
+        "$ per hour": PROFILES7["T4 GPU (2 cores, 8 GiB)"]["$ per hour"],
+    }
     fig_prof4
-    return
+    return CPU7, GPU7
 
 
 @app.cell(hide_code=True)
