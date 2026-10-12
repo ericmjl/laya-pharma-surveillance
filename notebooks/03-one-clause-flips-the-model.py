@@ -47,8 +47,8 @@ def banner(CRIMSON, GREEN, INK, INK2, KICK, MIST, TEAL, mo):
           <text x="40" y="112" font-family="-apple-system,Segoe UI,sans-serif" font-size="42" font-weight="800" fill="#EEF4FB">One clause flips the model</text>
           <text x="40" y="148" font-family="ui-monospace,Menlo,monospace" font-size="14.5" fill="{MIST}">0 of 38 adverse events detected. Then the question was rephrased.</text>
           <g font-family="ui-monospace,Menlo,monospace" font-size="11">
-            <rect x="620" y="62" width="74" height="21" rx="6" fill="{INK2}" stroke="#2E5566"/><text x="630" y="76" fill="{KICK}">draft A</text>
-            <rect x="620" y="132" width="74" height="21" rx="6" fill="{INK2}" stroke="#2E5566"/><text x="630" y="146" fill="{KICK}">draft B</text>
+            <rect x="620" y="62" width="74" height="21" rx="6" fill="{INK2}" stroke="#2E5566"/><text x="630" y="76" fill="{KICK}">prompt A</text>
+            <rect x="620" y="132" width="74" height="21" rx="6" fill="{INK2}" stroke="#2E5566"/><text x="630" y="146" fill="{KICK}">prompt B</text>
           </g>
           <rect x="726" y="70" width="16" height="9" rx="3" fill="{CRIMSON}"/>
           <rect x="726" y="140" width="98" height="9" rx="3" fill="{GREEN}"/>
@@ -122,7 +122,6 @@ def imports():
     LINE = "#D9D4CA"  # warm hairline
     PAPER = "#F7F5F1"  # light card background
     return (
-        AMBER,
         CRIMSON,
         GREEN,
         INK,
@@ -138,27 +137,26 @@ def imports():
         go,
         json,
         laya,
-        make_subplots,
         mo,
     )
 
 
 @app.cell(hide_code=True)
-def draft_panels_class():
+def prompt_panels_class():
     import anywidget
     import traitlets
 
-    class DraftPanels(anywidget.AnyWidget):
-        """Two side-by-side schema-draft panels, 50% each."""
+    class PromptPanels(anywidget.AnyWidget):
+        """Two side-by-side schema-prompt panels, 50% each."""
 
         _esm = """
     function render({ model, el }) {
       const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-      const drafts = model.get("drafts") || [];
+      const panels = model.get("panels") || [];
       el.style.fontFamily = "-apple-system,BlinkMacSystemFont,'SF Pro Text',Helvetica,Arial,sans-serif";
       el.innerHTML =
         '<div style="display:flex;gap:16px;align-items:stretch;">' +
-        drafts.map((d) =>
+        panels.map((d) =>
           '<div style="flex:1 1 50%;min-width:0;border:1px solid #D9D4CA;border-radius:12px;overflow:hidden;background:#fff;">' +
           '<div style="padding:12px 16px;border-bottom:1px solid #D9D4CA;">' +
           '<span style="font-weight:700;font-size:14px;color:#1D2530;">' + esc(d.label) + '</span>' +
@@ -174,9 +172,9 @@ def draft_panels_class():
     export default { render };
     """
 
-        drafts = traitlets.List().tag(sync=True)
+        panels = traitlets.List().tag(sync=True)
 
-    return (DraftPanels,)
+    return (PromptPanels,)
 
 
 @app.cell(hide_code=True)
@@ -218,7 +216,7 @@ def posts_preview(POSTS3, mo):
 
 
 @app.cell(hide_code=True)
-def draft_texts():
+def prompt_texts():
     LONG3 = (
         "Does the author of this post describe a symptom or health problem "
         "that they themselves experienced while taking the medication? Adverse event reports "
@@ -235,24 +233,24 @@ def schema_intro(mo):
     ## The question that broke the pipeline
 
     The whole pipeline hangs on one yes/no question: *is this post an
-    adverse-event report at all?* It went through two drafts, shown verbatim
-    below. Draft A reads like thorough prompt engineering to a human. To a
+    adverse-event report at all?* It went through two prompts, shown verbatim
+    below. Prompt A reads like thorough prompt engineering to a human. To a
     yes/no head it reads like a polarity flip.
     """)
     return
 
 
 @app.cell(hide_code=True)
-def schema_drafts(DraftPanels, LONG3, SHORT3):
-    DraftPanels(
-        drafts=[
+def schema_prompts(LONG3, PromptPanels, SHORT3):
+    PromptPanels(
+        panels=[
             {
-                "label": "Draft A - the exclusion clause",
+                "label": "Prompt A - the exclusion clause",
                 "badge": "broke it",
                 "code": LONG3,
             },
             {
-                "label": "Draft B - short, positively phrased",
+                "label": "Prompt B - short, positively phrased",
                 "badge": "fixed it",
                 "code": SHORT3,
             },
@@ -291,10 +289,10 @@ def run_intro(mo):
         [
             mo.md(
                 """
-                ## Run both drafts over all 50 posts
+                ## Run both prompts over all 50 posts
 
                 Each run is a single-question pass per post: two checkpoints, two
-                drafts, fifty posts. Under a minute on an M-series laptop. The
+                prompts, fifty posts. Under a minute on an M-series laptop. The
                 detection threshold is 0.5, and the Latin-script posts route to
                 the English checkpoint while the rest go multilingual, the
                 routing rule Act 2 justified.
@@ -305,7 +303,7 @@ def run_intro(mo):
                     "Click here to see the code that grades the posts": mo.md(
                         """
                         ```python
-                        q = {"is_ae": {"type": "noul", "instructions": draft}}
+                        q = {"is_ae": {"type": "noul", "instructions": prompt}}
                         p_adverse = agent.predict({"post": post}, q)["answers"]["is_ae"]["noul"]
                         # detected when p_adverse >= 0.5
                         ```
@@ -346,10 +344,10 @@ def schema_run(
         )
         with run_ctx3:
             for ck3, ag3 in [("english", english3), ("multilingual", multi3)]:
-                for draft3, ins3 in [("long", LONG3), ("short", SHORT3)]:
+                for prompt3, ins3 in [("long", LONG3), ("short", SHORT3)]:
                     for p3 in POSTS3:
                         q3 = {"is_ae": {"type": "noul", "instructions": ins3}}
-                        PREDS3.setdefault(ck3, {}).setdefault(draft3, {})[
+                        PREDS3.setdefault(ck3, {}).setdefault(prompt3, {})[
                             p3["id"]
                         ] = float(
                             ag3.predict({"post": p3["text"]}, q3)["answers"][
@@ -362,9 +360,9 @@ def schema_run(
 
     LATIN3 = {"en", "es", "fr", "de", "pt", "it", "sw"}
 
-    def routed3(p3, draft3):
+    def routed3(p3, prompt3):
         ck3 = "english" if p3["lang"] in LATIN3 else "multilingual"
-        return PREDS3[ck3][draft3][p3["id"]]
+        return PREDS3[ck3][prompt3][p3["id"]]
 
     def summarize3(predict3):
         tp3 = sum(
@@ -380,17 +378,17 @@ def schema_run(
 
     CONFIGS3 = [
         (
-            "draft A, multilingual",
+            "prompt A, multilingual",
             lambda x3: PREDS3["multilingual"]["long"][x3["id"]],
         ),
         (
-            "draft B, multilingual",
+            "prompt B, multilingual",
             lambda x3: PREDS3["multilingual"]["short"][x3["id"]],
         ),
-        ("draft A, english", lambda x3: PREDS3["english"]["long"][x3["id"]]),
-        ("draft B, english", lambda x3: PREDS3["english"]["short"][x3["id"]]),
-        ("routed pipeline, draft A", lambda x3: routed3(x3, "long")),
-        ("routed pipeline, draft B", lambda x3: routed3(x3, "short")),
+        ("prompt A, english", lambda x3: PREDS3["english"]["long"][x3["id"]]),
+        ("prompt B, english", lambda x3: PREDS3["english"]["short"][x3["id"]]),
+        ("routed pipeline, prompt A", lambda x3: routed3(x3, "long")),
+        ("routed pipeline, prompt B", lambda x3: routed3(x3, "short")),
     ]
 
     SUMMARY3 = []
@@ -409,41 +407,22 @@ def schema_run(
 
 
 @app.cell(hide_code=True, expand_output=True)
-def detection_table(
-    AMBER,
-    CRIMSON,
-    RUN_NOTE3,
-    SLATE,
-    SUMMARY3,
-    TEAL,
-    make_subplots,
-    mo,
-):
+def detection_table(CRIMSON, RUN_NOTE3, SUMMARY3, TEAL, go, mo):
     labels3 = [s3["configuration"] for s3 in SUMMARY3][::-1]
     det3 = [int(s3["AE detected"].split("/")[0]) for s3 in SUMMARY3][::-1]
     miss3 = [s3["missed"] for s3 in SUMMARY3][::-1]
-    fa3 = [s3["false alarms"] for s3 in SUMMARY3][::-1]
-    archived3 = [12 - f3 for f3 in fa3]
 
-    fig_det3 = make_subplots(
-        rows=2,
-        cols=1,
-        shared_yaxes=True,
-        vertical_spacing=0.14,
-        subplot_titles=(
-            "of 38 adverse events",
-            "of 12 chatter posts",
-        ),
-    )
+    fig_det3 = go.Figure()
     fig_det3.add_bar(
         y=labels3,
         x=det3,
         orientation="h",
         name="detected",
         marker_color=TEAL,
-        text=det3,
+        text=[d3 if d3 >= 4 else "" for d3 in det3],
         textposition="inside",
         insidetextanchor="middle",
+        textfont=dict(color="#EEF4FB"),
     )
     fig_det3.add_bar(
         y=labels3,
@@ -451,44 +430,23 @@ def detection_table(
         orientation="h",
         name="missed",
         marker_color=CRIMSON,
-        text=miss3,
+        text=[m3 if m3 >= 4 else "" for m3 in miss3],
         textposition="inside",
         insidetextanchor="middle",
-    )
-    fig_det3.add_bar(
-        y=labels3,
-        x=fa3,
-        orientation="h",
-        name="false alarms",
-        showlegend=False,
-        marker_color=AMBER,
-        text=[f3 if f3 else "" for f3 in fa3],
-        textposition="inside",
-        insidetextanchor="middle",
-    )
-    fig_det3.add_bar(
-        y=labels3,
-        x=archived3,
-        orientation="h",
-        name="correctly archived",
-        showlegend=False,
-        marker_color=SLATE,
-        text=[a3 if a3 else "" for a3 in archived3],
-        textposition="inside",
-        insidetextanchor="middle",
+        textfont=dict(color="#EEF4FB"),
     )
     fig_det3.update_layout(
         barmode="stack",
         title=dict(
-            text="detection outcomes per configuration - detection threshold 0.5",
+            text="of 38 adverse events per configuration (false alarms: see table)",
             font=dict(size=13),
         ),
-        height=560,
-        margin=dict(l=10, r=20, t=60, b=10),
+        height=380,
+        margin=dict(l=10, r=20, t=46, b=10),
         template="plotly_white",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0),
+        legend=dict(orientation="h", yanchor="bottom", y=1.0, x=0),
+        xaxis=dict(range=[0, 38]),
     )
-    fig_det3.update_xaxes(range=[0, 38])
 
     mo.vstack(
         [
@@ -505,11 +463,11 @@ def detection_reading(SUMMARY3, mo):
     mo.md(f"""
     Read the two routed rows, the configuration that would ship.
 
-    On the multilingual checkpoint, draft A detected
+    On the multilingual checkpoint, prompt A detected
     **{SUMMARY3[0]["AE detected"]}** adverse events: the exclusion clause,
     written to *help*, suppressed every one of them. The shipped configuration,
-    the routed pipeline, tells the same story: draft A
-    **{SUMMARY3[4]["AE detected"]}**, draft B **{SUMMARY3[5]["AE detected"]}**
+    the routed pipeline, tells the same story: prompt A
+    **{SUMMARY3[4]["AE detected"]}**, prompt B **{SUMMARY3[5]["AE detected"]}**
     with {SUMMARY3[5]["false alarms"]} false alarms. The clause did not add
     context; it inverted the head.
     """)
@@ -546,11 +504,11 @@ def flip_scatter(CRIMSON, POSTS3, PREDS3, SLATE, go):
     )
     fig_flip3.update_layout(
         title=dict(
-            text="P(adverse event) per post: draft A (x) vs draft B (y) - red = true adverse event, grey = chatter",
+            text="P(adverse event) per post: prompt A (x) vs prompt B (y) - red = true adverse event, grey = chatter",
             font=dict(size=13),
         ),
-        xaxis=dict(title="draft A (long, broken)", range=[-0.03, 1.03]),
-        yaxis=dict(title="draft B (short, fixed)", range=[-0.03, 1.03]),
+        xaxis=dict(title="prompt A (long, broken)", range=[-0.03, 1.03]),
+        yaxis=dict(title="prompt B (short, fixed)", range=[-0.03, 1.03]),
         height=520,
         margin=dict(l=10, r=20, t=60, b=10),
         template="plotly_white",
@@ -595,8 +553,8 @@ def spotlights(CRIMSON, GREEN, LINE, PAPER, POSTS3, PREDS3, mo):
               <div style="padding:14px 18px;">
                 <div style="font-size:13.5px;line-height:1.55;color:#1D2530;white-space:pre-wrap;">{body3}</div>
                 <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;font-family:ui-monospace,Menlo,monospace;font-size:12px;">
-                  <span style="padding:3px 10px;border-radius:999px;background:{CRIMSON}16;border:1px solid {CRIMSON}55;">draft A: P = <b>{p_long3:.2f}</b></span>
-                  <span style="padding:3px 10px;border-radius:999px;background:{GREEN}16;border:1px solid {GREEN}55;">draft B: P = <b>{p_short3:.2f}</b></span>
+                  <span style="padding:3px 10px;border-radius:999px;background:{CRIMSON}16;border:1px solid {CRIMSON}55;">prompt A: P = <b>{p_long3:.2f}</b></span>
+                  <span style="padding:3px 10px;border-radius:999px;background:{GREEN}16;border:1px solid {GREEN}55;">prompt B: P = <b>{p_short3:.2f}</b></span>
                 </div>
                 <div style="font-size:12px;color:#5C6B7A;margin-top:10px;">{note3}</div>
               </div>
