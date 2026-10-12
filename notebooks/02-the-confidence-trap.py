@@ -322,11 +322,10 @@ def khmer_intro(mo):
     ## A Khmer email, machine-translated
 
     Same complaint, Khmer script. I asked AI to translate it and I cannot
-    check it: I do not read Khmer. Assume the translation is correct. If it
-    is, the right triage is `billing`, mid urgency, some churn signal, and
-    the model has none of that context; it sees only Khmer characters.
-    Languages this far outside the training data are where classification
-    collapses, and where fine-tuning earns its keep.
+    check it, because I do not read Khmer. Take the translation on faith: the
+    right triage is `billing`, mid urgency, some churn signal. The model sees
+    none of that. It sees Khmer characters, which sit far outside the data it
+    was trained on, and the next cells show what that does to it.
     """)
     return
 
@@ -434,14 +433,44 @@ def khmer_reading(KH_EN2, mo):
 
 @app.cell(hide_code=True)
 def router_intro(mo):
-    mo.md("""
-    ## The fix sits before the model
+    ROUTER_DIAGRAM2 = """
+    flowchart LR
+        E["Email in<br/>(any script)"]:::email
+        R{"Router<br/>script check<br/>under 1 ms"}:::router
+        EN["laya<br/>English checkpoint"]:::en
+        ML["laya-multilingual<br/>mmBERT"]:::ml
+        A["Answers +<br/>probabilities"]:::ans
+        E --> R
+        R -->|Latin script| EN
+        R -->|non-Latin script| ML
+        EN --> A
+        ML --> A
+        classDef email fill:#13253f,stroke:#33507a,color:#eef4fb
+        classDef router fill:#1b2f4a,stroke:#d9534f,color:#eef4fb
+        classDef en fill:#1b2f4a,stroke:#4a7ebb,color:#eef4fb
+        classDef ml fill:#1b2f4a,stroke:#4ade80,color:#eef4fb
+        classDef ans fill:#13253f,stroke:#33507a,color:#eef4fb
+    """
 
-    The library ships a Router that reads the script of the input, pure
-    Python, under a millisecond, and dispatches to the right checkpoint. Run
-    it on the Khmer email, then run the email through the checkpoint it
-    picked.
-    """)
+    mo.vstack(
+        [
+            mo.md("## The fix sits before the model"),
+            mo.mermaid(ROUTER_DIAGRAM2),
+            mo.accordion(
+                {
+                    "Click here to see the code that does the routing": mo.md(
+                        """
+                        ```python
+                        decision = router2.route(email)  # reads the script, under 1 ms
+                        agent = english2 if decision.model == "english" else multi2
+                        answers = agent.predict(email, TRIAGE_Q2)["answers"]
+                        ```
+                        """
+                    )
+                }
+            ),
+        ]
+    )
     return
 
 
@@ -564,83 +593,170 @@ def translations():
 
 
 @app.cell(hide_code=True)
-def languages_grid(TRANSLATIONS2, TRIAGE_Q2, go, multi2):
-    grid_rows2 = []
-    for lang2, (subj2, body2) in TRANSLATIONS2.items():
-        ans2 = multi2.predict({"subject": subj2, "body": body2}, TRIAGE_Q2)[
-            "answers"
-        ]
-        grid_rows2.append(
-            {
-                "lang": lang2,
-                "dept": ans2["department"]["choice"],
-                "conf": float(ans2["department"]["confidence"]),
-                "urgency": float(ans2["urgency"]["score"]),
-                "churn": float(ans2["churn_risk"]["noul"]),
-            }
-        )
+def language_runs(TRANSLATIONS2, TRIAGE_Q2, english2, multi2):
+    LANGUAGE_NAMES2 = {
+        "en": "English",
+        "es": "Spanish",
+        "fr": "French",
+        "de": "German",
+        "pt": "Portuguese",
+        "ru": "Russian",
+        "ar": "Arabic",
+        "hi": "Hindi",
+        "zh": "Mandarin",
+        "ja": "Japanese",
+        "ko": "Korean",
+    }
 
-    fig_table2 = go.Figure(
-        go.Table(
-            header=dict(
-                values=["lang", "department", "conf", "urgency", "P(churn)"],
-                fill_color="#13253f",
-                font=dict(color="#eef4fb", size=12),
-                align="left",
-            ),
-            cells=dict(
-                values=[
-                    [r2["lang"] for r2 in grid_rows2],
-                    [r2["dept"] for r2 in grid_rows2],
-                    [f"{r2['conf']:.4f}" for r2 in grid_rows2],
-                    [f"{r2['urgency']:.2f}" for r2 in grid_rows2],
-                    [f"{r2['churn']:.4f}" for r2 in grid_rows2],
-                ],
-                fill_color=[["#fbfbfd", "#f2f4f7"] * 6],
-                font=dict(size=12),
-                align="left",
-            ),
-        )
-    )
-    fig_table2.update_layout(height=400, margin=dict(l=5, r=5, t=10, b=0))
-    fig_table2
-    return (grid_rows2,)
+    LANG_RESULTS2 = []
+    for lang2, (subj2, body2) in TRANSLATIONS2.items():
+        for ck2 in ("multilingual", "english"):
+            ax2 = {"multilingual": multi2, "english": english2}[ck2].predict(
+                {"subject": subj2, "body": body2}, TRIAGE_Q2
+            )["answers"]
+            LANG_RESULTS2.append(
+                {
+                    "lang": lang2,
+                    "language": LANGUAGE_NAMES2[lang2],
+                    "checkpoint": ck2,
+                    "subject": subj2,
+                    "body": body2,
+                    "dept": ax2["department"]["choice"],
+                    "conf": float(ax2["department"]["confidence"]),
+                    "urgency": float(ax2["urgency"]["score"]),
+                    "churn": float(ax2["churn_risk"]["noul"]),
+                }
+            )
+    f"{len(LANG_RESULTS2)} runs: 11 languages x 2 checkpoints"
+    return LANGUAGE_NAMES2, LANG_RESULTS2
 
 
 @app.cell(hide_code=True)
-def languages_plot(go, grid_rows2):
-    fig_conf2 = go.Figure(
-        go.Bar(
-            x=[r2["lang"] for r2 in grid_rows2],
-            y=[r2["conf"] for r2 in grid_rows2],
-            marker_color="#4a7ebb",
-            text=[f"{r2['conf']:.4f}" for r2 in grid_rows2],
-            textposition="outside",
+def language_explorer_controls(LANGUAGE_NAMES2, TRANSLATIONS2, mo):
+    checkpoint_toggle2 = mo.ui.radio(
+        options=["multilingual", "english"],
+        value="multilingual",
+        label="checkpoint: ",
+        inline=True,
+    )
+    language_pick2 = mo.ui.dropdown(
+        options=[LANGUAGE_NAMES2[lang2] for lang2 in TRANSLATIONS2],
+        value="Mandarin",
+        label="language: ",
+    )
+    mo.hstack([checkpoint_toggle2, language_pick2], justify="start")
+    return checkpoint_toggle2, language_pick2
+
+
+@app.cell(hide_code=True)
+def language_explorer(
+    LANGUAGE_NAMES2,
+    LANG_RESULTS2,
+    MailViewer,
+    checkpoint_toggle2,
+    language_pick2,
+):
+    picked2 = next(
+        r2
+        for r2 in LANG_RESULTS2
+        if r2["language"] == language_pick2.value
+        and r2["checkpoint"] == checkpoint_toggle2.value
+    )
+
+    MailViewer(
+        emails=[
+            {
+                "sender_name": "Maya Chen",
+                "sender_email": "maya@northwind-clinic.com",
+                "initials": "MC",
+                "subject": picked2["subject"],
+                "body": picked2["body"],
+                "time": LANGUAGE_NAMES2[picked2["lang"]],
+                "answers": {
+                    "department": {
+                        "choice": picked2["dept"],
+                        "confidence": picked2["conf"],
+                    },
+                    "urgency": {"score": picked2["urgency"]},
+                    "churn_risk": {"noul": picked2["churn"]},
+                },
+                "note": f"Complaint authored in English, shown in {picked2['language']}. "
+                f"Checkpoint: {picked2['checkpoint']}. Correct triage: billing, "
+                "mid urgency, some churn signal.",
+            }
+        ]
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def languages_plot(LANG_RESULTS2, go):
+    fig_pair2 = go.Figure(
+        go.Splom(
+            dimensions=[
+                dict(
+                    label="confidence",
+                    values=[
+                        r2["conf"]
+                        for r2 in LANG_RESULTS2
+                        if r2["checkpoint"] == "multilingual"
+                    ],
+                ),
+                dict(
+                    label="urgency",
+                    values=[
+                        r2["urgency"]
+                        for r2 in LANG_RESULTS2
+                        if r2["checkpoint"] == "multilingual"
+                    ],
+                ),
+                dict(
+                    label="P(churn)",
+                    values=[
+                        r2["churn"]
+                        for r2 in LANG_RESULTS2
+                        if r2["checkpoint"] == "multilingual"
+                    ],
+                ),
+            ],
+            text=[
+                r2["language"]
+                for r2 in LANG_RESULTS2
+                if r2["checkpoint"] == "multilingual"
+            ],
+            marker=dict(
+                color=["#4a7ebb"] * 11,
+                size=7,
+                line=dict(color="#13253f", width=0.5),
+            ),
+            diagonal_visible=False,
         )
     )
-    fig_conf2.update_layout(
+    fig_pair2.update_layout(
         title=dict(
-            text="department confidence on the same complaint, 11 languages (multilingual checkpoint)",
+            text="confidence vs urgency vs P(churn) per language (multilingual checkpoint; hover for language)",
             font=dict(size=13),
         ),
-        height=280,
-        margin=dict(l=10, r=20, t=46, b=0),
+        height=520,
+        margin=dict(l=10, r=10, t=46, b=10),
         template="plotly_white",
-        yaxis=dict(range=[0, 1.12]),
     )
-    fig_conf2
+    fig_pair2
     return
 
 
 @app.cell(hide_code=True)
 def languages_reading(mo):
-    mo.md("""
-    Eleven languages, eleven `billing` calls, urgency in the same band every
-    time. Several confidence values display as 1.000; that is softmax
-    saturation on a clean-cut case, not a copy-paste bug. The fourth decimal
-    is where the languages actually differ, and no language flips the
-    decision. The multilingual checkpoint is the one to route non-English
-    traffic to, and the Router already knows it.
+    mo.md(f"""
+    Toggle the checkpoint above and watch both panels respond. On the
+    multilingual checkpoint: `billing` every time, confidence pinned near
+    1.0, urgency in the same band, churn low. Several confidence values sit
+    at 1.0 because the softmax saturates on a clean-cut case; the fourth
+    decimal is where languages differ. Flip to the English checkpoint and the
+    same emails get shakier answers, which is the honest contrast.
+
+    For non-English traffic, the multilingual checkpoint is the one to route
+    to, and the Router already knows it.
     """)
     return
 
@@ -685,33 +801,35 @@ def latency_bench(
     samples_ml2 = bench_latency2(multi2, STATE_EN2)
     mean_en2 = statistics.mean(samples_en2)
     mean_ml2 = statistics.mean(samples_ml2)
-    std_en2 = statistics.stdev(samples_en2)
-    std_ml2 = statistics.stdev(samples_ml2)
 
     fig_lat2 = go.Figure()
-    fig_lat2.add_bar(
-        x=["English checkpoint", "Multilingual checkpoint"],
-        y=[mean_en2, mean_ml2],
-        error_y=dict(type="data", array=[std_en2, std_ml2], visible=True),
-        marker_color=["#a8b2bd", "#4a7ebb"],
-        opacity=0.75,
+    fig_lat2.add_trace(
+        go.Box(
+            y=samples_en2,
+            name="English checkpoint",
+            marker_color="#a8b2bd",
+            boxpoints="all",
+            jitter=0.3,
+            pointpos=0,
+        )
     )
     fig_lat2.add_trace(
-        go.Scatter(
-            x=[0.18] * len(samples_en2) + [1.18] * len(samples_ml2),
-            y=samples_en2 + samples_ml2,
-            mode="markers",
-            marker=dict(color="#1d1d1f", size=7, opacity=0.7),
-            showlegend=False,
+        go.Box(
+            y=samples_ml2,
+            name="Multilingual checkpoint",
+            marker_color="#4a7ebb",
+            boxpoints="all",
+            jitter=0.3,
+            pointpos=0,
         )
     )
     fig_lat2.update_layout(
         title=dict(
-            text=f"ms per pass, 4 questions (n=10 dots + mean ± sd): "
-            f"{mean_en2:.1f}±{std_en2:.1f} vs {mean_ml2:.1f}±{std_ml2:.1f}",
+            text=f"ms per pass, 4 questions (n=10 each, boxes = IQR, line = median): "
+            f"{mean_en2:.1f} vs {mean_ml2:.1f} ms mean",
             font=dict(size=13),
         ),
-        height=300,
+        height=320,
         margin=dict(l=10, r=20, t=46, b=10),
         template="plotly_white",
         yaxis=dict(title="milliseconds"),
