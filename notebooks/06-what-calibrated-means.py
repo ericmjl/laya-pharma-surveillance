@@ -163,35 +163,34 @@ def load_data_intro(mo):
     mo.vstack(
         [
             mo.md(
-                """
-                    Every number below renders from one committed file,
-                    `data/finetune_experiment_results.json`: the 53 held-out documents from
-                    the fine-tuning run in Act 5. No model loads and no downloads; the
-                    notebook runs on the measured numbers alone.
-            
+                f"""
+                Every number below renders from one committed file,
+                `data/finetune_experiment_results.json`: the 53 held-out documents
+                from the fine-tuning run in Act 5. No model loads and no downloads;
+                the notebook runs on the measured numbers alone.
                 """
             ),
             mo.accordion(
                 {
                     "Click here to see the code that loads the experiment results": mo.md(
-                        """
+                        f"""
                         ```python
-    DATA6 = Path(__file__).resolve().parent.parent / "data"
-    with open(DATA6 / "finetune_experiment_results.json", encoding="utf-8") as handle6:
-        R6 = json.load(handle6)
+                        DATA6 = Path(__file__).resolve().parent.parent / "data"
+                        with open(DATA6 / "finetune_experiment_results.json", encoding="utf-8") as handle6:
+                            R6 = json.load(handle6)
 
-    BUCKETS6 = ["choice:3-5", "choice:6-10", "choice:11+", "noul:2"]
-    TEMPS_BEFORE6 = [R6["temps_before"][bucket6] for bucket6 in BUCKETS6]
-    TEMPS_AFTER6 = [R6["temps_after"][bucket6] for bucket6 in BUCKETS6]
+                        BUCKETS6 = ["choice:3-5", "choice:6-10", "choice:11+", "noul:2"]
+                        TEMPS_BEFORE6 = [R6["temps_before"][b] for b in BUCKETS6]
+                        TEMPS_AFTER6 = [R6["temps_after"][b] for b in BUCKETS6]
 
-    RAW_ECE_BEFORE6 = R6["before_raw"]["action_required"]["ece"]
-    RAW_ECE_AFTER6 = R6["after_raw"]["action_required"]["ece"]
-    REFIT_ECE_BEFORE6 = R6["before_T"]["action_required"]["ece"]
-    REFIT_ECE_AFTER6 = R6["after_T"]["action_required"]["ece"]
+                        RAW_ECE_BEFORE6 = R6["before_raw"]["action_required"]["ece"]
+                        RAW_ECE_AFTER6 = R6["after_raw"]["action_required"]["ece"]
+                        REFIT_ECE_BEFORE6 = R6["before_T"]["action_required"]["ece"]
+                        REFIT_ECE_AFTER6 = R6["after_T"]["action_required"]["ece"]
 
-    JEV_ECE6 = 0.144  # Jev's shipped number, quoted from their model card
-    MODEL_CARD_RAW6 = 0.466  # Laya model card, raw, quoted
-    MODEL_CARD_CAL6 = 0.081  # Laya model card, calibrated, quoted
+                        JEV_ECE6 = 0.144  # TypeSafe Jev 1.13.0, as published on Laya's model card
+                        MODEL_CARD_RAW6 = 0.466
+                        MODEL_CARD_CAL6 = 0.081
                         ```
                         """
                     ),
@@ -276,59 +275,50 @@ def temps_plot_intro(mo):
     mo.vstack(
         [
             mo.md(
-                """
-                    Here is what the fitter found, base model against fine-tuned model, on
-                    a log scale. The base yes/no bucket is the reason a log scale is
-                    necessary.
-            
+                f"""
+                Here is what the fitter found, base model against fine-tuned model,
+                on a log scale. The base yes/no bucket is the reason a log scale is
+                necessary.
                 """
             ),
             mo.accordion(
                 {
                     "Click here to see the code that draws the temperature chart": mo.md(
-                        """
+                        f"""
                         ```python
-    fig_temp6 = go.Figure()
-    fig_temp6.add_trace(
-        go.Bar(
-            x=BUCKETS6,
-            y=TEMPS_BEFORE6,
-            name="base model",
-            marker_color=[CRIMSON if b6 == "noul:2" else SLATE for b6 in BUCKETS6],
-            text=[f"{t6:.2f}" for t6 in TEMPS_BEFORE6],
-            textposition="outside",
-        )
-    )
-    fig_temp6.add_trace(
-        go.Bar(
-            x=BUCKETS6,
-            y=TEMPS_AFTER6,
-            name="after RLCD fine-tuning",
-            marker_color=GREEN,
-            text=[f"{t6:.2f}" for t6 in TEMPS_AFTER6],
-            textposition="outside",
-        )
-    )
-    fig_temp6.add_hline(
-        y=1.0,
-        line_dash="dash",
-        line_color=TEAL,
-        annotation_text="T = 1: perfectly scaled",
-        annotation_position="top left",
-    )
-    fig_temp6.update_layout(
-        title=dict(
-            text="Fitted temperature per question-type bucket (log scale)",
-            font=dict(size=13),
-        ),
-        template="plotly_white",
-        yaxis=dict(type="log", title="fitted temperature (log scale)"),
-        xaxis=dict(title="question-type bucket"),
-        legend=dict(orientation="h", yanchor="bottom", xanchor="right", x=1, y=1.02),
-        height=430,
-        margin=dict(l=10, r=30, t=90, b=10),
-    )
-    fig_temp6
+                        fig_temp6 = go.Figure()
+                        fig_temp6.add_trace(
+                            go.Bar(
+                                x=BUCKETS6,
+                                y=TEMPS_BEFORE6,
+                                name="base model",
+                                marker_color=[CRIMSON if b6 == "noul:2" else SLATE for b6 in BUCKETS6],
+                                text=[f"{{t6:.2f}}" for t6 in TEMPS_BEFORE6],
+                                textposition="outside",
+                            )
+                        )
+                        fig_temp6.add_trace(
+                            go.Bar(
+                                x=BUCKETS6,
+                                y=TEMPS_AFTER6,
+                                name="after RLCD fine-tuning",
+                                marker_color=GREEN,
+                                text=[f"{{t6:.2f}}" for t6 in TEMPS_AFTER6],
+                                textposition="outside",
+                            )
+                        )
+                        fig_temp6.add_hline(
+                            y=1.0, line_dash="dash", line_color=TEAL,
+                            annotation_text="T = 1: perfectly scaled",
+                            annotation_position="top left",
+                        )
+                        fig_temp6.update_layout(
+                            template="plotly_white",
+                            yaxis=dict(type="log", title="fitted temperature (log scale)"),
+                            xaxis=dict(title="question-type bucket"),
+                            height=430,
+                        )
+                        fig_temp6
                         ```
                         """
                     ),
@@ -511,16 +501,7 @@ def flatten_demo_intro(mo):
 
 
 @app.cell(hide_code=True)
-def flatten_demo(
-    BUCKETS6,
-    CRIMSON,
-    SLATE,
-    TEAL,
-    TEMPS_BEFORE6,
-    go,
-    make_subplots,
-    math,
-):
+def flatten_demo(CRIMSON, SLATE, TEAL, go, make_subplots, math):
     LOGITS6 = [5.5, 1.5, 1.2, 1.0, 0.8, 0.6, 0.4, 0.2, 0.0, -0.2]
 
     def softmax6(z6, t6):
@@ -529,14 +510,17 @@ def flatten_demo(
         total6 = sum(exps6)
         return [value6 / total6 for value6 in exps6]
 
-    paired6 = sorted(zip(TEMPS_BEFORE6, BUCKETS6))
-    demo_temps6 = [1.0] + [pair6[0] for pair6 in paired6]
-    demo_labels6 = ["T = 1 (ideal)"] + [
-        f"T = {pair6[0]:.2f} ({pair6[1]})" for pair6 in paired6
+    demo_temps6 = [1.0, 2.09, 4.83, 13.59, 100.0]
+    demo_labels6 = [
+        "T = 1.00 (ideal)",
+        "T = 2.09",
+        "T = 4.83",
+        "T = 13.59",
+        "T = 100.00",
     ]
 
     fig_flat6 = make_subplots(rows=1, cols=5, subplot_titles=demo_labels6)
-    panel_colors6 = [TEAL, SLATE, SLATE, SLATE, CRIMSON]
+    panel_colors6 = [TEAL, SLATE, SLATE, CRIMSON, CRIMSON]
     for col6 in range(5):
         probs6 = softmax6(LOGITS6, demo_temps6[col6])
         fig_flat6.add_trace(
@@ -551,17 +535,14 @@ def flatten_demo(
         )
     fig_flat6.update_layout(
         title=dict(
-            text="Illustration: one logits vector, five temperatures - ranking fixed, trust drained",
+            text="Illustration: one 10-option logits vector at five temperatures - ranking fixed, confidence drained",
             font=dict(size=13),
         ),
+        height=380,
+        margin=dict(l=10, r=10, t=60, b=10),
         template="plotly_white",
-        height=330,
-        margin=dict(l=10, r=30, t=90, b=10),
+        showlegend=False,
     )
-    fig_flat6.update_annotations(font_size=10)
-    fig_flat6.update_xaxes(showticklabels=False)
-    fig_flat6.update_yaxes(range=[0, 1.0])
-    fig_flat6.update_yaxes(title_text="probability", row=1, col=1)
     fig_flat6
     return LOGITS6, softmax6
 
@@ -586,34 +567,23 @@ def gate_demo_intro(mo):
     mo.vstack(
         [
             mo.md(
-                """
-                    Here is why this matters for automation. Say you wire a gate to the top
-                    probability: fire the automated action when P(top) >= 0.9. Check the
-                    same illustration's top probability at the two extreme temperatures.
-            
+                f"""
+                Why this matters for automation: wire a gate to the top probability
+                and fire the automated action when P(top) >= 0.9. Check the same
+                illustration's top probability at the two extreme temperatures.
                 """
             ),
             mo.accordion(
                 {
                     "Click here to see the code that checks the gate": mo.md(
-                        '''
+                        f"""
                         ```python
-    p_ideal6 = softmax6(LOGITS6, 1.0)
-    p_ceiling6 = softmax6(LOGITS6, max(TEMPS_BEFORE6))
-    gate_md6 = mo.md(
-        f"""
-        | | P(top option) | a P >= 0.9 gate |
-        |---|---|---|
-        | T = 1 | **{max(p_ideal6):.2f}** | fires |
-        | T = {max(TEMPS_BEFORE6):.0f} (the base noul fit) | **{max(p_ceiling6):.2f}** | never fires |
-
-        Same logits, same argmax, opposite automation.
-        """
-    )
-    gate_md6
+                        p_ideal6 = softmax6(LOGITS6, 1.0)
+                        p_ceiling6 = softmax6(LOGITS6, max(TEMPS_BEFORE6))
+                        # fires when P(top option) >= 0.9
                         ```
-                        '''
-                    ),
+                        """
+                    )
                 }
             ),
         ]
