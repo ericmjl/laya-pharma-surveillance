@@ -1,0 +1,19 @@
+notebooks/02-the-confidence-trap.py
+  s_1c17499aff1e1a::t_1f33c6930b6fea 124,129-139,549-552,706-730,732-733,735-736,738,741-742,744-750,752-755,762-771,812-823,828-829,833-837,839,841-843,847-851,853,855-866,871,874,877-882
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "121d038f3f295c3ebe67c56d56138ef704b220ed",
+  "prompts": {},
+  "sessions": {
+    "s_1c17499aff1e1a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1301e-0dab-7497-ae10-ff9b523c662b",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
