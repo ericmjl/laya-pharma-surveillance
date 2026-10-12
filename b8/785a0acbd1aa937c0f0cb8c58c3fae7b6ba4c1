@@ -1,0 +1,59 @@
+notebooks/07-the-cheap-front-half.py
+  s_1c17499aff1e1a::t_6935f05c17e701 118-119,161
+  s_1c17499aff1e1a::t_6cd28e11176ab3 30-41,50-52
+  s_1c17499aff1e1a::t_359d7fc1df0e5b 1-29,42-49,53-117,120-160,162-248
+notebooks/04-real-documents.py
+  s_1c17499aff1e1a::t_6726ff98386498 284,286,290-292,294
+  s_1c17499aff1e1a::t_4e6aecb533f03f 35-46,55-57
+  s_1c17499aff1e1a::t_f4fa18dd559405 1-12,19-34,47-54,58-142,152-156,163-170,186-188,193-194,205-207,210,225-232,236-247,250,252-267,273-281,283,285,287-289,293,295-332
+  s_1c17499aff1e1a::t_3b12db30d4ede1 13-18,143-151,157-162,171-185,189-192,195-204,208-209,211-224,233-235
+  s_1c17499aff1e1a::t_f3d35a58a5322a 248-249,251,268-272
+  s_1c17499aff1e1a::t_072c6715c3b34d 282
+notebooks/03-one-clause-flips-the-model.py
+  s_1c17499aff1e1a::t_17a62d1ff5b5da 30,45
+  s_1c17499aff1e1a::t_f0a52423a81a10 70,72
+  s_1c17499aff1e1a::t_873a0144b3de30 141,148-153,156,160,174-181
+  s_1c17499aff1e1a::t_94d0e555f3ed89 29,33-43,47,53-55
+  s_1c17499aff1e1a::t_4bedef01eec53e 104
+  s_1c17499aff1e1a::t_954f6e03f4b411 1-28,31-32,44,46,48-52,56-62,64-69,71,73-103,105-140,142-147,154-155,157-159,161-173,182-257,259-292,294-334
+  s_1c17499aff1e1a::t_7ba617596df327 63
+  s_1c17499aff1e1a::t_f3090a5182a773 258,293
+notebooks/01-one-forward-pass.py
+  s_1c17499aff1e1a::t_4adf4d49591a1e 1-25,27,40-47,51-55,57-64,66-71,78-160,162-166,174-199,201-214,216-303,306-316
+  s_1c17499aff1e1a::t_4b2f4ae96674f4 161,200,215
+  s_1c17499aff1e1a::t_16b3337735bbd2 26,28-39,48-50
+  s_1c17499aff1e1a::t_a8a939516521ed 56,304-305
+  s_1c17499aff1e1a::t_0c38459e0550cc 65,72-77,168-173
+  s_1c17499aff1e1a::t_7ee033d07df1f7 167
+notebooks/02-the-confidence-trap.py
+  s_1c17499aff1e1a::t_15942d371be688 258,330-332
+  s_1c17499aff1e1a::t_f9b64670b1ec01 66,74-79
+  s_1c17499aff1e1a::t_51aa70408f20d7 1-27,29,42-49,53-65,67-73,80-238,257,259-329,333-339
+  s_1c17499aff1e1a::t_04df56f94e34e6 239-256
+  s_1c17499aff1e1a::t_42b3813087a6d3 28,30-41,50-52
+PLAN.md
+  s_1c17499aff1e1a::t_7385f2a1eb6cc8 14,31-34,52-59
+notebooks/05-twenty-minutes-of-fine-tuning.py
+  s_1c17499aff1e1a::t_85e452c279e5f3 33-44,53-55
+  s_1c17499aff1e1a::t_4ef4cd22b2cc91 1-32,45-52,56-160,162-234
+  s_1c17499aff1e1a::t_d83c4d7689fc11 161
+notebooks/06-what-calibrated-means.py
+  s_1c17499aff1e1a::t_978576afbeb522 33-44,53-55
+  s_1c17499aff1e1a::t_25e4820a517bcc 1-32,45-52,56-225
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b8785a0acbd1aa937c0f0cb8c58c3fae7b6ba4c1",
+  "prompts": {},
+  "sessions": {
+    "s_1c17499aff1e1a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1301e-0dab-7497-ae10-ff9b523c662b",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
