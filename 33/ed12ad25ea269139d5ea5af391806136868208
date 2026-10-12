@@ -1,0 +1,21 @@
+notebooks/04-real-documents.py
+  s_1c17499aff1e1a::t_feab518731585a 95-110,205-209,378-379,416-421,431-442,479,485-489
+notebooks/mail_viewer.py
+  s_1c17499aff1e1a::t_c8d7da306bd1a5 112-114,122,138,140-145,152,168-172,215
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "33ed12ad25ea269139d5ea5af391806136868208",
+  "prompts": {},
+  "sessions": {
+    "s_1c17499aff1e1a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1301e-0dab-7497-ae10-ff9b523c662b",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
