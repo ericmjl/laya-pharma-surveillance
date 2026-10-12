@@ -3,7 +3,10 @@
 # dependencies = [
 #     "marimo==0.25.1",
 #     "laya==0.3.5",
-#     "matplotlib",
+#     "plotly==7.1.0",
+#     "anywidget==0.11.0",
+#     "marimo-lens==0.2.3",
+#     "marimo-studio==0.3.0",
 # ]
 # ///
 """Act 1: One forward pass.
@@ -15,60 +18,116 @@ notebook shows it live. First run downloads the checkpoint from HuggingFace.
 
 import marimo
 
-__generated_with = "0.13.15"
+__generated_with = "0.25.1"
 app = marimo.App(width="medium")
 
 
-@app.cell
-def _():
-    import marimo as mo
-    import time
-    import matplotlib.pyplot as plt
-
-    plt.rcParams.update(
-        {
-            "figure.dpi": 110,
-            "axes.spines.top": False,
-            "axes.spines.right": False,
-            "axes.grid": True,
-            "grid.alpha": 0.25,
-            "axes.titleweight": "bold",
-            "axes.titlesize": 10,
-        }
-    )
-
-    return mo, time
-
-
-@app.cell
-def _(mo):
-    mo.md(
-        """
-        # Act 1 - One forward pass
-
-        > **The Laya pharma surveillance series · Act 1 of 7**
-        > Run me: `uvx marimo edit --sandbox notebooks/01-one-forward-pass.py`
-
-        Laya is a decision model: typed questions in, probability distributions
-        out, **one forward pass, no text generated**. Below: one support email,
-        four questions, one pass. Watch the timer.
-
-        *First cell run downloads the checkpoint from HuggingFace (~840 MB); after
-        that it loads from cache in seconds.*
-        """
-    )
-    return
-
-
-@app.cell
-def _(mo):
+@app.cell(hide_code=True)
+def imports():
     import contextlib
     import os
 
     os.environ.setdefault("USE_TF", "0")
 
+    import anywidget
     import laya
+    import marimo as mo
+    import plotly.graph_objects as go
+    import time
+    import traitlets
 
+    return anywidget, contextlib, go, laya, mo, time, traitlets
+
+
+@app.cell(hide_code=True)
+def banner(mo):
+    mo.Html("""
+    <div style="line-height:0;border-radius:16px;overflow:hidden;">
+    <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Act 1 - One forward pass">
+      <defs>
+        <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#0b1524"/><stop offset="1" stop-color="#13253f"/>
+        </linearGradient>
+        <linearGradient id="acc1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#4a7ebb"/><stop offset="0.55" stop-color="#4ade80"/><stop offset="1" stop-color="#d9534f"/>
+        </linearGradient>
+      </defs>
+      <rect x="1" y="1" width="958" height="208" rx="16" fill="url(#bg1)" stroke="#22364f"/>
+      <text x="700" y="185" font-family="ui-monospace,Menlo,monospace" font-size="170" font-weight="700" fill="none" stroke="#26405f" stroke-width="2" opacity="0.5">01</text>
+      <rect x="798" y="34" width="122" height="26" rx="13" fill="#1b2f4a" stroke="#33507a"/>
+      <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="#9fc0e8">ACT 1 OF 7</text>
+      <text x="40" y="54" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="3.5" fill="#7f9cc0">THE LAYA PHARMA SURVEILLANCE SERIES</text>
+      <text x="40" y="112" font-family="-apple-system,Segoe UI,sans-serif" font-size="42" font-weight="800" fill="#eef4fb">One forward pass</text>
+      <text x="40" y="148" font-family="ui-monospace,Menlo,monospace" font-size="14.5" fill="#a8b2bd">Four typed questions &#183; one ~40 ms pass &#183; zero generated text</text>
+      <g font-family="ui-monospace,Menlo,monospace" font-size="11">
+        <rect x="596" y="52" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="606" y="66" fill="#9fc0e8">choice</text>
+        <rect x="596" y="82" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="606" y="96" fill="#9fc0e8">score</text>
+        <rect x="596" y="112" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="606" y="126" fill="#9fc0e8">noul</text>
+        <rect x="596" y="142" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="606" y="156" fill="#9fc0e8">noul</text>
+      </g>
+      <path d="M670 62 C 710 62 726 100 756 101" stroke="#33507a" fill="none"/>
+      <path d="M670 92 C 706 92 724 101 756 101" stroke="#33507a" fill="none"/>
+      <path d="M670 122 C 706 122 724 103 756 103" stroke="#33507a" fill="none"/>
+      <path d="M670 152 C 710 152 726 104 756 103" stroke="#33507a" fill="none"/>
+      <circle cx="772" cy="102" r="15" fill="#13253f" stroke="#4a7ebb" stroke-width="2"/>
+      <text x="764" y="107" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#eef4fb">1&#215;</text>
+      <g>
+        <rect x="806" y="70" width="98" height="9" rx="3" fill="#4a7ebb"/>
+        <rect x="806" y="92" width="61" height="9" rx="3" fill="#4a7ebb" opacity="0.65"/>
+        <rect x="806" y="114" width="34" height="9" rx="3" fill="#4a7ebb" opacity="0.4"/>
+        <rect x="806" y="136" width="16" height="9" rx="3" fill="#4a7ebb" opacity="0.25"/>
+      </g>
+      <text x="806" y="166" font-family="ui-monospace,Menlo,monospace" font-size="10" fill="#5f7ea6">P(answer) per question</text>
+      <rect x="24" y="186" width="620" height="4" rx="2" fill="url(#acc1)"/>
+    </svg>
+    </div>
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def goal(mo):
+    mo.md("""
+    ## What this notebook shows
+
+    **The claim:** a 421M-parameter model answers four typed questions about an
+    email in a single forward pass. No text generated, no JSON to parse, tens
+    of milliseconds.
+
+    **How to read this notebook:** every result is a rendered artifact and the
+    code stays hidden until you want it (click the code icon on any cell to
+    reveal it). Before each step I say what is coming; after each output I say
+    what I see in it.
+
+    **The path:** load the model and read its spec sheet, then hand it one real
+    email of the kind that lands in a support inbox every day, watch the four
+    answers come back with their probabilities, then run a whole morning's
+    inbox of five emails.
+
+    Act 2 then asks the question this notebook sets up: should you trust those
+    confidence numbers?
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def pre_load(mo):
+    mo.md("""
+    ## First, the model
+
+    Everything below runs on `convaiinnovations/laya`, an open-weights decision
+    model from ConvAI Innovations (Apache 2.0). Under the hood it is a
+    ModernBERT-large encoder with a decision head: instead of generating the
+    next token, it scores answer options you define at request time. The first
+    run downloads the checkpoint (about 840 MB); after that it loads from
+    cache. One forward pass for all four questions is about to matter, so the
+    timer in a later cell is worth watching.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def load_model(contextlib, laya, mo):
     load_ctx1 = (
         mo.spinner("loading convaiinnovations/laya ...")
         if hasattr(mo, "spinner")
@@ -78,28 +137,158 @@ def _(mo):
         agent1 = laya.load("convaiinnovations/laya")
 
     n_params1 = sum(p.numel() for p in agent1.model.parameters())
-    meta1 = (
-        f"checkpoint `convaiinnovations/laya` (Apache 2.0) · "
-        f"{n_params1 / 1e6:.0f}M params · device `{agent1.device}` · "
-        f"{agent1.cfg.get('max_len')}-token budget per question"
+    return agent1, n_params1
+
+
+@app.cell(hide_code=True)
+def model_card(agent1, mo, n_params1):
+    mo.Html(
+        f"""
+        <div style="display:flex;flex-wrap:wrap;gap:30px;align-items:center;padding:16px 22px;border:1px solid #22364f;border-radius:12px;background:#0e1a2b;font-family:ui-monospace,Menlo,monospace;">
+          <div><div style="font-size:10px;letter-spacing:2px;color:#7f9cc0;">CHECKPOINT</div><div style="font-size:14px;color:#eef4fb;">convaiinnovations/laya</div></div>
+          <div><div style="font-size:10px;letter-spacing:2px;color:#7f9cc0;">PARAMETERS</div><div style="font-size:14px;color:#eef4fb;">{n_params1 / 1e6:.0f}M</div></div>
+          <div><div style="font-size:10px;letter-spacing:2px;color:#7f9cc0;">DEVICE</div><div style="font-size:14px;color:#eef4fb;">{agent1.device}</div></div>
+          <div><div style="font-size:10px;letter-spacing:2px;color:#7f9cc0;">CONTEXT BUDGET</div><div style="font-size:14px;color:#eef4fb;">{agent1.cfg.get("max_len")} tokens / question</div></div>
+          <div style="margin-left:auto;"><div style="font-size:10px;letter-spacing:2px;color:#7f9cc0;">LICENSE</div><div style="font-size:14px;color:#4ade80;">Apache 2.0</div></div>
+        </div>
+        """
     )
-    return agent1, meta1
-
-
-@app.cell
-def _(meta1, mo):
-    mo.md(f"**Model**: {meta1}")
     return
 
 
-@app.cell
-def _(mo):
-    mo.md("## The ticket and the schema")
+@app.cell(hide_code=True)
+def model_card_reading(mo):
+    mo.md("""
+    Read the card. The number that matters is **421M parameters**, roughly a
+    thousandth of a frontier LLM, small enough that every inference in this
+    notebook runs on a laptop CPU. The 512-token budget is per question and it
+    is configurable at call time, which becomes a plot point later in the
+    series.
+    """)
     return
 
 
-@app.cell
-def _():
+@app.cell(hide_code=True)
+def mail_viewer_class(anywidget, traitlets):
+    class MailViewer1(anywidget.AnyWidget):
+        """macOS Mail-style viewer for Laya-triaged email."""
+
+        _esm = """
+    function render({ model, el }) {
+      const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      let emails = model.get("emails") || [];
+      let sel = Math.min(model.get("selected") || 0, Math.max(emails.length - 1, 0));
+
+      const chip = (label, value, color) =>
+        '<span style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:' + color + '16;border:1px solid ' + color + '55;font-size:12px;">' +
+        '<span style="width:7px;height:7px;border-radius:50%;background:' + color + '"></span><b>' + esc(label) + '</b>&nbsp;' + esc(value) + '</span>';
+
+      const answerChips = (a) => {
+        if (!a) return "";
+        const parts = [];
+        if (a.department) parts.push(chip("dept", a.department.choice + " · " + a.department.confidence.toFixed(2), "#0a84ff"));
+        if (a.urgency) parts.push(chip("urgency", a.urgency.score.toFixed(2), "#ff9500"));
+        if (a.is_phishing) parts.push(chip("phishing", a.is_phishing.noul.toFixed(3), a.is_phishing.noul >= 0.5 ? "#ff3b30" : "#34c759"));
+        if (a.churn_risk) parts.push(chip("churn", a.churn_risk.noul.toFixed(3), a.churn_risk.noul >= 0.5 ? "#ff3b30" : "#34c759"));
+        return parts.join(" ");
+      };
+
+      const reader = (m) => `
+        <div style="padding:14px 18px 10px;">
+          <div style="font-size:17px;font-weight:700;letter-spacing:-0.2px;">${esc(m.subject)}</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">${esc(m.initials)}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:13px;font-weight:600;">${esc(m.sender_name)} <span style="font-weight:400;color:#86868b;">&lt;${esc(m.sender_email)}&gt;</span></div>
+              <div style="font-size:12px;color:#86868b;">to you@acme-health.com</div>
+            </div>
+            <div style="font-size:12px;color:#86868b;">${esc(m.time || "")}</div>
+          </div>
+          ${m.answers ? '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">' + answerChips(m.answers) + '</div>' : ""}
+          <div style="font-size:13.5px;line-height:1.5;white-space:pre-wrap;padding:14px 0 4px;">${esc(m.body)}</div>
+          ${m.ms ? '<div style="font-size:11px;color:#86868b;border-top:1px solid #ececf0;padding-top:8px;margin-top:6px;">triaged by convaiinnovations/laya in ' + esc(m.ms) + ' ms · one forward pass, zero generated text</div>' : ""}
+        </div>`;
+
+      const row = (m, i) => `
+        <div data-i="${i}" style="cursor:pointer;display:flex;gap:10px;padding:10px 12px;border-bottom:1px solid #ececf0;background:${i === sel ? "#0a84ff" : "transparent"};color:${i === sel ? "#fff" : "inherit"};">
+          <div style="width:34px;height:34px;border-radius:50%;background:${i === sel ? "rgba(255,255,255,.28)" : "linear-gradient(135deg,#0a84ff,#5e5ce6)"};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">${esc(m.initials)}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;justify-content:space-between;gap:8px;">
+              <span style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(m.sender_name)}</span>
+              <span style="font-size:11px;opacity:.75;flex-shrink:0;">${esc(m.time || "")}</span>
+            </div>
+            <div style="font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(m.subject)}</div>
+            <div style="font-size:12px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(m.preview)}</div>
+          </div>
+        </div>`;
+
+      const wrap = document.createElement("div");
+      wrap.style.cssText = "border-radius:12px;overflow:hidden;border:1px solid #d9d9de;box-shadow:0 1px 3px rgba(0,0,0,.08);background:#fff;";
+      el.style.fontFamily = "-apple-system,BlinkMacSystemFont,'SF Pro Text',Helvetica,Arial,sans-serif";
+      el.appendChild(wrap);
+
+      const draw = () => {
+        const m = emails[sel] || {};
+        const listHtml = emails.length > 1
+          ? '<div style="width:270px;flex-shrink:0;border-right:1px solid #e5e5ea;background:#fbfbfd;max-height:540px;overflow-y:auto;">' +
+            '<div style="padding:10px 12px;font-size:12px;font-weight:700;color:#86868b;text-transform:uppercase;letter-spacing:.5px;">Inbox</div>' +
+            emails.map(row).join("") + '</div>'
+          : "";
+        wrap.innerHTML =
+          '<div style="display:flex;align-items:center;gap:8px;padding:9px 14px;background:linear-gradient(#f6f6f8,#ececef);border-bottom:1px solid #d9d9de;">' +
+          '<span style="width:12px;height:12px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>' +
+          '<span style="width:12px;height:12px;border-radius:50%;background:#febc2e;display:inline-block;"></span>' +
+          '<span style="width:12px;height:12px;border-radius:50%;background:#28c840;display:inline-block;"></span>' +
+          '<span style="margin:0 auto;font-size:13px;font-weight:600;color:#6e6e73;">Inbox — Laya Triage</span>' +
+          '<span style="width:64px;"></span></div>' +
+          '<div style="display:flex;min-height:280px;">' + listHtml +
+          '<div style="flex:1;min-width:0;">' + reader(m) + '</div></div>';
+        wrap.querySelectorAll("[data-i]").forEach((n) =>
+          n.addEventListener("click", () => {
+            sel = parseInt(n.dataset.i, 10);
+            model.set("selected", sel);
+            model.save_changes();
+            draw();
+          })
+        );
+      };
+
+      draw();
+      model.on("change:emails", () => { emails = model.get("emails") || []; sel = 0; draw(); });
+    }
+
+    export default { render };
+    """
+
+        emails = traitlets.List().tag(sync=True)
+        selected = traitlets.Int(0).tag(sync=True)
+
+    return (MailViewer1,)
+
+
+@app.cell(hide_code=True)
+def schema_intro(mo):
+    mo.md("""
+    ## The ticket and the schema
+
+    A decision model works in two parts: a **state** (here, an email) and a
+    **schema** of typed questions. Three primitives cover most triage work:
+
+    - `choice` picks one option from a list you define at request time and
+      returns the full probability distribution over every option.
+    - `score` places the state on an ordinal rubric you describe in words.
+    - `noul` returns a calibrated probability that a yes/no statement holds.
+
+    Our support-triage schema asks four questions in one pass: which department
+    (choice), how urgent (score), is this phishing (noul), and is this customer
+    about to churn (noul). The schema is code you write; the model fills in the
+    answers.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def email_and_schema():
     EMAIL = {
         "subject": "Duplicate charge on invoice 4411",
         "body": (
@@ -144,27 +333,67 @@ def _():
     return EMAIL, TRIAGE_Q
 
 
-@app.cell
-def _(EMAIL, mo):
-    mo.md(
-        f"""**Email**
+@app.cell(hide_code=True)
+def schema_table(mo):
+    mo.md("""
+    The schema we hand the model, in full:
 
-        > **{EMAIL["subject"]}**
-        >
-        > {EMAIL["body"]}
-        """
+    | primitive | question | options |
+    |---|---|---|
+    | `choice` | which department? | billing · technical · sales · other |
+    | `score` | how urgent? | 0 not urgent to 2 critical |
+    | `noul` | is this a phishing attempt? | P(yes) |
+    | `noul` | will this customer churn? | P(yes) |
+
+    Nothing here is a prompt. Each question is a typed declaration, and the
+    model answers all four in one forward pass.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def email_setup(mo):
+    mo.md("""
+    Here is the email, in the inbox. Read it the way a triager would: who is
+    this, what do they want, how bad is it, and is anyone at risk?
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def email_preview(EMAIL, MailViewer1):
+    MailViewer1(
+        emails=[
+            {
+                "sender_name": "Maya Chen",
+                "sender_email": "maya@northwind-clinic.com",
+                "initials": "MC",
+                "subject": EMAIL["subject"],
+                "body": EMAIL["body"],
+                "time": "8:58 AM",
+                "preview": EMAIL["body"][:70],
+                "answers": None,
+            }
+        ]
     )
     return
 
 
-@app.cell
-def _(mo):
-    mo.md("## Run it")
+@app.cell(hide_code=True)
+def run_intro(mo):
+    mo.md("""
+    ## Run it
+
+    One call. The email goes in as the state, the four-question schema goes in
+    alongside it, and a single forward pass scores every answer option at once.
+    The timer is real: the number you see is what this machine measured. Watch
+    the chips that come back.
+    """)
     return
 
 
-@app.cell
-def _(EMAIL, TRIAGE_Q, agent1, contextlib, mo, time):
+@app.cell(hide_code=True)
+def run_inference(EMAIL, TRIAGE_Q, agent1, contextlib, mo, time):
     run_ctx1 = (
         mo.spinner("one forward pass ...")
         if hasattr(mo, "spinner")
@@ -178,137 +407,314 @@ def _(EMAIL, TRIAGE_Q, agent1, contextlib, mo, time):
     return a1, elapsed_ms1
 
 
-@app.cell
-def _(a1, elapsed_ms1, mo):
-    mo.md(
-        f"""
-        ## What came back: {elapsed_ms1:.0f} ms, four answers, zero generated text
-
-        | primitive | question | answer |
-        |---|---|---|
-        | `choice` | which department | **{a1["department"]["choice"]}** ({a1["department"]["confidence"]:.2f}) |
-        | `score` | urgency | **{a1["urgency"]["score"]:.2f}** on 0-2 |
-        | `noul` | is this phishing | **{a1["is_phishing"]["noul"]:.3f}** |
-        | `noul` | churn risk | **{a1["churn_risk"]["noul"]:.3f}** |
-        """
+@app.cell(hide_code=True)
+def results_viewer(EMAIL, MailViewer1, a1, elapsed_ms1, mo):
+    mo.vstack(
+        [
+            mo.md(
+                f"""
+                ## What came back: {elapsed_ms1:.0f} ms, four answers, zero generated text
+                """
+            ),
+            MailViewer1(
+                emails=[
+                    {
+                        "sender_name": "Maya Chen",
+                        "sender_email": "maya@northwind-clinic.com",
+                        "initials": "MC",
+                        "subject": EMAIL["subject"],
+                        "body": EMAIL["body"],
+                        "time": "8:58 AM",
+                        "answers": a1,
+                        "ms": round(elapsed_ms1),
+                    }
+                ]
+            ),
+        ]
     )
     return
 
 
-@app.cell
-def _(a1, mo):
+@app.cell(hide_code=True)
+def results_reading(mo):
+    mo.md("""
+    Read the chips.
+
+    - **Department** came back `billing` with the bulk of the probability
+      mass. A duplicate charge is about as clean a billing case as they come.
+    - **Urgency** landed mid-scale: there is a deadline ("this week"), but
+      nobody is bleeding.
+    - **P(phishing)** sits near zero, correctly; nothing here asks for
+      credentials or a click.
+    - **P(churn)** is the number an account-management queue would page on:
+      the customer names the exit door.
+
+    Four answers, one pass, and every answer arrived with its uncertainty
+    attached. That last part is the difference between a decision model and a
+    text generator asked to pretend it has opinions.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def dept_plot_intro(mo):
+    mo.md("""
+    The choice head does not just pick `billing`; it distributes probability
+    over all four options. Here is the full distribution, which is what the
+    confidence number summarizes.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def dept_plot(a1, go):
     dept_probs1 = a1["department"]["probabilities"]
-    import matplotlib.pyplot as plt_dept
-
     order1 = sorted(dept_probs1, key=dept_probs1.get)
-    fig_dept1, ax_dept1 = plt_dept.subplots(figsize=(7, 2.5))
-    ax_dept1.barh(order1, [dept_probs1[k] for k in order1], color="#4a7ebb")
-    ax_dept1.set_title("P(department) - the full choice distribution")
-    ax_dept1.axvline(1.0, color="grey", linewidth=0.5)
-    fig_dept1.tight_layout()
-    mo.vstack([fig_dept1])
-    return (fig_dept1,)
-
-
-@app.cell
-def _(a1, mo):
-    urg1 = a1["urgency"]["probabilities"]
-    import matplotlib.pyplot as plt_urg
-
-    labels1 = ["not urgent", "soon", "critical"]
-    fig_urg1, ax_urg1 = plt_urg.subplots(figsize=(7, 2.2))
-    ax_urg1.bar(labels1, [urg1[k] for k in ("0", "1", "2")], color="#4ade80")
-    ax_urg1.set_title(f"P(urgency) - score head, mean {a1['urgency']['score']:.2f}")
-    fig_urg1.tight_layout()
-    mo.vstack([fig_urg1])
-    return (fig_urg1,)
-
-
-@app.cell
-def _(mo):
-    mo.md(
-        """
-        Nothing to parse. The output space is numeric and typed, so there is
-        no JSON to repair and nothing to hallucinate. The same four questions
-        cost one forward pass, not four.
-        """
+    fig_dept1 = go.Figure(
+        go.Bar(
+            x=[dept_probs1[k] for k in order1],
+            y=order1,
+            orientation="h",
+            marker_color="#4a7ebb",
+            text=[f"{dept_probs1[k]:.3f}" for k in order1],
+            textposition="outside",
+        )
     )
+    fig_dept1.update_layout(
+        title=dict(
+            text="P(department) - the full choice distribution",
+            font=dict(size=13),
+        ),
+        height=280,
+        margin=dict(l=10, r=50, t=46, b=10),
+        template="plotly_white",
+        xaxis=dict(range=[0, 1.12]),
+    )
+    fig_dept1
     return
 
 
-@app.cell
-def _(mo):
-    mo.md("## Now five emails, same schema")
+@app.cell(hide_code=True)
+def dept_plot_reading(mo):
+    mo.md("""
+    `billing` takes the lion's share and the residue spreads thin across the
+    rest. That is the shape you want from a routing decision: a confident
+    winner with no plausible runner-up. When you see mass split across two
+    options, the model is telling you the email sits on a boundary, and that is
+    exactly when a confidence gate should route it to a human.
+    """)
     return
 
 
-@app.cell
-def _(TRIAGE_Q, agent1, time):
-    EMAILS1 = {
-        "duplicate charge": {
-            "subject": "Duplicate charge on invoice 4411",
-            "body": "We were billed twice for March. Please refund the duplicate. If this isn't fixed this week we will cancel our account.",
-        },
-        "obvious phishing": {
-            "subject": "URGENT: Your account will be suspended",
-            "body": "Dear customer, we detected unusual activity. Click http://paypal-secure-verify.example-login.com immediately to confirm your password and SSN, or your account will be permanently deleted within 24 hours.",
-        },
-        "prod outage": {
+@app.cell(hide_code=True)
+def urgency_plot_intro(mo):
+    mo.md("""
+    The score head works differently: it places the email on the 0-2 urgency
+    rubric and shows its mass per level.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def urgency_plot(a1, go):
+    urg1 = a1["urgency"]["probabilities"]
+    fig_urg1 = go.Figure(
+        go.Bar(
+            x=["not urgent", "soon", "critical"],
+            y=[
+                float(urg1.get("0", 0)),
+                float(urg1.get("1", 0)),
+                float(urg1.get("2", 0)),
+            ],
+            marker_color="#4ade80",
+            text=[
+                f"{float(urg1.get('0', 0)):.2f}",
+                f"{float(urg1.get('1', 0)):.2f}",
+                f"{float(urg1.get('2', 0)):.2f}",
+            ],
+            textposition="outside",
+        )
+    )
+    fig_urg1.update_layout(
+        title=dict(
+            text="P(urgency) - score head, mean "
+            + f"{a1['urgency']['score']:.2f}",
+            font=dict(size=13),
+        ),
+        height=260,
+        margin=dict(l=10, r=50, t=46, b=10),
+        template="plotly_white",
+        yaxis=dict(range=[0, 0.7]),
+    )
+    fig_urg1
+    return
+
+
+@app.cell(hide_code=True)
+def urgency_plot_reading(mo):
+    mo.md("""
+    Most of the mass sits on level 1, "soon", with the remainder split between
+    the extremes. A duplicate charge with a one-week fuse is a "soon", not a
+    page-the-on-call "critical", and the head agrees. Ordinal scores like this
+    are handy for sorting queues without hand-inventing numeric urgency
+    policies.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def nothing_to_parse(mo):
+    mo.md("""
+    Nothing to parse. The output space is numeric and typed, so there is
+    no JSON to repair and nothing to hallucinate. The same four questions
+    cost one forward pass, not four.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def sweep_intro(mo):
+    mo.md("""
+    ## Now five emails, same schema
+
+    One email is a demo; an inbox is the job. Here are five that hit the same
+    support address in one morning: a production outage, a payment dispute, a
+    happy customer, a textbook phishing blast, and a business-email-compromise
+    attempt wearing a colleague's clothes. Click through the inbox on the left;
+    the chips in the reader pane are the model's live answers.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def sweep_emails(TRIAGE_Q, agent1, time):
+    EMAILS1 = [
+        {
+            "key": "prod outage",
+            "sender_name": "Engineering On-Call",
+            "sender_email": "oncall@acme-health.com",
+            "initials": "EO",
             "subject": "Production down - checkout failing for all customers",
             "body": "Since 9am UTC every checkout returns a 500 error. We are losing orders every minute this stays broken. Please treat this as a P1.",
+            "time": "9:41 AM",
+            "unread": True,
         },
-        "happy customer": {
-            "subject": "Loving the new dashboard!",
-            "body": "Just wanted to say the new analytics dashboard is fantastic. Any chance you'll add CSV export next quarter? No rush at all.",
-        },
-        "BEC scam": {
+        {
+            "key": "BEC scam",
+            "sender_name": "Vendor Finance Desk",
+            "sender_email": "ap-updates@vendor-portal.example",
+            "initials": "VF",
             "subject": "Re: Q3 invoice - updated banking details",
             "body": "Hi, following our conversation last week, please note our accounts payable email has changed. Kindly update your records and process the attached invoice to the new details by Friday.",
+            "time": "9:07 AM",
+            "unread": True,
         },
-    }
-    sweep_rows1 = []
-    for name1, email1 in EMAILS1.items():
+        {
+            "key": "duplicate charge",
+            "sender_name": "Maya Chen",
+            "sender_email": "maya@northwind-clinic.com",
+            "initials": "MC",
+            "subject": "Duplicate charge on invoice 4411",
+            "body": "We were billed twice for March. Please refund the duplicate. If this isn't fixed this week we will cancel our account.",
+            "time": "8:58 AM",
+        },
+        {
+            "key": "happy customer",
+            "sender_name": "Devon Park",
+            "sender_email": "devon@parkanalytics.io",
+            "initials": "DP",
+            "subject": "Loving the new dashboard!",
+            "body": "Just wanted to say the new analytics dashboard is fantastic. Any chance you'll add CSV export next quarter? No rush at all.",
+            "time": "8:15 AM",
+        },
+        {
+            "key": "obvious phishing",
+            "sender_name": "Account Security",
+            "sender_email": "security@paypal-secure-verify.example-login.com",
+            "initials": "AS",
+            "subject": "URGENT: Your account will be suspended",
+            "body": "Dear customer, we detected unusual activity. Click http://paypal-secure-verify.example-login.com immediately to confirm your password and SSN, or your account will be permanently deleted within 24 hours.",
+            "time": "7:30 AM",
+            "unread": True,
+        },
+    ]
+
+    def clean_answers1(ax1):
+        return {
+            "department": {
+                "choice": ax1["department"]["choice"],
+                "confidence": float(ax1["department"]["confidence"]),
+            },
+            "urgency": {"score": float(ax1["urgency"]["score"])},
+            "is_phishing": {"noul": float(ax1["is_phishing"]["noul"])},
+            "churn_risk": {"noul": float(ax1["churn_risk"]["noul"])},
+        }
+
+    MAIL_DATA1 = []
+    for m1 in EMAILS1:
         t1 = time.perf_counter()
-        r1 = agent1.predict(email1, TRIAGE_Q)["answers"]
-        ms1 = (time.perf_counter() - t1) * 1000
-        sweep_rows1.append(
+        r1 = agent1.predict(
+            {"subject": m1["subject"], "body": m1["body"]}, TRIAGE_Q
+        )["answers"]
+        ms1 = round((time.perf_counter() - t1) * 1000)
+        MAIL_DATA1.append(
             {
-                "email": name1,
-                "department": f'{r1["department"]["choice"]} ({r1["department"]["confidence"]:.2f})',
-                "urgency": f'{r1["urgency"]["score"]:.2f}',
-                "P(phishing)": f'{r1["is_phishing"]["noul"]:.3f}',
-                "P(churn)": f'{r1["churn_risk"]["noul"]:.3f}',
-                "ms": f"{ms1:.0f}",
+                "sender_name": m1["sender_name"],
+                "sender_email": m1["sender_email"],
+                "initials": m1["initials"],
+                "subject": m1["subject"],
+                "body": m1["body"],
+                "preview": m1["body"][:70],
+                "time": m1["time"],
+                "unread": bool(m1.get("unread", False)),
+                "ms": ms1,
+                "answers": clean_answers1(r1),
             }
         )
-    return sweep_rows1
+    return (MAIL_DATA1,)
 
 
-@app.cell
-def _(mo, sweep_rows1):
-    mo.ui.table(sweep_rows1, selection=None)
+@app.cell(hide_code=True)
+def inbox_viewer(MAIL_DATA1, MailViewer1):
+    MailViewer1(emails=MAIL_DATA1, selected=1)
     return
 
 
-@app.cell
-def _(mo):
-    mo.md(
-        """
-        ## The same job with an LLM
+@app.cell(hide_code=True)
+def sweep_reading(mo):
+    mo.md("""
+    Sweep the inbox and the pattern holds: the outage routes to technical at
+    high urgency, the phishing blast scores P(phishing) near 1.0, the happy
+    customer files under sales with no churn signal.
 
-        Prompt it to return JSON, generate the tokens, parse the output, retry
-        when the JSON is malformed, sample the temperature and hope the
-        distribution means something. Seconds per email instead of
-        milliseconds, and no native probabilities.
+    Now the one that should stop you: the banking-details change. It reads like
+    routine accounts-payable housekeeping, and the model scored it exactly that
+    way. It is actually business email compromise, the most expensive email
+    fraud on the books. The model could not see it, and its confidence said
+    nothing.
 
-        Here: one forward pass per email, and the probabilities are the
-        native output, not a sampled string you have to trust.
+    Hold that thought; the series keeps coming back to it.
+    """)
+    return
 
-        **But should you trust those confidence numbers?** Act 2: feed this
-        model a language it has never seen, and watch the confidence score
-        stay perfectly silent.
-        """
-    )
+
+@app.cell(hide_code=True)
+def llm_contrast(mo):
+    mo.md("""
+    ## The same job with an LLM
+
+    Prompt it to return JSON, generate the tokens, parse the output, retry
+    when the JSON is malformed, sample the temperature and hope the
+    distribution means something. Seconds per email instead of
+    milliseconds, and no native probabilities.
+
+    Here: one forward pass per email, and the probabilities are the
+    native output, not a sampled string you have to trust.
+
+    **But should you trust those confidence numbers?** Act 2: feed this
+    model a language it has never seen, and watch the confidence score
+    stay perfectly silent.
+    """)
     return
 
 
