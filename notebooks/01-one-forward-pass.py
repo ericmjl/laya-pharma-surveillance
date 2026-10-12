@@ -382,7 +382,7 @@ def run_intro(mo):
             ),
             mo.accordion(
                 {
-                    "The code that runs Laya": mo.md(
+                    "Click here to see the code that runs Laya": mo.md(
                         """
                         ```python
                         t01 = time.perf_counter()
