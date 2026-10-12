@@ -88,24 +88,13 @@ def banner(mo):
 @app.cell(hide_code=True)
 def goal(mo):
     mo.md("""
-    ## What this notebook shows
+    In this notebook, we will show how Laya performs on a simple task: tagging
+    and classifying support emails.
 
-    **The claim:** a 421M-parameter model answers four typed questions about an
-    email in a single forward pass. No text generated, no JSON to parse, tens
-    of milliseconds.
+    By the end of the notebook, you will:
 
-    **How to read this notebook:** every result is a rendered artifact and the
-    code stays hidden until you want it (click the code icon on any cell to
-    reveal it). Before each step I say what is coming; after each output I say
-    what I see in it.
-
-    **The path:** load the model and read its spec sheet, then hand it one real
-    email of the kind that lands in a support inbox every day, watch the four
-    answers come back with their probabilities, then run a whole morning's
-    inbox of five emails.
-
-    Act 2 then asks the question this notebook sets up: should you trust those
-    confidence numbers?
+    - see the Laya model in action in a zero-shot setting, and
+    - see the code that is necessary to run the model zero-shot.
     """)
     return
 
@@ -269,14 +258,14 @@ def mail_viewer_class(anywidget, traitlets):
 @app.cell(hide_code=True)
 def schema_intro(mo):
     mo.md("""
-    ## The ticket and the schema
+    ## The email and the schema
 
     A decision model works in two parts: a **state** (here, an email) and a
     **schema** of typed questions. Three primitives cover most triage work:
 
     - `choice` picks one option from a list you define at request time and
       returns the full probability distribution over every option.
-    - `score` places the state on an ordinal rubric you describe in words.
+    - `score` places the email on an ordinal rubric you describe in words.
     - `noul` returns a calibrated probability that a yes/no statement holds.
 
     Our support-triage schema asks four questions in one pass: which department
@@ -336,7 +325,7 @@ def email_and_schema():
 @app.cell(hide_code=True)
 def schema_table(mo):
     mo.md("""
-    The schema we hand the model, in full:
+    The schema we hand the model is as follows:
 
     | primitive | question | options |
     |---|---|---|
@@ -381,14 +370,32 @@ def email_preview(EMAIL, MailViewer1):
 
 @app.cell(hide_code=True)
 def run_intro(mo):
-    mo.md("""
-    ## Run it
+    mo.vstack(
+        [
+            mo.md(
+                """
+                ## Run it
 
-    One call. The email goes in as the state, the four-question schema goes in
-    alongside it, and a single forward pass scores every answer option at once.
-    The timer is real: the number you see is what this machine measured. Watch
-    the chips that come back.
-    """)
+                One call sends the email and the schema through the model, and a
+                single forward pass scores every answer option at once.
+                """
+            ),
+            mo.accordion(
+                {
+                    "The code that runs Laya": mo.md(
+                        """
+                        ```python
+                        t01 = time.perf_counter()
+                        result1 = agent1.predict(EMAIL, TRIAGE_Q)
+                        elapsed_ms1 = (time.perf_counter() - t01) * 1000
+                        a1 = result1["answers"]
+                        ```
+                        """
+                    )
+                }
+            ),
+        ]
+    )
     return
 
 
@@ -440,18 +447,16 @@ def results_reading(mo):
     mo.md("""
     Read the chips.
 
-    - **Department** came back `billing` with the bulk of the probability
-      mass. A duplicate charge is about as clean a billing case as they come.
+    - **Department** came back `billing` with most of the probability mass. A
+      duplicate charge is about as clean a billing case as they come.
     - **Urgency** landed mid-scale: there is a deadline ("this week"), but
       nobody is bleeding.
-    - **P(phishing)** sits near zero, correctly; nothing here asks for
-      credentials or a click.
+    - **P(phishing)** sits near zero. Nothing here asks for credentials or a
+      click.
     - **P(churn)** is the number an account-management queue would page on:
       the customer names the exit door.
 
-    Four answers, one pass, and every answer arrived with its uncertainty
-    attached. That last part is the difference between a decision model and a
-    text generator asked to pretend it has opinions.
+    Four answers, one forward pass, each with its uncertainty attached.
     """)
     return
 
@@ -497,11 +502,10 @@ def dept_plot(a1, go):
 @app.cell(hide_code=True)
 def dept_plot_reading(mo):
     mo.md("""
-    `billing` takes the lion's share and the residue spreads thin across the
-    rest. That is the shape you want from a routing decision: a confident
-    winner with no plausible runner-up. When you see mass split across two
-    options, the model is telling you the email sits on a boundary, and that is
-    exactly when a confidence gate should route it to a human.
+    `billing` wins with most of the probability mass; the other three options
+    split the remainder. When two options split the mass instead, the model is
+    telling you the email sits on a boundary, and a confidence gate should send
+    it to a human.
     """)
     return
 
@@ -565,9 +569,11 @@ def urgency_plot_reading(mo):
 @app.cell(hide_code=True)
 def nothing_to_parse(mo):
     mo.md("""
-    Nothing to parse. The output space is numeric and typed, so there is
-    no JSON to repair and nothing to hallucinate. The same four questions
-    cost one forward pass, not four.
+    ## What just happened, in one line
+
+    The email went in as state, the schema fixed the shape of the answer, and
+    the outputs arrived as numbers and labels: no JSON to repair, nothing to
+    hallucinate, and all four questions answered in one forward pass.
     """)
     return
 
@@ -575,13 +581,13 @@ def nothing_to_parse(mo):
 @app.cell(hide_code=True)
 def sweep_intro(mo):
     mo.md("""
-    ## Now five emails, same schema
+    ## Five emails, same schema
 
-    One email is a demo; an inbox is the job. Here are five that hit the same
-    support address in one morning: a production outage, a payment dispute, a
-    happy customer, a textbook phishing blast, and a business-email-compromise
-    attempt wearing a colleague's clothes. Click through the inbox on the left;
-    the chips in the reader pane are the model's live answers.
+    One email is a demo; an inbox is the job. These five hit the same support
+    address in one morning: a production outage, a payment dispute, a happy
+    customer, a phishing blast, and a business-email-compromise attempt that
+    looks like routine accounts-payable housekeeping. Click through the inbox
+    on the left; the chips in the reader pane are the model's answers.
     """)
     return
 
@@ -683,17 +689,15 @@ def inbox_viewer(MAIL_DATA1, MailViewer1):
 @app.cell(hide_code=True)
 def sweep_reading(mo):
     mo.md("""
-    Sweep the inbox and the pattern holds: the outage routes to technical at
-    high urgency, the phishing blast scores P(phishing) near 1.0, the happy
-    customer files under sales with no churn signal.
+    Click through and the pattern holds: the outage routes to technical at high
+    urgency, the phishing blast scores P(phishing) near 1.0, the happy customer
+    files under sales.
 
-    Now the one that should stop you: the banking-details change. It reads like
-    routine accounts-payable housekeeping, and the model scored it exactly that
-    way. It is actually business email compromise, the most expensive email
-    fraud on the books. The model could not see it, and its confidence said
-    nothing.
-
-    Hold that thought; the series keeps coming back to it.
+    The banking-details email is the one to study. It reads like routine
+    housekeeping and the model scored it that way; it is actually business
+    email compromise, the most expensive email fraud on the books. The model
+    could not see it, and its confidence said nothing. Hold that thought; the
+    series keeps coming back to it.
     """)
     return
 
@@ -703,17 +707,17 @@ def llm_contrast(mo):
     mo.md("""
     ## The same job with an LLM
 
-    Prompt it to return JSON, generate the tokens, parse the output, retry
-    when the JSON is malformed, sample the temperature and hope the
-    distribution means something. Seconds per email instead of
-    milliseconds, and no native probabilities.
+    To do this with an LLM, you prompt it to return JSON, generate the tokens,
+    parse the output, and retry when the JSON is malformed. That is seconds per
+    email instead of milliseconds, and the probabilities are not native; you
+    sample or you trust prose.
 
-    Here: one forward pass per email, and the probabilities are the
-    native output, not a sampled string you have to trust.
+    Here, one forward pass per email, and the probabilities are the native
+    output, not a sampled string you have to trust.
 
-    **But should you trust those confidence numbers?** Act 2: feed this
-    model a language it has never seen, and watch the confidence score
-    stay perfectly silent.
+    But should you trust those confidence numbers? That is what notebook 2 is
+    all about: feed this model a language it has never seen, and watch the
+    confidence score stay perfectly silent.
     """)
     return
 
