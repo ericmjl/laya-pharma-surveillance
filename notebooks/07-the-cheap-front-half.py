@@ -2,7 +2,9 @@
 # requires-python = ">=3.10"
 # dependencies = [
 #     "marimo==0.25.1",
+#     "laya==0.3.5",
 #     "plotly==7.1.0",
+#     "anywidget==0.11.0",
 #     "marimo-lens==0.2.3",
 #     "marimo-studio==0.3.0",
 # ]
@@ -107,6 +109,11 @@ def pre_imports(mo):
 def imports():
     import marimo as mo
     import plotly.graph_objects as go
+    import sys
+    from pathlib import Path
+
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from mail_viewer import MailViewer
 
     # Pharmacopeia theme (see .agents/skills/laya-pharma-theme/SKILL.md)
     INK = "#0F2233"  # clinical navy: banners, dark cards
@@ -121,7 +128,20 @@ def imports():
     LINE = "#D9D4CA"  # warm hairline
     PAPER = "#F7F5F1"  # light card background
     DLR = "\\$"  # escaped dollar sign: a bare $...$ pair renders as math in markdown
-    return CRIMSON, DLR, GREEN, INK, INK2, KICK, MIST, SLATE, TEAL, go, mo
+    return (
+        CRIMSON,
+        DLR,
+        GREEN,
+        INK,
+        INK2,
+        KICK,
+        MIST,
+        MailViewer,
+        SLATE,
+        TEAL,
+        go,
+        mo,
+    )
 
 
 @app.cell(hide_code=True)
@@ -426,7 +446,26 @@ def bec_intro(mo):
 
 
 @app.cell(hide_code=True)
-def bec_beat(CRIMSON, INK, KICK, MIST, mo):
+def bec_load(mo):
+    import contextlib
+    import os
+
+    os.environ.setdefault("USE_TF", "0")
+
+    import laya
+
+    bec_load_ctx7 = (
+        mo.spinner("loading the English checkpoint (cached after Act 1) ...")
+        if hasattr(mo, "spinner")
+        else contextlib.nullcontext()
+    )
+    with bec_load_ctx7:
+        agent7 = laya.load("convaiinnovations/laya")
+    return (agent7,)
+
+
+@app.cell(hide_code=True)
+def bec_beat(MailViewer, agent7):
     BEC_SUBJECT7 = "Re: Q3 invoice - updated banking details"
     BEC_FROM7 = "Vendor Finance Desk <ap-updates@vendor-portal.example>"
     BEC_BODY7 = (
@@ -434,30 +473,43 @@ def bec_beat(CRIMSON, INK, KICK, MIST, mo):
         "payable email has changed. Kindly update your records and process the "
         "attached invoice to the new details by Friday."
     )
-    BEC_PHISH_P7 = 0.000
 
-    mo.Html(
-        f"""
-        <div style="background:{INK};border:1px solid #24404F;border-radius:12px;padding:18px 22px;max-width:660px;">
-          <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:2px;color:{KICK};margin-bottom:8px;">ACT 1 SWEEP &#183; ENGLISH CHECKPOINT &#183; PHISHING QUESTION</div>
-          <div style="font-family:-apple-system,Segoe UI,sans-serif;font-size:16px;font-weight:700;color:#EEF4FB;margin-bottom:4px;">{BEC_SUBJECT7}</div>
-          <div style="font-family:ui-monospace,Menlo,monospace;font-size:12px;color:{KICK};margin-bottom:10px;">{BEC_FROM7}</div>
-          <div style="font-family:-apple-system,Segoe UI,sans-serif;font-size:13.5px;line-height:1.55;color:{MIST};margin-bottom:14px;">{BEC_BODY7}</div>
-          <div style="display:inline-block;background:{CRIMSON};border-radius:999px;padding:5px 14px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#EEF4FB;">P(phishing) = {BEC_PHISH_P7:.3f}</div>
-        </div>
-        """
+    phish_q7 = {
+        "is_phishing": {
+            "type": "noul",
+            "instructions": "Is this email a phishing or scam attempt?",
+        }
+    }
+    r_bec7 = agent7.predict(
+        {"subject": BEC_SUBJECT7, "body": BEC_BODY7}, phish_q7
+    )["answers"]
+    BEC_PHISH7 = float(r_bec7["is_phishing"]["noul"])
+
+    MailViewer(
+        emails=[
+            {
+                "sender_name": "Vendor Finance Desk",
+                "sender_email": "ap-updates@vendor-portal.example",
+                "initials": "VF",
+                "subject": BEC_SUBJECT7,
+                "body": BEC_BODY7,
+                "time": "9:07 AM",
+                "answers": {"is_phishing": {"noul": BEC_PHISH7}},
+                "note": "Scored live by this notebook: English checkpoint, phishing question, one forward pass.",
+            }
+        ]
     )
-    return (BEC_PHISH_P7,)
+    return (BEC_PHISH7,)
 
 
 @app.cell(hide_code=True)
-def bec_reading(BEC_PHISH_P7, DLR, cpu_cost7, mo):
+def bec_reading(BEC_PHISH7, DLR, cpu_cost7, mo):
     mo.md(
         f"""
         This is business email compromise: no link, no urgency theater, just a
         plausible voice asking for a routing change. The English checkpoint
-        scored it **P(phishing) = {BEC_PHISH_P7:.3f}**, and the confidence
-        score, as always in this series, said nothing.
+        scored it **P(phishing) = {BEC_PHISH7:.3f}**, and the confidence score,
+        as always in this series, said nothing.
 
         That is the honest boundary of this act. The front half can be fast,
         cheap, and auditable, serve a million requests for about
@@ -469,7 +521,7 @@ def bec_reading(BEC_PHISH_P7, DLR, cpu_cost7, mo):
 
 
 @app.cell(hide_code=True)
-def series_recap(BEC_PHISH_P7, mo):
+def series_recap(BEC_PHISH7, mo):
     mo.md(f"""
     ## The series, closed
 
@@ -486,7 +538,7 @@ def series_recap(BEC_PHISH_P7, mo):
 
     Laya earns its place as the fast, cheap, auditable front half of a
     pipeline. The back half, the part that catches business email compromise
-    at P = {BEC_PHISH_P7:.3f}, still needs a System 2.
+    at P = {BEC_PHISH7:.3f}, still needs a System 2.
     """)
     return
 
