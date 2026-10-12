@@ -1,0 +1,19 @@
+notebooks/mail_viewer.py
+  s_1c17499aff1e1a::t_7244e9cc7ce9c1 112,118-120,136-137,139-142,144-154,156-170
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "88ad7d925d3b1ca9ae056368d489880fa9eece8e",
+  "prompts": {},
+  "sessions": {
+    "s_1c17499aff1e1a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1301e-0dab-7497-ae10-ff9b523c662b",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
