@@ -173,11 +173,10 @@ def load_data_intro(mo):
             mo.accordion(
                 {
                     "Click here to see the code that loads the experiment results": mo.md(
-                        f"""
-    ```python
+                        """```python
     DATA6 = Path(__file__).resolve().parent.parent / "data"
     with open(DATA6 / "finetune_experiment_results.json", encoding="utf-8") as handle6:
-    R6 = json.load(handle6)
+        R6 = json.load(handle6)
 
     BUCKETS6 = ["choice:3-5", "choice:6-10", "choice:11+", "noul:2"]
     TEMPS_BEFORE6 = [R6["temps_before"][b] for b in BUCKETS6]
@@ -191,8 +190,7 @@ def load_data_intro(mo):
     JEV_ECE6 = 0.144  # TypeSafe Jev 1.13.0, as published on Laya's model card
     MODEL_CARD_RAW6 = 0.466
     MODEL_CARD_CAL6 = 0.081
-    ```
-                        """
+    ```"""
                     ),
                 }
             ),
@@ -284,43 +282,43 @@ def temps_plot_intro(mo):
             mo.accordion(
                 {
                     "Click here to see the code that draws the temperature chart": mo.md(
-                        f"""
-    ```python
+                        """```python
     fig_temp6 = go.Figure()
     fig_temp6.add_trace(
-    go.Bar(
-    x=BUCKETS6,
-    y=TEMPS_BEFORE6,
-    name="base model",
-    marker_color=[CRIMSON if b6 == "noul:2" else SLATE for b6 in BUCKETS6],
-    text=[f"{{t6:.2f}}" for t6 in TEMPS_BEFORE6],
-    textposition="outside",
-    )
+        go.Bar(
+            x=BUCKETS6,
+            y=TEMPS_BEFORE6,
+            name="base model",
+            marker_color=[CRIMSON if b6 == "noul:2" else SLATE for b6 in BUCKETS6],
+            text=[f"{t6:.2f}" for t6 in TEMPS_BEFORE6],
+            textposition="outside",
+        )
     )
     fig_temp6.add_trace(
-    go.Bar(
-    x=BUCKETS6,
-    y=TEMPS_AFTER6,
-    name="after RLCD fine-tuning",
-    marker_color=GREEN,
-    text=[f"{{t6:.2f}}" for t6 in TEMPS_AFTER6],
-    textposition="outside",
-    )
+        go.Bar(
+            x=BUCKETS6,
+            y=TEMPS_AFTER6,
+            name="after RLCD fine-tuning",
+            marker_color=GREEN,
+            text=[f"{t6:.2f}" for t6 in TEMPS_AFTER6],
+            textposition="outside",
+        )
     )
     fig_temp6.add_hline(
-    y=1.0, line_dash="dash", line_color=TEAL,
-    annotation_text="T = 1: perfectly scaled",
-    annotation_position="top left",
+        y=1.0,
+        line_dash="dash",
+        line_color=TEAL,
+        annotation_text="T = 1: perfectly scaled",
+        annotation_position="top left",
     )
     fig_temp6.update_layout(
-    template="plotly_white",
-    yaxis=dict(type="log", title="fitted temperature (log scale)"),
-    xaxis=dict(title="question-type bucket"),
-    height=430,
+        template="plotly_white",
+        yaxis=dict(type="log", title="fitted temperature (log scale)"),
+        xaxis=dict(title="question-type bucket"),
+        height=430,
     )
     fig_temp6
-    ```
-                        """
+    ```"""
                     ),
                 }
             ),
@@ -519,7 +517,9 @@ def flatten_demo(CRIMSON, SLATE, TEAL, go, make_subplots, math):
         "T = 100.00",
     ]
 
-    fig_flat6 = make_subplots(rows=1, cols=5, subplot_titles=demo_labels6)
+    fig_flat6 = make_subplots(
+        rows=1, cols=5, shared_yaxes=True, subplot_titles=demo_labels6
+    )
     panel_colors6 = [TEAL, SLATE, SLATE, CRIMSON, CRIMSON]
     for col6 in range(5):
         probs6 = softmax6(LOGITS6, demo_temps6[col6])
@@ -533,6 +533,7 @@ def flatten_demo(CRIMSON, SLATE, TEAL, go, make_subplots, math):
             row=1,
             col=col6 + 1,
         )
+    fig_flat6.update_yaxes(range=[0, 1.0])
     fig_flat6.update_layout(
         title=dict(
             text="Illustration: one 10-option logits vector at five temperatures - ranking fixed, confidence drained",
@@ -576,14 +577,12 @@ def gate_demo_intro(mo):
             mo.accordion(
                 {
                     "Click here to see the code that checks the gate": mo.md(
-                        f"""
-    ```python
+                        """```python
     p_ideal6 = softmax6(LOGITS6, 1.0)
     p_ceiling6 = softmax6(LOGITS6, max(TEMPS_BEFORE6))
     # fires when P(top option) >= 0.9
-    ```
-                        """
-                    )
+    ```"""
+                    ),
                 }
             ),
         ]
