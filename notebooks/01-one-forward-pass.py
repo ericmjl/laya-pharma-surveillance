@@ -39,52 +39,81 @@ def imports():
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from mail_viewer import MailViewer
 
-    return MailViewer, contextlib, go, laya, mo, time
+    # Pharmacopeia theme (see .agents/skills/laya-pharma-theme/SKILL.md)
+    INK = "#0F2233"  # clinical navy: banners, dark cards
+    INK2 = "#16303F"  # gradient end, chip fills
+    TEAL = "#1F7A8C"  # assay teal: primary data series
+    GREEN = "#2F9E68"  # recovery green: safe / selected
+    AMBER = "#C9821F"  # caution amber: urgency / warning
+    CRIMSON = "#B3282D"  # adverse crimson: danger ONLY
+    SLATE = "#8A97A5"  # secondary series
+    MIST = "#A7B3BD"  # muted text on ink
+    KICK = "#8FB0B8"  # kicker text on ink
+    LINE = "#D9D4CA"  # warm hairline
+    PAPER = "#F7F5F1"  # light card background
+    return (
+        AMBER,
+        CRIMSON,
+        GREEN,
+        INK,
+        INK2,
+        KICK,
+        MIST,
+        MailViewer,
+        TEAL,
+        contextlib,
+        go,
+        laya,
+        mo,
+        time,
+    )
 
 
 @app.cell(hide_code=True)
-def banner(mo):
-    mo.Html("""
-    <div style="line-height:0;border-radius:16px;overflow:hidden;">
-    <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Act 1 - One forward pass">
-      <defs>
-        <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#0b1524"/><stop offset="1" stop-color="#13253f"/>
-        </linearGradient>
-        <linearGradient id="acc1" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="#4a7ebb"/><stop offset="0.55" stop-color="#4ade80"/><stop offset="1" stop-color="#d9534f"/>
-        </linearGradient>
-      </defs>
-      <rect x="1" y="1" width="958" height="208" rx="16" fill="url(#bg1)" stroke="#22364f"/>
-      <text x="700" y="185" font-family="ui-monospace,Menlo,monospace" font-size="170" font-weight="700" fill="none" stroke="#26405f" stroke-width="2" opacity="0.5">01</text>
-      <rect x="798" y="34" width="122" height="26" rx="13" fill="#1b2f4a" stroke="#33507a"/>
-      <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="#9fc0e8">ACT 1 OF 7</text>
-      <text x="40" y="54" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="3.5" fill="#7f9cc0">THE LAYA PHARMA SURVEILLANCE SERIES</text>
-      <text x="40" y="112" font-family="-apple-system,Segoe UI,sans-serif" font-size="42" font-weight="800" fill="#eef4fb">One forward pass</text>
-      <text x="40" y="148" font-family="ui-monospace,Menlo,monospace" font-size="14.5" fill="#a8b2bd">Four typed questions &#183; one ~40 ms pass &#183; zero generated text</text>
-      <g font-family="ui-monospace,Menlo,monospace" font-size="11">
-        <rect x="596" y="52" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="606" y="66" fill="#9fc0e8">choice</text>
-        <rect x="596" y="82" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="606" y="96" fill="#9fc0e8">score</text>
-        <rect x="596" y="112" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="606" y="126" fill="#9fc0e8">noul</text>
-        <rect x="596" y="142" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="606" y="156" fill="#9fc0e8">noul</text>
-      </g>
-      <path d="M670 62 C 710 62 726 100 756 101" stroke="#33507a" fill="none"/>
-      <path d="M670 92 C 706 92 724 101 756 101" stroke="#33507a" fill="none"/>
-      <path d="M670 122 C 706 122 724 103 756 103" stroke="#33507a" fill="none"/>
-      <path d="M670 152 C 710 152 726 104 756 103" stroke="#33507a" fill="none"/>
-      <circle cx="772" cy="102" r="15" fill="#13253f" stroke="#4a7ebb" stroke-width="2"/>
-      <text x="764" y="107" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#eef4fb">1&#215;</text>
-      <g>
-        <rect x="806" y="70" width="98" height="9" rx="3" fill="#4a7ebb"/>
-        <rect x="806" y="92" width="61" height="9" rx="3" fill="#4a7ebb" opacity="0.65"/>
-        <rect x="806" y="114" width="34" height="9" rx="3" fill="#4a7ebb" opacity="0.4"/>
-        <rect x="806" y="136" width="16" height="9" rx="3" fill="#4a7ebb" opacity="0.25"/>
-      </g>
-      <text x="806" y="166" font-family="ui-monospace,Menlo,monospace" font-size="10" fill="#5f7ea6">P(answer) per question</text>
-      <rect x="24" y="186" width="620" height="4" rx="2" fill="url(#acc1)"/>
-    </svg>
-    </div>
-    """)
+def banner(CRIMSON, GREEN, INK, INK2, KICK, MIST, TEAL, mo):
+    mo.Html(
+        f"""
+        <div style="line-height:0;border-radius:16px;overflow:hidden;">
+        <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Act 1 - One forward pass">
+          <defs>
+            <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="{INK}"/><stop offset="1" stop-color="{INK2}"/>
+            </linearGradient>
+            <linearGradient id="acc1" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="{TEAL}"/><stop offset="0.55" stop-color="{GREEN}"/><stop offset="1" stop-color="{CRIMSON}"/>
+            </linearGradient>
+          </defs>
+          <rect x="1" y="1" width="958" height="208" rx="16" fill="url(#bg1)" stroke="#24404F"/>
+          <text x="700" y="185" font-family="ui-monospace,Menlo,monospace" font-size="170" font-weight="700" fill="none" stroke="#26404F" stroke-width="2" opacity="0.5">01</text>
+          <rect x="798" y="34" width="122" height="26" rx="13" fill="{INK2}" stroke="#2E5566"/>
+          <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="{KICK}">ACT 1 OF 7</text>
+          <text x="40" y="54" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="3.5" fill="{KICK}">THE LAYA PHARMA SURVEILLANCE SERIES</text>
+          <text x="40" y="112" font-family="-apple-system,Segoe UI,sans-serif" font-size="42" font-weight="800" fill="#EEF4FB">One forward pass</text>
+          <text x="40" y="148" font-family="ui-monospace,Menlo,monospace" font-size="14.5" fill="{MIST}">Four typed questions &#183; one ~40 ms pass &#183; zero generated text</text>
+          <g font-family="ui-monospace,Menlo,monospace" font-size="11">
+            <rect x="596" y="52" width="74" height="21" rx="6" fill="{INK2}" stroke="#2E5566"/><text x="606" y="66" fill="{KICK}">choice</text>
+            <rect x="596" y="82" width="74" height="21" rx="6" fill="{INK2}" stroke="#2E5566"/><text x="606" y="96" fill="{KICK}">score</text>
+            <rect x="596" y="112" width="74" height="21" rx="6" fill="{INK2}" stroke="#2E5566"/><text x="606" y="126" fill="{KICK}">noul</text>
+            <rect x="596" y="142" width="74" height="21" rx="6" fill="{INK2}" stroke="#2E5566"/><text x="606" y="156" fill="{KICK}">noul</text>
+          </g>
+          <path d="M670 62 C 710 62 726 100 756 101" stroke="#2E5566" fill="none"/>
+          <path d="M670 92 C 706 92 724 101 756 101" stroke="#2E5566" fill="none"/>
+          <path d="M670 122 C 706 122 724 103 756 103" stroke="#2E5566" fill="none"/>
+          <path d="M670 152 C 710 152 726 104 756 103" stroke="#2E5566" fill="none"/>
+          <circle cx="772" cy="102" r="15" fill="{INK}" stroke="{TEAL}" stroke-width="2"/>
+          <text x="764" y="107" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#EEF4FB">1&#215;</text>
+          <g>
+            <rect x="806" y="70" width="98" height="9" rx="3" fill="{TEAL}"/>
+            <rect x="806" y="92" width="61" height="9" rx="3" fill="{TEAL}" opacity="0.65"/>
+            <rect x="806" y="114" width="34" height="9" rx="3" fill="{TEAL}" opacity="0.4"/>
+            <rect x="806" y="136" width="16" height="9" rx="3" fill="{TEAL}" opacity="0.25"/>
+          </g>
+          <text x="806" y="166" font-family="ui-monospace,Menlo,monospace" font-size="10" fill="#6E93A0">P(answer) per question</text>
+          <rect x="24" y="186" width="620" height="4" rx="2" fill="url(#acc1)"/>
+        </svg>
+        </div>
+        """
+    )
     return
 
 
@@ -133,15 +162,15 @@ def load_model(contextlib, laya, mo):
 
 
 @app.cell(hide_code=True)
-def model_card(agent1, mo, n_params1):
+def model_card(GREEN, INK, KICK, agent1, mo, n_params1):
     mo.Html(
         f"""
-        <div style="display:flex;flex-wrap:wrap;gap:30px;align-items:center;padding:16px 22px;border:1px solid #22364f;border-radius:12px;background:#0e1a2b;font-family:ui-monospace,Menlo,monospace;">
-          <div><div style="font-size:10px;letter-spacing:2px;color:#7f9cc0;">CHECKPOINT</div><div style="font-size:14px;color:#eef4fb;">convaiinnovations/laya</div></div>
-          <div><div style="font-size:10px;letter-spacing:2px;color:#7f9cc0;">PARAMETERS</div><div style="font-size:14px;color:#eef4fb;">{n_params1 / 1e6:.0f}M</div></div>
-          <div><div style="font-size:10px;letter-spacing:2px;color:#7f9cc0;">DEVICE</div><div style="font-size:14px;color:#eef4fb;">{agent1.device}</div></div>
-          <div><div style="font-size:10px;letter-spacing:2px;color:#7f9cc0;">CONTEXT BUDGET</div><div style="font-size:14px;color:#eef4fb;">{agent1.cfg.get("max_len")} tokens / question</div></div>
-          <div style="margin-left:auto;"><div style="font-size:10px;letter-spacing:2px;color:#7f9cc0;">LICENSE</div><div style="font-size:14px;color:#4ade80;">Apache 2.0</div></div>
+        <div style="display:flex;flex-wrap:wrap;gap:30px;align-items:center;padding:16px 22px;border:1px solid #24404F;border-radius:12px;background:{INK};font-family:ui-monospace,Menlo,monospace;">
+          <div><div style="font-size:10px;letter-spacing:2px;color:{KICK};">CHECKPOINT</div><div style="font-size:14px;color:#EEF4FB;">convaiinnovations/laya</div></div>
+          <div><div style="font-size:10px;letter-spacing:2px;color:{KICK};">PARAMETERS</div><div style="font-size:14px;color:#EEF4FB;">{n_params1 / 1e6:.0f}M</div></div>
+          <div><div style="font-size:10px;letter-spacing:2px;color:{KICK};">DEVICE</div><div style="font-size:14px;color:#EEF4FB;">{agent1.device}</div></div>
+          <div><div style="font-size:10px;letter-spacing:2px;color:{KICK};">CONTEXT BUDGET</div><div style="font-size:14px;color:#EEF4FB;">{agent1.cfg.get("max_len")} tokens / question</div></div>
+          <div style="margin-left:auto;"><div style="font-size:10px;letter-spacing:2px;color:{KICK};">LICENSE</div><div style="font-size:14px;color:{GREEN};">Apache 2.0</div></div>
         </div>
         """
     )
@@ -377,7 +406,7 @@ def dept_plot_intro(mo):
 
 
 @app.cell(hide_code=True)
-def dept_plot(a1, go):
+def dept_plot(TEAL, a1, go):
     dept_probs1 = a1["department"]["probabilities"]
     order1 = sorted(dept_probs1, key=dept_probs1.get)
     fig_dept1 = go.Figure(
@@ -385,7 +414,7 @@ def dept_plot(a1, go):
             x=[dept_probs1[k] for k in order1],
             y=order1,
             orientation="h",
-            marker_color="#4a7ebb",
+            marker_color=TEAL,
             text=[f"{dept_probs1[k]:.3f}" for k in order1],
             textposition="outside",
         )
@@ -425,7 +454,7 @@ def urgency_plot_intro(mo):
 
 
 @app.cell(hide_code=True)
-def urgency_plot(a1, go):
+def urgency_plot(AMBER, a1, go):
     urg1 = a1["urgency"]["probabilities"]
     fig_urg1 = go.Figure(
         go.Bar(
@@ -435,7 +464,7 @@ def urgency_plot(a1, go):
                 float(urg1.get("1", 0)),
                 float(urg1.get("2", 0)),
             ],
-            marker_color="#4ade80",
+            marker_color=AMBER,
             text=[
                 f"{float(urg1.get('0', 0)):.2f}",
                 f"{float(urg1.get('1', 0)):.2f}",

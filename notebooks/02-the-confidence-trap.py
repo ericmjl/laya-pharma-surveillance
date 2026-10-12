@@ -25,48 +25,50 @@ app = marimo.App(width="medium")
 
 
 @app.cell(hide_code=True)
-def banner(mo):
-    mo.Html("""
-    <div style="line-height:0;border-radius:16px;overflow:hidden;">
-    <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Act 2 - The confidence trap">
-      <defs>
-        <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#0b1524"/><stop offset="1" stop-color="#13253f"/>
-        </linearGradient>
-        <linearGradient id="acc2" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="#4a7ebb"/><stop offset="0.55" stop-color="#4ade80"/><stop offset="1" stop-color="#d9534f"/>
-        </linearGradient>
-      </defs>
-      <rect x="1" y="1" width="958" height="208" rx="16" fill="url(#bg2)" stroke="#22364f"/>
-      <text x="690" y="188" font-family="ui-monospace,Menlo,monospace" font-size="160" font-weight="700" fill="none" stroke="#26405f" stroke-width="2" opacity="0.5">02</text>
-      <rect x="798" y="34" width="122" height="26" rx="13" fill="#1b2f4a" stroke="#33507a"/>
-      <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="#9fc0e8">ACT 2 OF 7</text>
-      <text x="40" y="54" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="3.5" fill="#7f9cc0">THE LAYA PHARMA SURVEILLANCE SERIES</text>
-      <text x="40" y="112" font-family="-apple-system,Segoe UI,sans-serif" font-size="42" font-weight="800" fill="#eef4fb">The confidence trap</text>
-      <text x="40" y="148" font-family="ui-monospace,Menlo,monospace" font-size="14.5" fill="#a8b2bd">Degradation you can see. Collapse you cannot.</text>
-      <g font-family="ui-monospace,Menlo,monospace" font-size="11">
-        <rect x="620" y="52" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="630" y="66" fill="#9fc0e8">en ckpt</text>
-        <rect x="620" y="82" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="630" y="96" fill="#9fc0e8">multi</text>
-        <rect x="620" y="112" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="630" y="126" fill="#9fc0e8">router</text>
-        <rect x="620" y="142" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="630" y="156" fill="#9fc0e8">11 langs</text>
-      </g>
-      <path d="M694 62 C 724 62 736 100 758 101" stroke="#33507a" fill="none"/>
-      <path d="M694 92 C 720 92 734 101 758 101" stroke="#33507a" fill="none"/>
-      <path d="M694 122 C 720 122 734 103 758 103" stroke="#33507a" fill="none"/>
-      <path d="M694 152 C 724 152 736 104 758 103" stroke="#33507a" fill="none"/>
-      <circle cx="772" cy="102" r="15" fill="#13253f" stroke="#d9534f" stroke-width="2"/>
-      <text x="766" y="107" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#eef4fb">?</text>
-      <g>
-        <rect x="806" y="70" width="98" height="9" rx="3" fill="#d9534f"/>
-        <rect x="806" y="92" width="61" height="9" rx="3" fill="#d9534f" opacity="0.6"/>
-        <rect x="806" y="114" width="34" height="9" rx="3" fill="#4a7ebb" opacity="0.6"/>
-        <rect x="806" y="136" width="16" height="9" rx="3" fill="#4a7ebb" opacity="0.35"/>
-      </g>
-      <text x="806" y="166" font-family="ui-monospace,Menlo,monospace" font-size="10" fill="#5f7ea6">P(option)</text>
-      <rect x="24" y="186" width="560" height="4" rx="2" fill="url(#acc2)"/>
-    </svg>
-    </div>
-    """)
+def banner(CRIMSON, GREEN, INK, INK2, KICK, MIST, TEAL, mo):
+    mo.Html(
+        f"""
+        <div style="line-height:0;border-radius:16px;overflow:hidden;">
+        <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Act 2 - The confidence trap">
+          <defs>
+            <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="{INK}"/><stop offset="1" stop-color="{INK2}"/>
+            </linearGradient>
+            <linearGradient id="acc2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="{TEAL}"/><stop offset="0.55" stop-color="{GREEN}"/><stop offset="1" stop-color="{CRIMSON}"/>
+            </linearGradient>
+          </defs>
+          <rect x="1" y="1" width="958" height="208" rx="16" fill="url(#bg2)" stroke="#24404F"/>
+          <text x="690" y="188" font-family="ui-monospace,Menlo,monospace" font-size="160" font-weight="700" fill="none" stroke="#26404F" stroke-width="2" opacity="0.5">02</text>
+          <rect x="798" y="34" width="122" height="26" rx="13" fill="{INK2}" stroke="#2E5566"/>
+          <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="{KICK}">ACT 2 OF 7</text>
+          <text x="40" y="54" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="3.5" fill="{KICK}">THE LAYA PHARMA SURVEILLANCE SERIES</text>
+          <text x="40" y="112" font-family="-apple-system,Segoe UI,sans-serif" font-size="42" font-weight="800" fill="#EEF4FB">The confidence trap</text>
+          <text x="40" y="148" font-family="ui-monospace,Menlo,monospace" font-size="14.5" fill="{MIST}">Degradation you can see. Collapse you cannot.</text>
+          <g font-family="ui-monospace,Menlo,monospace" font-size="11">
+            <rect x="620" y="52" width="74" height="21" rx="6" fill="{INK2}" stroke="#2E5566"/><text x="630" y="66" fill="{KICK}">en ckpt</text>
+            <rect x="620" y="82" width="74" height="21" rx="6" fill="{INK2}" stroke="#2E5566"/><text x="630" y="96" fill="{KICK}">multi</text>
+            <rect x="620" y="112" width="74" height="21" rx="6" fill="{INK2}" stroke="#2E5566"/><text x="630" y="126" fill="{KICK}">router</text>
+            <rect x="620" y="142" width="74" height="21" rx="6" fill="{INK2}" stroke="#2E5566"/><text x="630" y="156" fill="{KICK}">11 langs</text>
+          </g>
+          <path d="M694 62 C 724 62 736 100 758 101" stroke="#2E5566" fill="none"/>
+          <path d="M694 92 C 720 92 734 101 758 101" stroke="#2E5566" fill="none"/>
+          <path d="M694 122 C 720 122 734 103 758 103" stroke="#2E5566" fill="none"/>
+          <path d="M694 152 C 724 152 736 104 758 103" stroke="#2E5566" fill="none"/>
+          <circle cx="772" cy="102" r="15" fill="{INK}" stroke="{CRIMSON}" stroke-width="2"/>
+          <text x="766" y="107" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#EEF4FB">?</text>
+          <g>
+            <rect x="806" y="70" width="98" height="9" rx="3" fill="{CRIMSON}"/>
+            <rect x="806" y="92" width="61" height="9" rx="3" fill="{CRIMSON}" opacity="0.6"/>
+            <rect x="806" y="114" width="34" height="9" rx="3" fill="{TEAL}" opacity="0.6"/>
+            <rect x="806" y="136" width="16" height="9" rx="3" fill="{TEAL}" opacity="0.35"/>
+          </g>
+          <text x="806" y="166" font-family="ui-monospace,Menlo,monospace" font-size="10" fill="#6E93A0">P(option)</text>
+          <rect x="24" y="186" width="560" height="4" rx="2" fill="url(#acc2)"/>
+        </svg>
+        </div>
+        """
+    )
     return
 
 
@@ -126,9 +128,30 @@ def imports():
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from mail_viewer import MailViewer
 
+    # Pharmacopeia theme (see .agents/skills/laya-pharma-theme/SKILL.md)
+    INK = "#0F2233"  # clinical navy: banners, dark cards
+    INK2 = "#16303F"  # gradient end, chip fills
+    TEAL = "#1F7A8C"  # assay teal: primary data series
+    GREEN = "#2F9E68"  # recovery green: safe / selected
+    AMBER = "#C9821F"  # caution amber: urgency / warning
+    CRIMSON = "#B3282D"  # adverse crimson: danger ONLY
+    SLATE = "#8A97A5"  # secondary series
+    MIST = "#A7B3BD"  # muted text on ink
+    KICK = "#8FB0B8"  # kicker text on ink
+    LINE = "#D9D4CA"  # warm hairline
+    PAPER = "#F7F5F1"  # light card background
     return (
+        AMBER,
+        CRIMSON,
+        GREEN,
+        INK,
+        INK2,
+        KICK,
+        MIST,
         MailViewer,
         Router,
+        SLATE,
+        TEAL,
         contextlib,
         go,
         laya,
@@ -268,20 +291,20 @@ def mandarin_test(TRIAGE_Q2, ZH_EMAIL2, english2, multi2):
 
 
 @app.cell(hide_code=True)
-def mandarin_plot(ZH_RESULTS2, go):
+def mandarin_plot(SLATE, TEAL, ZH_RESULTS2, go):
     opts2 = ["billing", "technical", "sales", "other"]
     fig_zh2 = go.Figure()
     fig_zh2.add_bar(
         name="English checkpoint",
         x=opts2,
         y=[ZH_RESULTS2["english"]["probs"].get(o2, 0) for o2 in opts2],
-        marker_color="#a8b2bd",
+        marker_color=SLATE,
     )
     fig_zh2.add_bar(
         name="Multilingual checkpoint",
         x=opts2,
         y=[ZH_RESULTS2["multilingual"]["probs"].get(o2, 0) for o2 in opts2],
-        marker_color="#4a7ebb",
+        marker_color=TEAL,
     )
     fig_zh2.update_layout(
         barmode="group",
@@ -397,14 +420,14 @@ def khmer_test(KHMER_EMAIL2, TRIAGE_Q2, english2):
 
 
 @app.cell(hide_code=True)
-def khmer_plot(KH_EN2, go):
+def khmer_plot(CRIMSON, KH_EN2, go):
     order_kh2 = sorted(KH_EN2["probs"], key=KH_EN2["probs"].get)
     fig_kh2 = go.Figure(
         go.Bar(
             x=[KH_EN2["probs"][k2] for k2 in order_kh2],
             y=order_kh2,
             orientation="h",
-            marker_color="#d9534f",
+            marker_color=CRIMSON,
             text=[f"{KH_EN2['probs'][k2]:.3f}" for k2 in order_kh2],
             textposition="outside",
         )
@@ -443,11 +466,11 @@ def khmer_reading(KH_EN2, mo):
 
 
 @app.cell(hide_code=True)
-def router_intro(mo):
-    ROUTER_DIAGRAM2 = """
+def router_intro(AMBER, GREEN, INK, INK2, SLATE, TEAL, mo):
+    ROUTER_DIAGRAM2 = f"""
     flowchart LR
         E["Email in<br/>(any script)"]:::email
-        R{"Router<br/>script check<br/>under 1 ms"}:::router
+        R{{"Router<br/>script check<br/>under 1 ms"}}:::router
         EN["laya<br/>English checkpoint"]:::en
         ML["laya-multilingual<br/>mmBERT"]:::ml
         A["Answers +<br/>probabilities"]:::ans
@@ -456,11 +479,11 @@ def router_intro(mo):
         R -->|non-Latin script| ML
         EN --> A
         ML --> A
-        classDef email fill:#13253f,stroke:#33507a,color:#eef4fb
-        classDef router fill:#1b2f4a,stroke:#d9534f,color:#eef4fb
-        classDef en fill:#1b2f4a,stroke:#4a7ebb,color:#eef4fb
-        classDef ml fill:#1b2f4a,stroke:#4ade80,color:#eef4fb
-        classDef ans fill:#13253f,stroke:#33507a,color:#eef4fb
+        classDef email fill:{INK},stroke:#2E5566,color:#EEF4FB
+        classDef router fill:{INK2},stroke:{AMBER},color:#EEF4FB
+        classDef en fill:{INK2},stroke:{SLATE},color:#EEF4FB
+        classDef ml fill:{INK2},stroke:{TEAL},color:#EEF4FB
+        classDef ans fill:{INK},stroke:{GREEN},color:#EEF4FB
     """
 
     mo.vstack(
@@ -704,7 +727,9 @@ def language_explorer(
 
 @app.cell(hide_code=True)
 def languages_plot(
+    GREEN,
     LANG_RESULTS2,
+    TEAL,
     checkpoint_toggle2,
     language_pick2,
     make_subplots,
@@ -726,8 +751,7 @@ def languages_plot(
             x=langs2,
             y=[r2[metric2] for r2 in rows2],
             marker_color=[
-                "#4ade80" if lang2 == sel_lang2 else "#4a7ebb"
-                for lang2 in langs2
+                GREEN if lang2 == sel_lang2 else TEAL for lang2 in langs2
             ],
             row=i2,
             col=1,
@@ -786,6 +810,10 @@ def latency_intro(mo):
 
 @app.cell(hide_code=True)
 def latency_bench(
+    CRIMSON,
+    INK,
+    SLATE,
+    TEAL,
     TRANSLATIONS2,
     TRIAGE_Q2,
     english2,
@@ -809,76 +837,48 @@ def latency_bench(
             samples2.append((time.perf_counter() - t2) * 1000)
         return samples2
 
-    def beeswarm2(values2, center2, y_max2):
-        """Seaborn-style beeswarm: place each point at the offset closest to the
-        category center such that no two marker disks (diameter ~10 px) touch.
-        Pixel metrics approximate the rendered plot: ~280 px of value axis over
-        y_max2 ms, ~300 px per category on the x axis."""
-
-        radius_px2 = 5.0
-        px_per_ms2 = 280.0 / y_max2
-        px_per_x2 = 300.0
-
-        placed2 = []
-        out2 = [0.0] * len(values2)
-        for i2 in sorted(range(len(values2)), key=lambda k2: values2[k2]):
-            v2 = values2[i2]
-            candidates2 = [0.0]
-            for px2, py2 in placed2:
-                dy_px2 = (v2 - py2) * px_per_ms2
-                if abs(dy_px2) < 2 * radius_px2:
-                    dx_px2 = ((2 * radius_px2) ** 2 - dy_px2**2) ** 0.5
-                    dx_units2 = dx_px2 / px_per_x2
-                    candidates2.extend(
-                        [px2 - center2 + dx_units2, px2 - center2 - dx_units2]
-                    )
-            chosen2 = 0.0
-            for cand2 in sorted(candidates2, key=abs):
-                fits2 = all(
-                    (
-                        ((cand2 + center2 - px2) * px_per_x2) ** 2
-                        + ((v2 - py2) * px_per_ms2) ** 2
-                    )
-                    >= (2 * radius_px2) ** 2
-                    for (px2, py2) in placed2
-                )
-                if fits2:
-                    chosen2 = cand2
-                    break
-            out2[i2] = center2 + chosen2
-            placed2.append((center2 + chosen2, v2))
-        return out2
+    def swarm_offsets2(values2, bin_height2):
+        order2 = sorted(range(len(values2)), key=lambda i2: values2[i2])
+        counts2 = {}
+        offsets2 = [0.0] * len(values2)
+        for i2 in order2:
+            b2 = int(values2[i2] // bin_height2)
+            k2 = counts2.get(b2, 0)
+            side2 = -1 if k2 % 2 else 1
+            offsets2[i2] = side2 * (k2 // 2 + 1) * 0.13
+            counts2[b2] = k2 + 1
+        return offsets2
 
     samples_en2 = bench_latency2(english2, STATE_EN2)
     samples_ml2 = bench_latency2(multi2, STATE_EN2)
     mean_en2 = statistics.mean(samples_en2)
     mean_ml2 = statistics.mean(samples_ml2)
-    y_top2 = max(samples_en2 + samples_ml2) * 1.15
-
-    xs_en2 = beeswarm2(samples_en2, 0.0, y_top2)
-    xs_ml2 = beeswarm2(samples_ml2, 1.0, y_top2)
+    all_values2 = samples_en2 + samples_ml2
+    bin_height2 = max((max(all_values2) - min(all_values2)) / 10, 0.3)
 
     fig_lat2 = go.Figure()
     fig_lat2.add_trace(
         go.Scatter(
-            x=xs_en2,
+            x=[
+                swarm_offsets2(samples_en2, bin_height2)[i2]
+                for i2 in range(len(samples_en2))
+            ],
             y=samples_en2,
             mode="markers",
             name="English checkpoint",
-            marker=dict(
-                color="#a8b2bd", size=10, line=dict(color="#13253f", width=0.5)
-            ),
+            marker=dict(color=SLATE, size=10, line=dict(color=INK, width=0.5)),
         )
     )
     fig_lat2.add_trace(
         go.Scatter(
-            x=xs_ml2,
+            x=[
+                1 + swarm_offsets2(samples_ml2, bin_height2)[i2]
+                for i2 in range(len(samples_ml2))
+            ],
             y=samples_ml2,
             mode="markers",
             name="Multilingual checkpoint",
-            marker=dict(
-                color="#4a7ebb", size=10, line=dict(color="#13253f", width=0.5)
-            ),
+            marker=dict(color=TEAL, size=10, line=dict(color=INK, width=0.5)),
         )
     )
     fig_lat2.add_trace(
@@ -887,12 +887,12 @@ def latency_bench(
             y=[mean_en2, mean_ml2],
             mode="markers",
             name="mean",
-            marker=dict(symbol="diamond", size=14, color="#d9534f"),
+            marker=dict(symbol="diamond", size=14, color=CRIMSON),
         )
     )
     fig_lat2.update_layout(
         title=dict(
-            text=f"ms per pass, 4 questions - beeswarm, n=10 each; means {mean_en2:.1f} vs {mean_ml2:.1f} ms (diamonds)",
+            text=f"ms per pass, 4 questions - swarm, n=10 each; means {mean_en2:.1f} vs {mean_ml2:.1f} ms (diamonds)",
             font=dict(size=13),
         ),
         height=340,
@@ -902,9 +902,8 @@ def latency_bench(
             tickmode="array",
             tickvals=[0, 1],
             ticktext=["English checkpoint", "Multilingual checkpoint"],
-            range=[-0.6, 1.6],
         ),
-        yaxis=dict(title="milliseconds", range=[0, y_top2]),
+        yaxis=dict(title="milliseconds", range=[0, max(all_values2) * 1.15]),
     )
     fig_lat2
     return

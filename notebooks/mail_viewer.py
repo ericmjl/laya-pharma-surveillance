@@ -1,5 +1,9 @@
 """Shared macOS Mail-style viewer widget for the Laya pharma surveillance notebooks.
 
+Colors follow the Pharmacopeia theme (see .agents/skills/laya-pharma-theme/SKILL.md):
+teal #1F7A8C primary, amber #C9821F caution, crimson #B3282D adverse, green #2F9E68 safe.
+Window chrome stays macOS-native by design.
+
 Import from the notebooks directory:
 
     from mail_viewer import MailViewer
@@ -25,10 +29,10 @@ function render({ model, el }) {
   const answerChips = (a) => {
     if (!a) return "";
     const parts = [];
-    if (a.department) parts.push(chip("dept", a.department.choice + " · " + a.department.confidence.toFixed(2), "#0a84ff"));
-    if (a.urgency) parts.push(chip("urgency", a.urgency.score.toFixed(2), "#ff9500"));
-    if (a.is_phishing) parts.push(chip("phishing", a.is_phishing.noul.toFixed(3), a.is_phishing.noul >= 0.5 ? "#ff3b30" : "#34c759"));
-    if (a.churn_risk) parts.push(chip("churn", a.churn_risk.noul.toFixed(3), a.churn_risk.noul >= 0.5 ? "#ff3b30" : "#34c759"));
+    if (a.department) parts.push(chip("dept", a.department.choice + " · " + a.department.confidence.toFixed(2), "#1F7A8C"));
+    if (a.urgency) parts.push(chip("urgency", a.urgency.score.toFixed(2), "#C9821F"));
+    if (a.is_phishing) parts.push(chip("phishing", a.is_phishing.noul.toFixed(3), a.is_phishing.noul >= 0.5 ? "#B3282D" : "#2F9E68"));
+    if (a.churn_risk) parts.push(chip("churn", a.churn_risk.noul.toFixed(3), a.churn_risk.noul >= 0.5 ? "#B3282D" : "#2F9E68"));
     return parts.join(" ");
   };
 
@@ -36,7 +40,7 @@ function render({ model, el }) {
     <div style="padding:14px 18px 10px;">
       <div style="font-size:17px;font-weight:700;letter-spacing:-0.2px;">${esc(m.subject)}</div>
       <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
-        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">${esc(m.initials)}</div>
+        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1F7A8C,#0F2233);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">${esc(m.initials)}</div>
         <div style="flex:1;min-width:0;">
           <div style="font-size:13px;font-weight:600;">${esc(m.sender_name)} <span style="font-weight:400;color:#86868b;">&lt;${esc(m.sender_email)}&gt;</span></div>
           <div style="font-size:12px;color:#86868b;">to you@acme-health.com</div>
@@ -45,13 +49,13 @@ function render({ model, el }) {
       </div>
       ${m.answers ? '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">' + answerChips(m.answers) + '</div>' : ""}
       <div style="font-size:13.5px;line-height:1.5;white-space:pre-wrap;padding:14px 0 4px;">${esc(m.body)}</div>
-      ${m.note ? '<div style="font-size:12px;color:#51515b;background:#f2f2f7;border-radius:8px;padding:8px 12px;margin-top:8px;">' + esc(m.note) + '</div>' : ""}
+      ${m.note ? '<div style="font-size:12px;color:#51515b;background:#F7F5F1;border-radius:8px;padding:8px 12px;margin-top:8px;">' + esc(m.note) + '</div>' : ""}
       ${m.ms ? '<div style="font-size:11px;color:#86868b;border-top:1px solid #ececf0;padding-top:8px;margin-top:6px;">triaged by convaiinnovations/laya in ' + esc(m.ms) + ' ms · one forward pass, zero generated text</div>' : ""}
     </div>`;
 
   const row = (m, i) => `
-    <div data-i="${i}" style="cursor:pointer;display:flex;gap:10px;padding:10px 12px;border-bottom:1px solid #ececf0;background:${i === sel ? "#0a84ff" : "transparent"};color:${i === sel ? "#fff" : "inherit"};">
-      <div style="width:34px;height:34px;border-radius:50%;background:${i === sel ? "rgba(255,255,255,.28)" : "linear-gradient(135deg,#0a84ff,#5e5ce6)"};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">${esc(m.initials)}</div>
+    <div data-i="${i}" style="cursor:pointer;display:flex;gap:10px;padding:10px 12px;border-bottom:1px solid #ececf0;background:${i === sel ? "#1F7A8C" : "transparent"};color:${i === sel ? "#fff" : "inherit"};">
+      <div style="width:34px;height:34px;border-radius:50%;background:${i === sel ? "rgba(255,255,255,.28)" : "linear-gradient(135deg,#1F7A8C,#0F2233)"};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">${esc(m.initials)}</div>
       <div style="flex:1;min-width:0;">
         <div style="display:flex;justify-content:space-between;gap:8px;">
           <span style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(m.sender_name)}</span>
