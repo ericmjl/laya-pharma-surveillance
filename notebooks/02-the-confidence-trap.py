@@ -121,11 +121,22 @@ def imports():
     import plotly.graph_objects as go
     import time
     from laya import Router
+    from plotly.subplots import make_subplots
 
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from mail_viewer import MailViewer
 
-    return MailViewer, Router, contextlib, go, laya, mo, statistics, time
+    return (
+        MailViewer,
+        Router,
+        contextlib,
+        go,
+        laya,
+        make_subplots,
+        mo,
+        statistics,
+        time,
+    )
 
 
 @app.cell(hide_code=True)
@@ -535,8 +546,10 @@ def languages_intro(mo):
     ## The same email, eleven languages
 
     The multilingual checkpoint covers scripts from Latin to Cyrillic to CJK.
-    If cross-lingual consistency is real, the same complaint should get the
-    same triage in every language on the list.
+    The translations below are machine-translated: easy for a frontier LLM in
+    principle, but errors are possible, so we proceed assuming they are
+    correct. If cross-lingual consistency is real, the same complaint should
+    get the same triage in every language on the list.
     """)
     return
 
@@ -690,73 +703,72 @@ def language_explorer(
 
 
 @app.cell(hide_code=True)
-def languages_plot(LANG_RESULTS2, go):
-    fig_pair2 = go.Figure(
-        go.Splom(
-            dimensions=[
-                dict(
-                    label="confidence",
-                    values=[
-                        r2["conf"]
-                        for r2 in LANG_RESULTS2
-                        if r2["checkpoint"] == "multilingual"
-                    ],
-                ),
-                dict(
-                    label="urgency",
-                    values=[
-                        r2["urgency"]
-                        for r2 in LANG_RESULTS2
-                        if r2["checkpoint"] == "multilingual"
-                    ],
-                ),
-                dict(
-                    label="P(churn)",
-                    values=[
-                        r2["churn"]
-                        for r2 in LANG_RESULTS2
-                        if r2["checkpoint"] == "multilingual"
-                    ],
-                ),
-            ],
-            text=[
-                r2["language"]
-                for r2 in LANG_RESULTS2
-                if r2["checkpoint"] == "multilingual"
-            ],
-            marker=dict(
-                color=["#4a7ebb"] * 11,
-                size=7,
-                line=dict(color="#13253f", width=0.5),
-            ),
-            diagonal_visible=False,
-        )
+def languages_plot(
+    LANG_RESULTS2,
+    checkpoint_toggle2,
+    language_pick2,
+    make_subplots,
+):
+    sel_ck2 = checkpoint_toggle2.value
+    sel_lang2 = language_pick2.value
+    rows2 = [r2 for r2 in LANG_RESULTS2 if r2["checkpoint"] == sel_ck2]
+    langs2 = [r2["language"] for r2 in rows2]
+
+    fig_rows2 = make_subplots(
+        rows=3,
+        cols=1,
+        shared_xaxes=True,
+        vertical_spacing=0.09,
+        subplot_titles=("confidence", "urgency", "P(churn)"),
     )
-    fig_pair2.update_layout(
+    for i2, metric2 in enumerate(["conf", "urgency", "churn"], start=1):
+        fig_rows2.add_bar(
+            x=langs2,
+            y=[r2[metric2] for r2 in rows2],
+            marker_color=[
+                "#4ade80" if lang2 == sel_lang2 else "#4a7ebb"
+                for lang2 in langs2
+            ],
+            row=i2,
+            col=1,
+        )
+
+    fig_rows2.update_layout(
         title=dict(
-            text="confidence vs urgency vs P(churn) per language (multilingual checkpoint; hover for language)",
+            text=f"three triage numbers per language - checkpoint: {sel_ck2}, selected: {sel_lang2} (green)",
             font=dict(size=13),
         ),
-        height=520,
-        margin=dict(l=10, r=10, t=46, b=10),
+        height=560,
+        margin=dict(l=10, r=20, t=60, b=10),
         template="plotly_white",
+        showlegend=False,
     )
-    fig_pair2
+    fig_rows2.update_yaxes(
+        title_text="confidence", range=[0, 1.15], row=1, col=1
+    )
+    fig_rows2.update_yaxes(
+        title_text="urgency (0-2)", range=[0, 2.4], row=2, col=1
+    )
+    fig_rows2.update_yaxes(
+        title_text="P(churn)", range=[0, 1.15], row=3, col=1
+    )
+    fig_rows2
     return
 
 
 @app.cell(hide_code=True)
 def languages_reading(mo):
     mo.md(f"""
-    Toggle the checkpoint above and watch both panels respond. On the
-    multilingual checkpoint: `billing` every time, confidence pinned near
-    1.0, urgency in the same band, churn low. Several confidence values sit
-    at 1.0 because the softmax saturates on a clean-cut case; the fourth
-    decimal is where languages differ. Flip to the English checkpoint and the
-    same emails get shakier answers, which is the honest contrast.
+    Three numbers, three rows, one bar per language. Flip the checkpoint
+    toggle and every row updates; pick a language and its bar turns green so
+    you can track it across the three metrics.
 
-    For non-English traffic, the multilingual checkpoint is the one to route
-    to, and the Router already knows it.
+    On the multilingual checkpoint: `billing` every time, confidence pinned
+    near 1.0 (softmax saturation on a clean-cut case; the fourth decimal is
+    where languages differ), urgency in the same band, churn low. Flip to the
+    English checkpoint and the same emails get shakier answers, which is the
+    honest contrast. For non-English traffic, the multilingual checkpoint is
+    the one to route to, and the Router already knows it.
     """)
     return
 
@@ -797,42 +809,77 @@ def latency_bench(
             samples2.append((time.perf_counter() - t2) * 1000)
         return samples2
 
+    def swarm_offsets2(values2, bin_height2):
+        order2 = sorted(range(len(values2)), key=lambda i2: values2[i2])
+        counts2 = {}
+        offsets2 = [0.0] * len(values2)
+        for i2 in order2:
+            b2 = int(values2[i2] // bin_height2)
+            k2 = counts2.get(b2, 0)
+            side2 = -1 if k2 % 2 else 1
+            offsets2[i2] = side2 * (k2 // 2 + 1) * 0.13
+            counts2[b2] = k2 + 1
+        return offsets2
+
     samples_en2 = bench_latency2(english2, STATE_EN2)
     samples_ml2 = bench_latency2(multi2, STATE_EN2)
     mean_en2 = statistics.mean(samples_en2)
     mean_ml2 = statistics.mean(samples_ml2)
+    all_values2 = samples_en2 + samples_ml2
+    bin_height2 = max((max(all_values2) - min(all_values2)) / 10, 0.3)
 
     fig_lat2 = go.Figure()
     fig_lat2.add_trace(
-        go.Box(
+        go.Scatter(
+            x=[
+                swarm_offsets2(samples_en2, bin_height2)[i2]
+                for i2 in range(len(samples_en2))
+            ],
             y=samples_en2,
+            mode="markers",
             name="English checkpoint",
-            marker_color="#a8b2bd",
-            boxpoints="all",
-            jitter=0.3,
-            pointpos=0,
+            marker=dict(
+                color="#a8b2bd", size=10, line=dict(color="#13253f", width=0.5)
+            ),
         )
     )
     fig_lat2.add_trace(
-        go.Box(
+        go.Scatter(
+            x=[
+                1 + swarm_offsets2(samples_ml2, bin_height2)[i2]
+                for i2 in range(len(samples_ml2))
+            ],
             y=samples_ml2,
+            mode="markers",
             name="Multilingual checkpoint",
-            marker_color="#4a7ebb",
-            boxpoints="all",
-            jitter=0.3,
-            pointpos=0,
+            marker=dict(
+                color="#4a7ebb", size=10, line=dict(color="#13253f", width=0.5)
+            ),
+        )
+    )
+    fig_lat2.add_trace(
+        go.Scatter(
+            x=[0, 1],
+            y=[mean_en2, mean_ml2],
+            mode="markers",
+            name="mean",
+            marker=dict(symbol="diamond", size=14, color="#d9534f"),
         )
     )
     fig_lat2.update_layout(
         title=dict(
-            text=f"ms per pass, 4 questions (n=10 each, boxes = IQR, line = median): "
-            f"{mean_en2:.1f} vs {mean_ml2:.1f} ms mean",
+            text=f"ms per pass, 4 questions - swarm, n=10 each; means {mean_en2:.1f} vs {mean_ml2:.1f} ms (diamonds)",
             font=dict(size=13),
         ),
-        height=320,
+        height=340,
         margin=dict(l=10, r=20, t=46, b=10),
         template="plotly_white",
-        yaxis=dict(title="milliseconds"),
+        xaxis=dict(
+            tickmode="array",
+            tickvals=[0, 1],
+            ticktext=["English checkpoint", "Multilingual checkpoint"],
+        ),
+        yaxis=dict(title="milliseconds", range=[0, max(all_values2) * 1.15]),
     )
     fig_lat2
     return
