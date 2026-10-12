@@ -1,0 +1,19 @@
+notebooks/01-one-forward-pass.py
+  s_1c17499aff1e1a::t_1b4bf5d91e4c87 91-92,94,96-97,261,268,328,373-377,379-398,450-451,454-455,459,505-508,572-576,584,586-590,692-700,710-713,715-716,718-720
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "02fb4c2f5367a8ddd8f7c5dc5a76ccc8f61572d3",
+  "prompts": {},
+  "sessions": {
+    "s_1c17499aff1e1a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1301e-0dab-7497-ae10-ff9b523c662b",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
