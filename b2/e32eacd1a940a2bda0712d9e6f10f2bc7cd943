@@ -1,0 +1,19 @@
+notebooks/03-one-clause-flips-the-model.py
+  s_1c17499aff1e1a::t_4915303a815b8a 50-51,145,149-150,155,159,175,177,219,236-237,244-246,248,253,292,295,306,347,350,363,365,381,385,388-391,410,414-415,422,425,433,436,441,444-445,447-448,466,469-470,507,510-511,556-557
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b2e32eacd1a940a2bda0712d9e6f10f2bc7cd943",
+  "prompts": {},
+  "sessions": {
+    "s_1c17499aff1e1a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1301e-0dab-7497-ae10-ff9b523c662b",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
