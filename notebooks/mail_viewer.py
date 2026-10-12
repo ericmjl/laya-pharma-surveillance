@@ -109,7 +109,9 @@ export default { render };
 
 
 class SampleDocs(anywidget.AnyWidget):
-    """Category picker + live-random 3-doc sample; click a card for full text."""
+    """Category picker + random 3-doc sample: shuffles once on load (and on
+    the Reshuffle button / category change), never on expand or other
+    interactions. Click a card for the full text."""
 
     _esm = """
 function render({ model, el }) {
@@ -117,6 +119,7 @@ function render({ model, el }) {
   const docs = model.get("docs") || [];
   const cats = [...new Set(docs.map((d) => d.category))].sort();
   let currentCat = cats[0];
+  let picks = null;
   let expanded = -1;
   el.style.fontFamily = "-apple-system,BlinkMacSystemFont,'SF Pro Text',Helvetica,Arial,sans-serif";
 
@@ -132,16 +135,21 @@ function render({ model, el }) {
     return c.slice(0, 3);
   };
 
-  const draw = () => {
+  const resample = () => {
     const pool = docs.filter((d) => d.category === currentCat);
-    const picks = sample3(pool);
+    picks = sample3(pool);
+    expanded = -1;
+  };
+
+  const draw = () => {
+    if (!picks) resample();
     wrap.innerHTML =
       '<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">' +
       '<select style="cursor:pointer;border:1px solid #D9D4CA;border-radius:8px;padding:7px 10px;font-size:12.5px;background:#fff;color:#1D2530;">' +
       cats.map((c) => '<option ' + (c === currentCat ? "selected" : "") + '>' + esc(c) + '</option>').join("") +
       '</select>' +
       '<button style="cursor:pointer;border:1px solid #D9D4CA;background:#fff;border-radius:8px;padding:7px 14px;font-size:12.5px;font-weight:600;color:#1D2530;">Reshuffle sample</button>' +
-      '<span style="font-size:11.5px;color:#86868b;">three random documents, drawn live in your browser - click one for full text</span>' +
+      '<span style="font-size:11.5px;color:#86868b;">three random documents - click one for the full text</span>' +
       '</div>' +
       '<div style="margin-top:10px;">' +
       picks.map((d, i) =>
@@ -157,10 +165,13 @@ function render({ model, el }) {
       '</div>';
     wrap.querySelector("select").addEventListener("change", (e) => {
       currentCat = e.target.value;
-      expanded = -1;
+      picks = null;
       draw();
     });
-    wrap.querySelector("button").addEventListener("click", () => draw());
+    wrap.querySelector("button").addEventListener("click", () => {
+      picks = null;
+      draw();
+    });
     wrap.querySelectorAll("[data-i]").forEach((n) =>
       n.addEventListener("click", () => {
         const i = parseInt(n.dataset.i, 10);
@@ -201,7 +212,7 @@ function render({ model, el }) {
         <span style="padding:3px 10px;border-radius:999px;background:#1F7A8C16;border:1px solid #1F7A8C55;color:#1D2530;">label: <b>${esc(m.label)}</b></span>
         <span style="padding:3px 10px;border-radius:999px;background:#B3282D16;border:1px solid #B3282D55;color:#1D2530;">predicted: <b>${esc(m.predicted)}</b> (P=${esc(m.prob)})</span>
       </div>
-      <div style="font-size:13px;line-height:1.55;white-space:pre-wrap;padding:12px 0 4px;color:#1D2530;">${esc(m.body)}</div>
+      <div style="font-size:13px;line-height:1.55;white-space:pre-wrap;padding:12px 0 4px;color:#1D2530;max-height:340px;overflow-y:auto;">${esc(m.body)}</div>
     </div>`;
 
   const row = (m, i) => `

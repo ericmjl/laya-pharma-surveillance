@@ -92,16 +92,22 @@ def pre_data(mo):
     mo.md("""
     ## The corpus
 
-    Synthetic posts prove mechanics; this act is 265 real documents. The
-    first 50 were hand-curated, five per category, from FDA warning letters,
-    Drug Safety Communications, Federal Register notices, PubMed abstracts,
-    DOJ False Claims Act settlements, FiercePharma articles, vendor press
-    releases, 10-K risk factors, docket-comment letters, and synthetic spam.
-    I then scaled the corpus with script-side fetchers against the Federal
-    Register API, PubMed E-utilities, FDA listing pages, SEC EDGAR full-text
-    search, and FiercePharma's RSS, so the ingestion is reproducible. Labels
-    are authorial ground truth; zero-shot predictions exist for the first 50
-    documents only.
+    This act is 265 real documents: 50 hand-curated (five per category) plus
+    215 fetched by script. The sources:
+
+    - FDA warning letters - [fda.gov](https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/compliance-actions-and-activities/warning-letters)
+    - FDA Drug Safety Communications - [fda.gov](https://www.fda.gov/drugs/drug-safety-and-availability/drug-safety-communications)
+    - Federal Register notices - [federalregister.gov](https://www.federalregister.gov/)
+    - PubMed abstracts - [pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/)
+    - SEC EDGAR filings and 10-K risk factors - [sec.gov](https://www.sec.gov/edgar/search/)
+    - DOJ False Claims Act settlements - [justice.gov](https://www.justice.gov/civil/false-claims-act)
+    - FiercePharma, BioPharma Dive, BioSpace press coverage - [fiercepharma.com](https://www.fiercepharma.com/)
+    - Vendor press releases - [prnewswire.com](https://www.prnewswire.com/)
+    - Docket comments (PhRMA, BIO, Public Citizen) - [regulations.gov](https://www.regulations.gov/)
+
+    The spam slice is the one exception: synthetic samples, authored to be
+    representative. Labels across the corpus are authorial ground truth, and
+    zero-shot predictions exist for the first 50 documents.
     """)
     return
 
@@ -196,7 +202,11 @@ def corpus_sampler(ALL_DOCS4, CAT_DISPLAY, SampleDocs):
             "title": d4["title"],
             "source": d4["source"],
             "snippet": d4["text"][:180]
-            + ("..." if len(d4["text"]) > 180 else ""),
+            + (
+                "... (click for the full document)"
+                if len(d4["text"]) > 180
+                else ""
+            ),
             "text": d4["text"],
         }
         for d4 in ALL_DOCS4
@@ -365,8 +375,8 @@ def sweep_chart(
     urg_acc4,
 ):
     sweep_labels4 = [
-        "primary category (operational 4)",
-        "primary category (other 6)",
+        "primary category (10-way, operational 4)",
+        "primary category (10-way, other 6)",
         "urgency (exact 0-2 match)",
         "action required (threshold 0.5)",
         "owning team (8-way)",
@@ -403,10 +413,12 @@ def sweep_legend(mo):
     mo.md("""
     What each row measures:
 
-    - **Primary category**: does the model's 10-way label match? The four
-      operational categories - regulatory guidance, inspection findings,
-      safety communications, scientific publications - are the routes a
-      surveillance pipeline acts on; the other six are everything else.
+    - **Primary category**: does the model's pick match the label out of
+      **10 possible labels**? The four operational categories - regulatory
+      guidance, inspection findings, safety communications, scientific
+      publications - are the routes a surveillance pipeline acts on; the
+      other six are everything else. All 10 labels are real routing
+      destinations, so this is a 10-way decision, not a spam filter.
     - **Owning team**: did the 8-way team assignment match the label?
     - **Action required**: does P(action) >= 0.5 match the yes/no label?
     - **Urgency**: did the 0-2 score match exactly?
@@ -416,19 +428,18 @@ def sweep_legend(mo):
 
 @app.cell(hide_code=True)
 def sweep_reading(action_acc4, mo, ops4, rest_acc4, team_acc4, urg_acc4):
-    mo.md(f"""
-    The four operational categories - regulatory guidance, inspection
-    findings, safety communications, scientific publications - are perfect
-    zero-shot: {sum(1 for d4 in ops4 if d4["pred"]["doc_type"] == d4["cat"])}/{len(ops4)}.
-    Nothing here is cherry-picked; those are the categories a surveillance
-    pipeline actually routes on.
-
-    The rest is exactly where the edges live: primary category drops to
-    {rest_acc4:.0%} outside the operational core, and owning team
-    ({team_acc4:.0%}), actionability ({action_acc4:.0%}), and urgency
-    ({urg_acc4:.0%}) sit barely above coin flips. Hold that thought for
-    notebook 5.
-    """)
+    mo.md(
+        f"""
+        The four operational categories - regulatory guidance, inspection
+        findings, safety communications, scientific publications - are perfect
+        zero-shot: {sum(1 for d4 in ops4 if d4["pred"]["doc_type"] == d4["cat"])}/{len(ops4)}
+        on a 10-way decision. Outside that core, the primary category falls to
+        {rest_acc4:.0%} - still well above the {1 / 10:.0%} random baseline for a
+        10-way choice, but not routing-grade. Owning team ({team_acc4:.0%}),
+        actionability ({action_acc4:.0%}), and urgency ({urg_acc4:.0%}) sit
+        barely above coin flips. Hold that thought for notebook 5.
+        """
+    )
     return
 
 
@@ -465,16 +476,17 @@ def failure_gallery(WRONG4, mo):
 
 
 @app.cell(hide_code=True)
-def failure_viewer(DocViewer, WRONG4):
+def failure_viewer(CAT_DISPLAY, DocViewer, WRONG4):
     viewer_docs4 = [
         {
             "id": d4["id"],
             "source": d4["source"],
             "title": d4["title"],
-            "body": d4["text"][:500]
-            + ("..." if len(d4["text"]) > 500 else ""),
-            "label": d4["cat"],
-            "predicted": d4["pred"]["doc_type"],
+            "body": d4["text"],
+            "label": CAT_DISPLAY[d4["cat"]],
+            "predicted": CAT_DISPLAY.get(
+                d4["pred"]["doc_type"], d4["pred"]["doc_type"]
+            ),
             "prob": f"{d4['pred']['type_probs'].get(d4['pred']['doc_type'], 0):.2f}",
         }
         for d4 in WRONG4
