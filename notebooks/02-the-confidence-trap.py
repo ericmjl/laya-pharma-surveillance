@@ -4,6 +4,7 @@
 #     "marimo==0.25.1",
 #     "laya==0.3.5",
 #     "plotly==7.1.0",
+#     "anywidget==0.11.0",
 #     "marimo-lens==0.2.3",
 #     "marimo-studio==0.3.0",
 # ]
@@ -37,32 +38,32 @@ def banner(mo):
         </linearGradient>
       </defs>
       <rect x="1" y="1" width="958" height="208" rx="16" fill="url(#bg2)" stroke="#22364f"/>
-      <text x="700" y="185" font-family="ui-monospace,Menlo,monospace" font-size="170" font-weight="700" fill="none" stroke="#26405f" stroke-width="2" opacity="0.5">02</text>
+      <text x="690" y="188" font-family="ui-monospace,Menlo,monospace" font-size="160" font-weight="700" fill="none" stroke="#26405f" stroke-width="2" opacity="0.5">02</text>
       <rect x="798" y="34" width="122" height="26" rx="13" fill="#1b2f4a" stroke="#33507a"/>
       <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="#9fc0e8">ACT 2 OF 7</text>
       <text x="40" y="54" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="3.5" fill="#7f9cc0">THE LAYA PHARMA SURVEILLANCE SERIES</text>
       <text x="40" y="112" font-family="-apple-system,Segoe UI,sans-serif" font-size="42" font-weight="800" fill="#eef4fb">The confidence trap</text>
-      <text x="40" y="148" font-family="ui-monospace,Menlo,monospace" font-size="14.5" fill="#a8b2bd">0.952 confidence on text you cannot read &#183; a Router that checks before the model</text>
+      <text x="40" y="148" font-family="ui-monospace,Menlo,monospace" font-size="14.5" fill="#a8b2bd">Degradation you can see. Collapse you cannot.</text>
       <g font-family="ui-monospace,Menlo,monospace" font-size="11">
-        <rect x="596" y="52" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="606" y="66" fill="#9fc0e8">en ckpt</text>
-        <rect x="596" y="82" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="606" y="96" fill="#9fc0e8">multi</text>
-        <rect x="596" y="112" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="606" y="126" fill="#9fc0e8">router</text>
-        <rect x="596" y="142" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="606" y="156" fill="#9fc0e8">11 langs</text>
+        <rect x="620" y="52" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="630" y="66" fill="#9fc0e8">en ckpt</text>
+        <rect x="620" y="82" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="630" y="96" fill="#9fc0e8">multi</text>
+        <rect x="620" y="112" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="630" y="126" fill="#9fc0e8">router</text>
+        <rect x="620" y="142" width="74" height="21" rx="6" fill="#1b2f4a" stroke="#33507a"/><text x="630" y="156" fill="#9fc0e8">11 langs</text>
       </g>
-      <path d="M670 62 C 710 62 726 100 756 101" stroke="#33507a" fill="none"/>
-      <path d="M670 92 C 706 92 724 101 756 101" stroke="#33507a" fill="none"/>
-      <path d="M670 122 C 706 122 724 103 756 103" stroke="#33507a" fill="none"/>
-      <path d="M670 152 C 710 152 726 104 756 103" stroke="#33507a" fill="none"/>
+      <path d="M694 62 C 724 62 736 100 758 101" stroke="#33507a" fill="none"/>
+      <path d="M694 92 C 720 92 734 101 758 101" stroke="#33507a" fill="none"/>
+      <path d="M694 122 C 720 122 734 103 758 103" stroke="#33507a" fill="none"/>
+      <path d="M694 152 C 724 152 736 104 758 103" stroke="#33507a" fill="none"/>
       <circle cx="772" cy="102" r="15" fill="#13253f" stroke="#d9534f" stroke-width="2"/>
-      <text x="764" y="107" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#eef4fb">?</text>
+      <text x="766" y="107" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#eef4fb">?</text>
       <g>
         <rect x="806" y="70" width="98" height="9" rx="3" fill="#d9534f"/>
         <rect x="806" y="92" width="61" height="9" rx="3" fill="#d9534f" opacity="0.6"/>
         <rect x="806" y="114" width="34" height="9" rx="3" fill="#4a7ebb" opacity="0.6"/>
         <rect x="806" y="136" width="16" height="9" rx="3" fill="#4a7ebb" opacity="0.35"/>
       </g>
-      <text x="806" y="166" font-family="ui-monospace,Menlo,monospace" font-size="10" fill="#5f7ea6">confident on the wrong answer</text>
-      <rect x="24" y="186" width="620" height="4" rx="2" fill="url(#acc2)"/>
+      <text x="806" y="166" font-family="ui-monospace,Menlo,monospace" font-size="10" fill="#5f7ea6">P(option)</text>
+      <rect x="24" y="186" width="560" height="4" rx="2" fill="url(#acc2)"/>
     </svg>
     </div>
     """)
@@ -96,11 +97,11 @@ def pre_load(mo):
 
     Everything below runs on two open-weights checkpoints from ConvAI
     Innovations: `laya` (English, 421M params, ModernBERT-large) and
-    `laya-multilingual` (322M params, mmBERT-base, 256k vocab), plus the
-    `Router` that ships with the library and dispatches by script. The first
-    run downloads both (about 1.5 GB total). If you watch the log you will
-    also see a temperature-clamp warning on load; park that thought, it
-    becomes the whole story in notebook 6.
+    `laya-multilingual` (322M params, mmBERT-base, 256k vocab). The library
+    also ships a Router that sends each email to the right checkpoint based
+    on its script. The first run downloads both checkpoints (about 1.5 GB
+    total). The load log shows a temperature-clamp warning; that becomes the
+    story in notebook 6.
     """)
     return
 
@@ -109,6 +110,9 @@ def pre_load(mo):
 def imports():
     import contextlib
     import os
+    import statistics
+    import sys
+    from pathlib import Path
 
     os.environ.setdefault("USE_TF", "0")
 
@@ -118,7 +122,10 @@ def imports():
     import time
     from laya import Router
 
-    return Router, contextlib, go, laya, mo, time
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from mail_viewer import MailViewer
+
+    return MailViewer, Router, contextlib, go, laya, mo, statistics, time
 
 
 @app.cell(hide_code=True)
@@ -185,36 +192,36 @@ def triage_schema():
 @app.cell(hide_code=True)
 def mandarin_intro(mo):
     mo.md("""
-    ## A Mandarin email you can verify
+    ## A Mandarin email I can verify
 
-    Here is the Act 1 billing complaint, in Mandarin. You can read every word,
-    so grade it yourself: a duplicate charge on invoice 4411, a refund
-    demanded, an account cancelled if it is not fixed this week. Correct
-    triage is department `billing`, urgency mid-scale, and a churn signal
-    somewhere between "real" and "conditional boilerplate".
+    Here is the Act 1 billing complaint, in Mandarin. I read Mandarin, so I
+    can verify every word myself: a duplicate charge on invoice 4411, a
+    refund demanded, an account cancelled if it is not fixed this week.
+    Correct triage is department `billing`, urgency mid-scale, and a churn
+    signal somewhere between "real" and "conditional boilerplate".
     """)
     return
 
 
 @app.cell(hide_code=True)
-def mandarin_email(mo):
+def mandarin_email(MailViewer):
     ZH_EMAIL2 = {
         "subject": "发票 4411 重复扣费",
         "body": "我们三月份的费用被重复扣取了。请退还重复扣款。如果本周内不解决，我们将取消账户。",
-        "gloss": "Duplicate charge on invoice 4411. Our March fees were charged twice; please refund the duplicate. If this is not fixed this week, we will cancel the account.",
     }
 
-    mo.Html(
-        f"""
-        <div style="border:1px solid #d9d9de;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);font-family:-apple-system,BlinkMacSystemFont,sans-serif;">
-          <div style="padding:12px 18px;background:linear-gradient(#f6f6f8,#ececef);border-bottom:1px solid #d9d9de;font-size:13px;font-weight:600;color:#6e6e73;">Inbox — Maya Chen &lt;maya@northwind-clinic.com&gt;</div>
-          <div style="padding:16px 18px;">
-            <div style="font-size:17px;font-weight:700;">{ZH_EMAIL2["subject"]}</div>
-            <div style="font-size:14px;line-height:1.6;padding:12px 0;">{ZH_EMAIL2["body"]}</div>
-            <div style="font-size:12.5px;color:#86868b;border-top:1px solid #ececf0;padding-top:10px;">Gloss (we wrote the translation, the model never saw it): {ZH_EMAIL2["gloss"]}</div>
-          </div>
-        </div>
-        """
+    MailViewer(
+        emails=[
+            {
+                "sender_name": "Maya Chen",
+                "sender_email": "maya@northwind-clinic.com",
+                "initials": "MC",
+                "subject": ZH_EMAIL2["subject"],
+                "body": ZH_EMAIL2["body"],
+                "time": "8:58 AM",
+                "note": "English translation (I wrote it; the model never saw it): Duplicate charge on invoice 4411. Our March fees were charged twice; please refund the duplicate. If this is not fixed this week, we will cancel the account.",
+            }
+        ]
     )
     return (ZH_EMAIL2,)
 
@@ -246,7 +253,7 @@ def mandarin_test(TRIAGE_Q2, ZH_EMAIL2, english2, multi2):
             "churn": float(a2["churn_risk"]["noul"]),
         }
     ZH_RESULTS2
-    return ZH_RESULTS2, a2
+    return (ZH_RESULTS2,)
 
 
 @app.cell(hide_code=True)
@@ -314,38 +321,38 @@ def khmer_intro(mo):
     mo.md("""
     ## A Khmer email, machine-translated
 
-    Same complaint, Khmer script. Full honesty: I asked AI to translate it,
-    and I do not know Khmer well enough to verify it. Assume the translation
-    is correct and grade the model on that assumption: if the email really
-    says what the gloss says, the correct triage is `billing`, mid urgency,
-    and some churn signal. What the model does with really-out-of-distribution
-    input is the story of the rest of this series.
+    Same complaint, Khmer script. I asked AI to translate it and I cannot
+    check it: I do not read Khmer. Assume the translation is correct. If it
+    is, the right triage is `billing`, mid urgency, some churn signal, and
+    the model has none of that context; it sees only Khmer characters.
+    Languages this far outside the training data are where classification
+    collapses, and where fine-tuning earns its keep.
     """)
     return
 
 
 @app.cell(hide_code=True)
-def khmer_email(mo):
+def khmer_email(MailViewer):
     KHMER_EMAIL2 = {
         "subject": "វិក្កយបត្រ 4411 ត្រូវបានគិតថ្លៃពីរដង",
         "body": (
             "យើងត្រូវបានគិតថ្លៃពីរដងសម្រាប់ខែមីនា។ សូមប្រគល់ប្រាក់វិញនូវចំនួនដែលគិតពីរដង។ "
             "ប្រសិនបើមិនបានដោះស្រាយក្នុងសប្តាហ៍នេះ យើងនឹងលុបចោលគណនីរបស់យើង។"
         ),
-        "gloss": "Duplicate charge on invoice 4411. We were billed twice for March; please refund the duplicate. If this is not fixed this week, we will cancel our account.",
     }
 
-    mo.Html(
-        f"""
-        <div style="border:1px solid #d9d9de;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);font-family:-apple-system,BlinkMacSystemFont,sans-serif;">
-          <div style="padding:12px 18px;background:linear-gradient(#f6f6f8,#ececef);border-bottom:1px solid #d9d9de;font-size:13px;font-weight:600;color:#6e6e73;">Inbox — Maya Chen &lt;maya@northwind-clinic.com&gt;</div>
-          <div style="padding:16px 18px;">
-            <div style="font-size:17px;font-weight:700;">{KHMER_EMAIL2["subject"]}</div>
-            <div style="font-size:14px;line-height:1.6;padding:12px 0;">{KHMER_EMAIL2["body"]}</div>
-            <div style="font-size:12.5px;color:#86868b;border-top:1px solid #ececf0;padding-top:10px;">Gloss (ours, not the model's): {KHMER_EMAIL2["gloss"]}</div>
-          </div>
-        </div>
-        """
+    MailViewer(
+        emails=[
+            {
+                "sender_name": "Maya Chen",
+                "sender_email": "maya@northwind-clinic.com",
+                "initials": "MC",
+                "subject": KHMER_EMAIL2["subject"],
+                "body": KHMER_EMAIL2["body"],
+                "time": "9:12 AM",
+                "note": "English translation (machine-translated; I cannot verify it): Duplicate charge on invoice 4411. We were billed twice for March; please refund the duplicate. If this is not fixed this week, we will cancel our account.",
+            }
+        ]
     )
     return (KHMER_EMAIL2,)
 
@@ -439,31 +446,46 @@ def router_intro(mo):
 
 
 @app.cell(hide_code=True)
-def router_demo(KHMER_EMAIL2, TRIAGE_Q2, mo, multi2, router2):
+def router_demo(KHMER_EMAIL2, MailViewer, TRIAGE_Q2, multi2, router2):
     decision2 = router2.route(
         {"subject": KHMER_EMAIL2["subject"], "body": KHMER_EMAIL2["body"]}
     )
-    info2 = getattr(decision2, "__dict__", None) or decision2
+    reason2 = str(getattr(decision2, "reason", decision2))
+    model2 = str(getattr(decision2, "model", decision2))
 
     r_kh_ml2 = multi2.predict(
         {"subject": KHMER_EMAIL2["subject"], "body": KHMER_EMAIL2["body"]},
         TRIAGE_Q2,
     )["answers"]
 
-    mo.md(
-        f"""
-        The Router dispatches to:
-
-        ```
-        {info2}
-        ```
-
-        And the multilingual checkpoint reads the same email fine:
-        department **{r_kh_ml2["department"]["choice"]}** at
-        **{r_kh_ml2["department"]["confidence"]:.3f}**, urgency
-        {r_kh_ml2["urgency"]["score"]:.2f}, churn P =
-        {r_kh_ml2["churn_risk"]["noul"]:.3f}.
-        """
+    MailViewer(
+        emails=[
+            {
+                "sender_name": "Maya Chen",
+                "sender_email": "maya@northwind-clinic.com",
+                "initials": "MC",
+                "subject": KHMER_EMAIL2["subject"],
+                "body": KHMER_EMAIL2["body"],
+                "time": "routed by script",
+                "answers": {
+                    "department": {
+                        "choice": r_kh_ml2["department"]["choice"],
+                        "confidence": float(
+                            r_kh_ml2["department"]["confidence"]
+                        ),
+                    },
+                    "urgency": {"score": float(r_kh_ml2["urgency"]["score"])},
+                    "churn_risk": {
+                        "noul": float(r_kh_ml2["churn_risk"]["noul"])
+                    },
+                },
+                "note": "Router dispatch: "
+                + model2
+                + " ("
+                + reason2
+                + "). English translation (machine-translated): Duplicate charge on invoice 4411. We were billed twice for March; please refund the duplicate.",
+            }
+        ]
     )
     return
 
@@ -542,7 +564,7 @@ def translations():
 
 
 @app.cell(hide_code=True)
-def languages_grid(TRANSLATIONS2, TRIAGE_Q2, a2, go, multi2):
+def languages_grid(TRANSLATIONS2, TRIAGE_Q2, go, multi2):
     grid_rows2 = []
     for lang2, (subj2, body2) in TRANSLATIONS2.items():
         ans2 = multi2.predict({"subject": subj2, "body": body2}, TRIAGE_Q2)[
@@ -551,10 +573,10 @@ def languages_grid(TRANSLATIONS2, TRIAGE_Q2, a2, go, multi2):
         grid_rows2.append(
             {
                 "lang": lang2,
-                "dept": a2["department"]["choice"],
-                "conf": float(a2["department"]["confidence"]),
-                "urgency": float(a2["urgency"]["score"]),
-                "churn": float(a2["churn_risk"]["noul"]),
+                "dept": ans2["department"]["choice"],
+                "conf": float(ans2["department"]["confidence"]),
+                "urgency": float(ans2["urgency"]["score"]),
+                "churn": float(ans2["churn_risk"]["noul"]),
             }
         )
 
@@ -570,9 +592,9 @@ def languages_grid(TRANSLATIONS2, TRIAGE_Q2, a2, go, multi2):
                 values=[
                     [r2["lang"] for r2 in grid_rows2],
                     [r2["dept"] for r2 in grid_rows2],
-                    [f"{r2['conf']:.3f}" for r2 in grid_rows2],
+                    [f"{r2['conf']:.4f}" for r2 in grid_rows2],
                     [f"{r2['urgency']:.2f}" for r2 in grid_rows2],
-                    [f"{r2['churn']:.3f}" for r2 in grid_rows2],
+                    [f"{r2['churn']:.4f}" for r2 in grid_rows2],
                 ],
                 fill_color=[["#fbfbfd", "#f2f4f7"] * 6],
                 font=dict(size=12),
@@ -580,7 +602,7 @@ def languages_grid(TRANSLATIONS2, TRIAGE_Q2, a2, go, multi2):
             ),
         )
     )
-    fig_table2.update_layout(height=430, margin=dict(l=5, r=5, t=10, b=5))
+    fig_table2.update_layout(height=400, margin=dict(l=5, r=5, t=10, b=0))
     fig_table2
     return (grid_rows2,)
 
@@ -592,7 +614,7 @@ def languages_plot(go, grid_rows2):
             x=[r2["lang"] for r2 in grid_rows2],
             y=[r2["conf"] for r2 in grid_rows2],
             marker_color="#4a7ebb",
-            text=[f"{r2['conf']:.2f}" for r2 in grid_rows2],
+            text=[f"{r2['conf']:.4f}" for r2 in grid_rows2],
             textposition="outside",
         )
     )
@@ -601,10 +623,10 @@ def languages_plot(go, grid_rows2):
             text="department confidence on the same complaint, 11 languages (multilingual checkpoint)",
             font=dict(size=13),
         ),
-        height=300,
-        margin=dict(l=10, r=20, t=46, b=10),
+        height=280,
+        margin=dict(l=10, r=20, t=46, b=0),
         template="plotly_white",
-        yaxis=dict(range=[0, 1.15]),
+        yaxis=dict(range=[0, 1.12]),
     )
     fig_conf2
     return
@@ -614,10 +636,11 @@ def languages_plot(go, grid_rows2):
 def languages_reading(mo):
     mo.md("""
     Eleven languages, eleven `billing` calls, urgency in the same band every
-    time, and the confidence bars cluster near the top. The wobbles are the
-    honest part; no language flips the decision. The multilingual checkpoint
-    is the one to route non-English traffic to, and the Router already knows
-    it.
+    time. Several confidence values display as 1.000; that is softmax
+    saturation on a clean-cut case, not a copy-paste bug. The fourth decimal
+    is where the languages actually differ, and no language flips the
+    decision. The multilingual checkpoint is the one to route non-English
+    traffic to, and the Router already knows it.
     """)
     return
 
@@ -634,7 +657,15 @@ def latency_intro(mo):
 
 
 @app.cell(hide_code=True)
-def latency_bench(TRANSLATIONS2, TRIAGE_Q2, english2, go, multi2, time):
+def latency_bench(
+    TRANSLATIONS2,
+    TRIAGE_Q2,
+    english2,
+    go,
+    multi2,
+    statistics,
+    time,
+):
     STATE_EN2 = {
         "subject": "Duplicate charge on invoice 4411",
         "body": TRANSLATIONS2["en"][1],
@@ -643,26 +674,41 @@ def latency_bench(TRANSLATIONS2, TRIAGE_Q2, english2, go, multi2, time):
     def bench_latency2(agent2, state2, n2=10):
         for _ in range(3):
             agent2.predict(state2, TRIAGE_Q2)
-        t2 = time.perf_counter()
+        samples2 = []
         for _ in range(n2):
+            t2 = time.perf_counter()
             agent2.predict(state2, TRIAGE_Q2)
-        return (time.perf_counter() - t2) / n2 * 1000
+            samples2.append((time.perf_counter() - t2) * 1000)
+        return samples2
 
-    ms_en2 = bench_latency2(english2, STATE_EN2)
-    ms_ml2 = bench_latency2(multi2, STATE_EN2)
+    samples_en2 = bench_latency2(english2, STATE_EN2)
+    samples_ml2 = bench_latency2(multi2, STATE_EN2)
+    mean_en2 = statistics.mean(samples_en2)
+    mean_ml2 = statistics.mean(samples_ml2)
+    std_en2 = statistics.stdev(samples_en2)
+    std_ml2 = statistics.stdev(samples_ml2)
 
-    fig_lat2 = go.Figure(
-        go.Bar(
-            x=["English checkpoint", "Multilingual checkpoint"],
-            y=[ms_en2, ms_ml2],
-            marker_color=["#a8b2bd", "#4a7ebb"],
-            text=[f"{ms_en2:.1f} ms", f"{ms_ml2:.1f} ms"],
-            textposition="outside",
+    fig_lat2 = go.Figure()
+    fig_lat2.add_bar(
+        x=["English checkpoint", "Multilingual checkpoint"],
+        y=[mean_en2, mean_ml2],
+        error_y=dict(type="data", array=[std_en2, std_ml2], visible=True),
+        marker_color=["#a8b2bd", "#4a7ebb"],
+        opacity=0.75,
+    )
+    fig_lat2.add_trace(
+        go.Scatter(
+            x=[0.18] * len(samples_en2) + [1.18] * len(samples_ml2),
+            y=samples_en2 + samples_ml2,
+            mode="markers",
+            marker=dict(color="#1d1d1f", size=7, opacity=0.7),
+            showlegend=False,
         )
     )
     fig_lat2.update_layout(
         title=dict(
-            text="ms per pass, 4 questions (n=10, after warm-up)",
+            text=f"ms per pass, 4 questions (n=10 dots + mean ± sd): "
+            f"{mean_en2:.1f}±{std_en2:.1f} vs {mean_ml2:.1f}±{std_ml2:.1f}",
             font=dict(size=13),
         ),
         height=300,
