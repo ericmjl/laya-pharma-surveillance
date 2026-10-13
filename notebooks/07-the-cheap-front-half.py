@@ -210,90 +210,57 @@ def endpoint_call(mo):
 
 
 @app.cell(hide_code=True)
-def benchmarks(SLATE, TEAL, go, make_subplots):
+def benchmarks(SLATE, TEAL, make_subplots):
     PROFILES7 = {
         "CPU (1 core, 3 GiB)": {
             "cold start s": 3.5,
             "p50 s": 3.31,
             "server inference s": 2.9,
-            "throughput req/s (serial)": 1.2,
+            "throughput req/s": 1.2,
             "$ per hour": 0.071,
         },
         "T4 GPU (2 cores, 8 GiB)": {
             "cold start s": 44.3,
             "p50 s": 0.48,
             "server inference s": 0.049,
-            "throughput req/s (8 concurrent)": 8.0,
+            "throughput req/s": 8.0,
             "$ per hour": 0.749,
         },
     }
 
-    fig_prof4 = make_subplots(
-        rows=1,
-        cols=3,
-        subplot_titles=(
-            "cold start (s)",
-            "throughput (req/s)",
-            "billable rate ($/h)",
-        ),
-    )
-    for col4, key4 in enumerate(
-        ["cold start s", "throughput req/s (serial)", "$ per hour"], start=1
-    ):
-        ykey4 = (
-            "throughput req/s (8 concurrent)"
-            if key4 == "throughput req/s (serial)"
-            else key4
-        )
-        for i4, (name4, v4) in enumerate(PROFILES7.items()):
-            val4 = v4[key4] if key4 in v4 else v4[ykey4]
-            fig_prof4.add_trace(
-                go.Bar(
-                    x=[name4.split(" (")[0]],
-                    y=[val4],
-                    marker_color=[SLATE, TEAL][i4 - 1],
-                    showlegend=(col4 == 1),
-                    name=name4.split(" (")[0],
-                ),
-                row=1,
-                col=col4,
-            )
-    fig_prof4.update_layout(
-        title=dict(
-            text="two profiles, three ways that matter", font=dict(size=13)
-        ),
-        height=460,
-        margin=dict(l=10, r=20, t=80, b=40),
-        template="plotly_white",
-        showlegend=True,
-        legend=dict(orientation="h", yanchor="bottom", y=1.0, x=0),
-    )
-    fig_prof4.update_yaxes(title_text="seconds", row=1, col=1)
-    fig_prof4.update_yaxes(title_text="req/s", row=1, col=2)
-    fig_prof4.update_yaxes(title_text="dollars/hour", row=1, col=3)
+    CPU7 = dict(PROFILES7["CPU (1 core, 3 GiB)"])
+    GPU7 = dict(PROFILES7["T4 GPU (2 cores, 8 GiB)"])
 
-    CPU7 = {
-        "cold start s": PROFILES7["CPU (1 core, 3 GiB)"]["cold start s"],
-        "p50 s": PROFILES7["CPU (1 core, 3 GiB)"]["p50 s"],
-        "server inference s": PROFILES7["CPU (1 core, 3 GiB)"][
-            "server inference s"
-        ],
-        "throughput req/s": PROFILES7["CPU (1 core, 3 GiB)"][
-            "throughput req/s (serial)"
-        ],
-        "$ per hour": PROFILES7["CPU (1 core, 3 GiB)"]["$ per hour"],
-    }
-    GPU7 = {
-        "cold start s": PROFILES7["T4 GPU (2 cores, 8 GiB)"]["cold start s"],
-        "p50 s": PROFILES7["T4 GPU (2 cores, 8 GiB)"]["p50 s"],
-        "server inference s": PROFILES7["T4 GPU (2 cores, 8 GiB)"][
-            "server inference s"
-        ],
-        "throughput req/s": PROFILES7["T4 GPU (2 cores, 8 GiB)"][
-            "throughput req/s (8 concurrent)"
-        ],
-        "$ per hour": PROFILES7["T4 GPU (2 cores, 8 GiB)"]["$ per hour"],
-    }
+    fig_prof4 = make_subplots(
+        rows=3,
+        cols=1,
+        subplot_titles=(
+            "cold start (seconds)",
+            "sustained throughput (req/s)",
+            "billable rate ($/hour)",
+        ),
+    )
+    for row4, key4 in enumerate(
+        ["cold start s", "throughput req/s", "$ per hour"], start=1
+    ):
+        fig_prof4.add_bar(
+            y=["CPU", "T4 GPU"],
+            x=[CPU7[key4], GPU7[key4]],
+            orientation="h",
+            marker_color=[SLATE, TEAL],
+            text=[f"{CPU7[key4]:g}", f"{GPU7[key4]:g}"],
+            textposition="outside",
+            row=row4,
+            col=1,
+        )
+
+    fig_prof4.update_layout(
+        height=600,
+        margin=dict(l=10, r=60, t=70, b=10),
+        template="plotly_white",
+        showlegend=False,
+    )
+    fig_prof4.update_xaxes(range=[0, None])
     fig_prof4
     return CPU7, GPU7
 
@@ -420,16 +387,28 @@ def cost_crossover(SLATE, TEAL, cpu_cost7, go, gpu_cost7):
     )
     fig_cross4.update_layout(
         title=dict(
-            text="monthly bill vs monthly requests - the cost lines never cross; the GPU is a latency purchase",
-            font=dict(size=13),
+            text="monthly bill vs monthly requests", font=dict(size=13)
         ),
         height=380,
-        margin=dict(l=10, r=20, t=60, b=10),
+        margin=dict(l=10, r=20, t=46, b=10),
         template="plotly_white",
         xaxis=dict(title="requests per month", tickformat=",.0f"),
         yaxis=dict(title="dollars per month", tickprefix="$"),
     )
     fig_cross4
+    return cpu_per_req7, gpu_per_req7
+
+
+@app.cell(hide_code=True)
+def cost_crossover_reading(DLR, cpu_per_req7, gpu_per_req7, mo):
+    mo.md(f"""
+    The cost lines never cross. Per request, CPU costs about
+    {DLR}{cpu_per_req7 * 1000:.3f} per thousand and the T4 about
+    {DLR}{gpu_per_req7 * 1000:.3f} per thousand, and both scale linearly,
+    so batch triage is cheaper on CPU at every volume. The GPU is a
+    latency purchase, not a cost decision: buy it when interactive
+    response time matters, not when volume does.
+    """)
     return
 
 
