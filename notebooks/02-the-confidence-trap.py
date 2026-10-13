@@ -185,10 +185,11 @@ def load_models(Router, contextlib, laya, mo):
 def load_reading(mo, n_en2, n_ml2):
     mo.md(f"""
     Both checkpoints are loaded: {n_en2 / 1e6:.0f}M params (English) and
-    {n_ml2 / 1e6:.0f}M params (multilingual). Note the warning in the log:
-    one English bucket ships a fitted temperature of 0.10, so far outside the
-    sane range that the library clamps it and tells you the bucket is
-    uncalibrated. Remember that when calibration gets its own notebook.
+    {n_ml2 / 1e6:.0f}M params (multilingual). One warning in the load log
+    matters: an English bucket ships a fitted temperature of 0.10, so far
+    outside the sane range that the library clamps it and tells you the
+    bucket is uncalibrated. Remember that when calibration gets its own
+    notebook.
     """)
     return
 
@@ -326,7 +327,7 @@ def mandarin_plot(SLATE, TEAL, ZH_RESULTS2, go):
 @app.cell(hide_code=True)
 def mandarin_reading(ZH_RESULTS2, mo):
     mo.md(f"""
-    Grade the two against what you read.
+    Graded against the email itself, the two checkpoints split.
 
     - The **English checkpoint** gets the department right but shakily:
       {ZH_RESULTS2["english"]["conf"]:.2f} confidence, with real mass leaking

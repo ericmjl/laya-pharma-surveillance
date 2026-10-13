@@ -180,7 +180,7 @@ def model_card(GREEN, INK, KICK, agent1, mo, n_params1):
 @app.cell(hide_code=True)
 def model_card_reading(mo):
     mo.md("""
-    Read the card. The number that matters is **421M parameters**, roughly a
+    The number that matters on the card is **421M parameters**, roughly a
     thousandth of a frontier LLM, small enough that every inference in this
     notebook runs on a laptop CPU. The 512-token budget is per question and it
     is configurable at call time, which becomes a plot point later in the
@@ -259,7 +259,7 @@ def email_and_schema():
 @app.cell(hide_code=True)
 def schema_table(mo):
     mo.md("""
-    The schema we hand the model is as follows:
+    Here is the schema we hand the model:
 
     | primitive | question | options |
     |---|---|---|
@@ -379,7 +379,7 @@ def results_viewer(EMAIL, MailViewer, a1, elapsed_ms1, mo):
 @app.cell(hide_code=True)
 def results_reading(mo):
     mo.md("""
-    Read the chips.
+    What the chips say:
 
     - **Department** came back `billing` with most of the probability mass. A
       duplicate charge is about as clean a billing case as they come.
@@ -398,9 +398,9 @@ def results_reading(mo):
 @app.cell(hide_code=True)
 def dept_plot_intro(mo):
     mo.md("""
-    The choice head does not just pick `billing`; it distributes probability
-    over all four options. Here is the full distribution, which is what the
-    confidence number summarizes.
+    The choice head distributes probability over all four options; `billing`
+    is just where most of the mass landed. Here is the full distribution
+    behind the confidence number.
     """)
     return
 
@@ -623,9 +623,9 @@ def inbox_viewer(MAIL_DATA1, MailViewer):
 @app.cell(hide_code=True)
 def sweep_reading(mo):
     mo.md("""
-    Click through and the pattern holds: the outage routes to technical at high
-    urgency, the phishing blast scores P(phishing) near 1.0, the happy customer
-    files under sales.
+    Across the inbox, the pattern holds: the outage routes to technical at
+    high urgency, the phishing blast scores P(phishing) near 1.0, the happy
+    customer files under sales.
 
     The banking-details email is the one to study. It reads like routine
     housekeeping and the model scored it that way; it is actually business

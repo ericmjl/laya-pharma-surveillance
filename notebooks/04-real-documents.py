@@ -250,8 +250,7 @@ def corpus_chart(ALL_DOCS4, CAT_DISPLAY, Counter, TEAL, go):
 def corpus_chart_reading(mo):
     mo.md("""
     Amber is the only synthetic slice: representative spam samples marked as
-    such. Everything else was scraped from the source. Browse it yourself
-    below.
+    such. A script scraped everything else from the source. Browse it below.
     """)
     return
 
@@ -446,7 +445,7 @@ def sweep_legend(mo):
     - **Primary category**: does the model's pick match the label out of
       **10 possible labels**? The four operational categories - regulatory
       guidance, inspection findings, safety communications, scientific
-      publications - are the routes a surveillance pipeline notebooks on; the
+      publications - are the routes a surveillance pipeline runs on; the
       other six are everything else. All 10 labels are real routing
       destinations, so this is a 10-way decision, not a spam filter.
     - **Owning team**: did the 8-way team assignment match the label?

@@ -146,7 +146,7 @@ def goal(N_TEST5, N_TRAIN5, mo):
 @app.cell(hide_code=True)
 def context_intro(N_TRAIN5, mo):
     mo.md(f"""
-    ## Where Notebooks 1-6 left off
+    ## Where Notebooks 1-4 left off
 
     Notebook 4 ended with three problems: spam classified as science, press
     coverage about warning letters classified as the warning letters
@@ -300,8 +300,9 @@ def split_examples(DATA5, R5, json, mo):
 @app.cell(hide_code=True)
 def data_reading(N_TEST5, N_TRAIN5, QLABEL_JOINED5, mo):
     mo.md(f"""
-        The file holds the split ({N_TRAIN5} training documents, {N_TEST5} test
-        documents) and before/after metrics for five questions:
+        The before/after numbers come from one committed results file: the
+        split ({N_TRAIN5} training documents, {N_TEST5} test documents) and
+        before/after metrics for five questions:
         {QLABEL_JOINED5}. The "before" rows are the base checkpoint from Notebooks
         1-4; the "after" rows are the same checkpoint after RLCD fine-tuning.
         Every number in the prose below is computed from this file, so the text
@@ -582,10 +583,10 @@ def curve_section(mo):
     mo.md("""
     ## The training curve
 
-    The numbers above come from one run whose per-epoch curve was not
-    recorded at the time. The cell below re-runs the same fine-tuning with
+    The numbers above come from one run; I did not record its per-epoch
+    curve at the time. The cell below re-runs the same fine-tuning with
     curve recording and plots training reward and held-out metrics per
-    epoch. It takes about 20 minutes, so it is left unexecuted here.
+    epoch. It takes about 20 minutes, so I left it unexecuted here.
     """)
     return
 

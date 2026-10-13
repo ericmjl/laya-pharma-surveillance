@@ -233,7 +233,7 @@ def schema_intro(mo):
     ## The question that broke the pipeline
 
     The whole pipeline hangs on one yes/no question: *is this post an
-    adverse-event report at all?* It went through two prompts, shown verbatim
+    adverse-event report at all?* I wrote two phrasings of it, both verbatim
     below. Prompt A reads like thorough prompt engineering to a human. To a
     yes/no head it reads like a polarity flip.
     """)
@@ -459,7 +459,7 @@ def detection_chart(CRIMSON, SUMMARY3, TEAL, go):
 @app.cell(hide_code=True)
 def detection_reading(SUMMARY3, mo):
     mo.md(f"""
-    Read the two routed rows, the configuration that would ship.
+    The two routed rows are the configuration that would ship.
 
     On the multilingual checkpoint, prompt A detected
     **{SUMMARY3[0]["AE detected"]}** adverse events: the exclusion clause,

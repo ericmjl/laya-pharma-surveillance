@@ -152,8 +152,8 @@ def calibration_idea(mo):
     each bucket, and average the gaps.
 
     On this axis the closed competitor currently ships better raw numbers.
-    Jev reports ECE 0.144; Laya's model card admits 0.213 raw. Both
-    comparisons miss two things, and both are below.
+    Jev reports ECE 0.144; Laya's model card admits 0.213 raw. That
+    comparison misses two things, and both are below.
     """)
     return
 
@@ -164,10 +164,9 @@ def load_data_intro(mo):
         [
             mo.md(
                 f"""
-                Every number below renders from one committed file,
+                Every number below comes from one committed file,
                 `data/finetune_experiment_results.json`: the 53 held-out documents
-                from the fine-tuning run in Notebook 5. No model loads and no downloads;
-                the notebook runs on the measured numbers alone.
+                from the fine-tuning run in Notebook 5.
                 """
             ),
             mo.accordion(
@@ -389,8 +388,6 @@ def temps_plot(
 @app.cell(hide_code=True)
 def temps_reading(TEMPS_AFTER6, TEMPS_BEFORE6, mo):
     mo.md(f"""
-    Read the two rows of bars.
-
     - **Base model** (slate): every bucket sits above T = 1, meaning
       over-confident. The crimson bar is the alarming one: on the yes/no
       head the fitter ran all the way to the search ceiling and returned
@@ -419,10 +416,11 @@ def flatten_section(mo):
     mo.md("""
     ## What T = 100 actually does to a distribution
 
-    Temperature scaling divides logits by T and lets softmax turn the
-    result into probabilities. So what does dividing by 100 do? It does
-    not make the model smarter about which answer is right; it drains the
-    confidence out of the opinion the model already has.
+    Temperature scaling divides logits (the model's raw scores for each
+    option) by T and lets softmax turn the result into probabilities. So
+    what does dividing by 100 do? It does not make the model smarter about
+    which answer is right; it drains the confidence out of the opinion the
+    model already has.
     """)
     return
 
@@ -570,8 +568,9 @@ def gate_demo_intro(mo):
             mo.md(
                 f"""
                 Why this matters for automation: wire a gate to the top probability
-                and fire the automated action when P(top) >= 0.9. Check the same
-                illustration's top probability at the two extreme temperatures.
+                and fire the automated action when P(top) >= 0.9. The table below
+                checks the same illustration's top probability at the two extreme
+                temperatures.
                 """
             ),
             mo.accordion(
@@ -832,7 +831,7 @@ def takeaways(mo):
     3. The durable fix is the training objective, not the post-hoc patch:
        proper scoring rules make honesty the winning strategy.
 
-    One notebook left. Notebook 7 wraps the fine-tuned front half in an API and
+    One notebook left. Notebook 7 wraps the fine-tuned model in an API and
     prices it: deployment.
     """)
     return
