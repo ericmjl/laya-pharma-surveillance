@@ -1,0 +1,19 @@
+notebooks/07-the-cheap-front-half.py
+  s_1c17499aff1e1a::t_91042724e3eff3 77-78,82-88,310,578-579
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "310a24734d68a7861f797498e8cc651eb87b9a6e",
+  "prompts": {},
+  "sessions": {
+    "s_1c17499aff1e1a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1301e-0dab-7497-ae10-ff9b523c662b",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
