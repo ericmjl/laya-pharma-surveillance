@@ -1,0 +1,37 @@
+notebooks/01-one-forward-pass.py
+  s_2ec40b92774144::t_24bc06336ddcc0 183,262,382,401-403,626-628
+notebooks/02-the-confidence-trap.py
+  s_2ec40b92774144::t_b1d6f6a8deb958 188-192,330
+notebooks/03-one-clause-flips-the-model.py
+  s_2ec40b92774144::t_03289bf2513c0f 236,462
+notebooks/04-real-documents.py
+  s_2ec40b92774144::t_653b01a2122522 253,448
+notebooks/05-twenty-minutes-of-fine-tuning.py
+  s_1c17499aff1e1a::t_6789d875b8fdc6 149,303-305,586-587,589
+notebooks/06-what-calibrated-means.py
+  s_1c17499aff1e1a::t_ca8abbb8238f30 155-156,167,169,419-423,571-573,834
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ba045b969e89dd31b1585011ca000c7e12d77b24",
+  "prompts": {},
+  "sessions": {
+    "s_1c17499aff1e1a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1301e-0dab-7497-ae10-ff9b523c662b",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    },
+    "s_2ec40b92774144": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1348f-85df-7564-8f99-a2328c7c4ea8",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
