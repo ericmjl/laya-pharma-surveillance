@@ -1,0 +1,14 @@
+notebooks/07-the-cheap-front-half.py
+  h_923f9eef54c2c1 213,219,226,231-233,235-236,238-240,243-244,246-254,256,258-259,261,263,390,393,399-411
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2cba99ec6fe9db0d7ad151d6f57d9c518ef10cb9",
+  "prompts": {},
+  "humans": {
+    "h_923f9eef54c2c1": {
+      "author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
