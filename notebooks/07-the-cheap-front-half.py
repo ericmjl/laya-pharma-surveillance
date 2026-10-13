@@ -108,10 +108,11 @@ def pre_imports(mo):
 @app.cell(hide_code=True)
 def imports():
     import json
-    import marimo as mo
-    import plotly.graph_objects as go
     import sys
     from pathlib import Path
+
+    import marimo as mo
+    import plotly.graph_objects as go
 
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from mail_viewer import MailViewer
@@ -222,17 +223,13 @@ def benchmarks(Path, SLATE, TEAL, json, make_subplots):
         normalized7["name"] = name7
         normalized7["cold start s"] = normalized7.pop("cold_start_s")
         normalized7["p50 s"] = normalized7.pop("p50_s")
-        normalized7["server inference s"] = normalized7.pop(
-            "server_inference_s"
-        )
+        normalized7["server inference s"] = normalized7.pop("server_inference_s")
         normalized7["throughput req/s"] = normalized7.pop(thr_key7)
         normalized7["$ per hour"] = normalized7.pop("usd_per_hour")
         return normalized7
 
     CPU7 = _normalize7(_raw7["cpu"], "CPU", "throughput_req_s_serial")
-    GPU7 = _normalize7(
-        _raw7["gpu_t4"], "T4 GPU", "throughput_req_s_8_concurrent"
-    )
+    GPU7 = _normalize7(_raw7["gpu_t4"], "T4 GPU", "throughput_req_s_8_concurrent")
 
     fig_prof4 = make_subplots(
         rows=5,
@@ -406,9 +403,7 @@ def cost_crossover(SLATE, TEAL, cpu_cost7, go, gpu_cost7):
         )
     )
     fig_cross4.update_layout(
-        title=dict(
-            text="monthly bill vs monthly requests", font=dict(size=13)
-        ),
+        title=dict(text="monthly bill vs monthly requests", font=dict(size=13)),
         height=380,
         margin=dict(l=10, r=20, t=46, b=10),
         template="plotly_white",
@@ -568,9 +563,7 @@ def bec_load(mo):
     import laya
 
     bec_load_ctx7 = (
-        mo.spinner(
-            "loading the English checkpoint (cached after Notebook 1) ..."
-        )
+        mo.spinner("loading the English checkpoint (cached after Notebook 1) ...")
         if hasattr(mo, "spinner")
         else contextlib.nullcontext()
     )
@@ -595,9 +588,9 @@ def bec_beat(MailViewer, agent7):
             "instructions": "Is this email a phishing or scam attempt?",
         }
     }
-    r_bec7 = agent7.predict(
-        {"subject": BEC_SUBJECT7, "body": BEC_BODY7}, phish_q7
-    )["answers"]
+    r_bec7 = agent7.predict({"subject": BEC_SUBJECT7, "body": BEC_BODY7}, phish_q7)[
+        "answers"
+    ]
     BEC_PHISH7 = float(r_bec7["is_phishing"]["noul"])
 
     MailViewer(
