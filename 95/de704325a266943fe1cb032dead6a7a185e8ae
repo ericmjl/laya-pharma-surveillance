@@ -1,0 +1,21 @@
+notebooks/mail_viewer.py
+  s_052d5447415eca::t_51ae6c6eeb41a5 30,45,47,49-50,52,55-57,70,73-74,76-77,102,106-107
+notebooks/01-one-forward-pass.py
+  s_052d5447415eca::t_5a1d9a18d39056 28,41-45,496-508,524,526-529
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "95de704325a266943fe1cb032dead6a7a185e8ae",
+  "prompts": {},
+  "sessions": {
+    "s_052d5447415eca": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1373c-6f73-7387-a923-f795d8221c78",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
