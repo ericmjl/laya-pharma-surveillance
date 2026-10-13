@@ -1,0 +1,21 @@
+notebooks/05-twenty-minutes-of-fine-tuning.py
+  s_1c17499aff1e1a::t_d09adda0d5d6c9 147,149,151-155,316,318-321,385-393,506,508-510,572-575,585-588
+notebooks/07-the-cheap-front-half.py
+  s_1c17499aff1e1a::t_4ba03f221c7f3a 98-103,157-158
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a71af9280aac4683215d3313f139d4eeba601836",
+  "prompts": {},
+  "sessions": {
+    "s_1c17499aff1e1a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1301e-0dab-7497-ae10-ff9b523c662b",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
