@@ -25,6 +25,7 @@ app = marimo.App(width="medium")
 @app.cell(hide_code=True)
 def imports():
     import contextlib
+    import importlib
     import os
     import sys
     from pathlib import Path
@@ -37,7 +38,11 @@ def imports():
     import time
 
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from mail_viewer import MailViewer
+    import mail_viewer
+
+    # Reload so edits to mail_viewer.py show up on the next cell run.
+    importlib.reload(mail_viewer)
+    MailViewer = mail_viewer.MailViewer
 
     # Pharmacopeia theme (see .agents/skills/laya-pharma-theme/SKILL.md)
     INK = "#0F2233"  # clinical navy: banners, dark cards
@@ -489,6 +494,19 @@ def urgency_plot(AMBER, a1, go):
 
 
 @app.cell(hide_code=True)
+def urgency_plot_context(mo):
+    mo.md("""
+    What you are looking at: the model scores urgency on a 0-2 rubric, where
+    level 0 is "not urgent", level 1 is "soon", and level 2 is "critical".
+    Each bar is the probability the model assigns to one level, and the mean
+    in the title is the probability-weighted average of those level numbers.
+    A mean of 1.41 sits between "soon" (1) and "critical" (2), closer to
+    "soon".
+    """)
+    return
+
+
+@app.cell(hide_code=True)
 def urgency_plot_reading(mo):
     mo.md("""
     Most of the mass sits on level 1, "soon", with the remainder split between
@@ -503,11 +521,12 @@ def urgency_plot_reading(mo):
 @app.cell(hide_code=True)
 def nothing_to_parse(mo):
     mo.md("""
-    ## What just happened, in one line
+    ## What just happened
 
-    The email went in as state, the schema fixed the shape of the answer, and
-    the outputs arrived as numbers and labels: no JSON to repair, nothing to
-    hallucinate, and all four questions answered in one forward pass.
+    The model answered all four questions in one forward pass. Because the
+    schema fixed the shape of each answer before generation, the outputs are
+    numbers and labels, not free text. There is no JSON to repair and no
+    generated prose to check for hallucinations.
     """)
     return
 

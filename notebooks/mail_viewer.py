@@ -27,7 +27,7 @@ function render({ model, el }) {
   let sel = Math.min(model.get("selected") || 0, Math.max(emails.length - 1, 0));
 
   const chip = (label, value, color) =>
-    '<span style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:' + color + '16;border:1px solid ' + color + '55;font-size:12px;">' +
+    '<span style="display:inline-flex;align-items:center;gap:7px;padding:4px 12px;border-radius:999px;background:' + color + '16;border:1px solid ' + color + '55;font-size:14px;">' +
     '<span style="width:7px;height:7px;border-radius:50%;background:' + color + '"></span><b>' + esc(label) + '</b>&nbsp;' + esc(value) + '</span>';
 
   const answerChips = (a) => {
@@ -42,19 +42,19 @@ function render({ model, el }) {
 
   const reader = (m) => `
     <div style="padding:14px 18px 10px;">
-      <div style="font-size:17px;font-weight:700;letter-spacing:-0.2px;">${esc(m.subject)}</div>
+      <div style="font-size:20px;font-weight:700;letter-spacing:-0.2px;">${esc(m.subject)}</div>
       <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
-        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1F7A8C,#0F2233);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">${esc(m.initials)}</div>
+        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1F7A8C,#0F2233);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;">${esc(m.initials)}</div>
         <div style="flex:1;min-width:0;">
-          <div style="font-size:13px;font-weight:600;">${esc(m.sender_name)} <span style="font-weight:400;color:#86868b;">&lt;${esc(m.sender_email)}&gt;</span></div>
-          <div style="font-size:12px;color:#86868b;">to you@acme-health.com</div>
+          <div style="font-size:15px;font-weight:600;">${esc(m.sender_name)} <span style="font-weight:400;color:#86868b;">&lt;${esc(m.sender_email)}&gt;</span></div>
+          <div style="font-size:13.5px;color:#86868b;">to you@acme-health.com</div>
         </div>
-        <div style="font-size:12px;color:#86868b;">${esc(m.time || "")}</div>
+        <div style="font-size:13.5px;color:#86868b;">${esc(m.time || "")}</div>
       </div>
       ${m.answers ? '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">' + answerChips(m.answers) + '</div>' : ""}
-      <div style="font-size:13.5px;line-height:1.5;white-space:pre-wrap;padding:14px 0 4px;">${esc(m.body)}</div>
-      ${m.note ? '<div style="font-size:12px;color:#51515b;background:#F7F5F1;border-radius:8px;padding:8px 12px;margin-top:8px;">' + esc(m.note) + '</div>' : ""}
-      ${m.ms ? '<div style="font-size:11px;color:#86868b;border-top:1px solid #ececf0;padding-top:8px;margin-top:6px;">triaged by convaiinnovations/laya in ' + esc(m.ms) + ' ms · one forward pass, zero generated text</div>' : ""}
+      <div style="font-size:16px;line-height:1.55;white-space:pre-wrap;padding:14px 0 4px;">${esc(m.body)}</div>
+      ${m.note ? '<div style="font-size:13.5px;color:#51515b;background:#F7F5F1;border-radius:8px;padding:8px 12px;margin-top:8px;">' + esc(m.note) + '</div>' : ""}
+      ${m.ms ? '<div style="font-size:13px;color:#86868b;border-top:1px solid #ececf0;padding-top:8px;margin-top:6px;">triaged by convaiinnovations/laya in ' + esc(m.ms) + ' ms · one forward pass, zero generated text</div>' : ""}
     </div>`;
 
   const wrap = document.createElement("div");
@@ -67,14 +67,14 @@ function render({ model, el }) {
 
   const rowHTML = (m, i) => `
     <div data-i="${i}" style="cursor:pointer;display:flex;gap:10px;padding:10px 12px;border-bottom:1px solid #ececf0;">
-      <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1F7A8C,#0F2233);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">${esc(m.initials)}</div>
+      <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1F7A8C,#0F2233);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">${esc(m.initials)}</div>
       <div style="flex:1;min-width:0;">
         <div style="display:flex;justify-content:space-between;gap:8px;">
-          <span style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(m.sender_name)}</span>
-          <span style="font-size:11px;opacity:.75;flex-shrink:0;">${esc(m.time || "")}</span>
+          <span style="font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(m.sender_name)}</span>
+          <span style="font-size:12.5px;opacity:.75;flex-shrink:0;">${esc(m.time || "")}</span>
         </div>
-        <div style="font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(m.subject)}</div>
-        <div style="font-size:12px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(m.preview)}</div>
+        <div style="font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(m.subject)}</div>
+        <div style="font-size:13.5px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(m.preview)}</div>
       </div>
     </div>`;
 
@@ -99,12 +99,12 @@ function render({ model, el }) {
       '<span style="width:12px;height:12px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>' +
       '<span style="width:12px;height:12px;border-radius:50%;background:#febc2e;display:inline-block;"></span>' +
       '<span style="width:12px;height:12px;border-radius:50%;background:#28c840;display:inline-block;"></span>' +
-      '<span style="margin:0 auto;font-size:13px;font-weight:600;color:#6e6e73;">Inbox — Laya Triage</span>' +
+      '<span style="margin:0 auto;font-size:14.5px;font-weight:600;color:#6e6e73;">Inbox — Laya Triage</span>' +
       '<span style="width:64px;"></span></div>' +
       '<div style="display:flex;min-height:280px;">' +
       (emails.length > 1
-        ? '<div data-list style="width:270px;flex-shrink:0;border-right:1px solid #e5e5ea;background:#fbfbfd;max-height:540px;overflow-y:auto;">' +
-          '<div style="padding:10px 12px;font-size:12px;font-weight:700;color:#86868b;text-transform:uppercase;letter-spacing:.5px;">Inbox</div>' +
+        ? '<div data-list style="width:300px;flex-shrink:0;border-right:1px solid #e5e5ea;background:#fbfbfd;max-height:540px;overflow-y:auto;">' +
+          '<div style="padding:10px 12px;font-size:13px;font-weight:700;color:#86868b;text-transform:uppercase;letter-spacing:.5px;">Inbox</div>' +
           emails.map(rowHTML).join("") + '</div>'
         : "") +
       '<div data-reader style="flex:1;min-width:0;"></div></div>';
