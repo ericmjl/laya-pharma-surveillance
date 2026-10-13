@@ -1,0 +1,47 @@
+notebooks/01-one-forward-pass.py
+  s_1c17499aff1e1a::t_b1a22f7cca1140 77,89
+notebooks/02-the-confidence-trap.py
+  s_1c17499aff1e1a::t_950c4c3f1cee43 32,44,191,231,345,561,966
+notebooks/03-one-clause-flips-the-model.py
+  s_1c17499aff1e1a::t_500885ddeba799 33,45,298,587
+notebooks/04-real-documents.py
+  s_1c17499aff1e1a::t_4f834dbacb7e99 36,48,85,95,103,192,306,449,548
+notebooks/05-twenty-minutes-of-fine-tuning.py
+  s_1c17499aff1e1a::t_f3cfac77d1f9a0 90,102,132,149,151,311,600,719
+notebooks/06-what-calibrated-means.py
+  s_1c17499aff1e1a::t_44a5a8b07bc852 73,85,169,265,631,824,835
+notebooks/07-the-cheap-front-half.py
+  s_1c17499aff1e1a::t_dcf6da63e8e941 32,44,46,87,98,174-175,266-267,305,312,329-330,332-334,365-366,547,549-551,566-568,616,619-631,653-655
+training/finetune_experiment.py
+  s_1c17499aff1e1a::t_1a158420266dec 1-380
+training/laya_training_src/rl_agent_api.py
+  s_1c17499aff1e1a::t_83fc849c396a53 1-78
+training/laya_training_src/rl_agent_config.json
+  s_1c17499aff1e1a::t_ca2a9225e717ba 1-33
+training/laya_training_src/rl_common.py
+  s_1c17499aff1e1a::t_ad168a8e1b523c 1-408
+training/real_docs_corpus.py
+  s_1c17499aff1e1a::t_009c7b5f1c0230 1-328
+training/real_docs_corpus_large.json
+  s_1c17499aff1e1a::t_c7a4a6ae15539e 1-2582
+training/real_docs_corpus_large.py
+  s_1c17499aff1e1a::t_8f9607d4424125 1-8
+training/train.log
+  s_1c17499aff1e1a::t_07f463a45331b4 1-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1e821af928e29e82abd824476841da790640c4c6",
+  "prompts": {},
+  "sessions": {
+    "s_1c17499aff1e1a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1301e-0dab-7497-ae10-ff9b523c662b",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
