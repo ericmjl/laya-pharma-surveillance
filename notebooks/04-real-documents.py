@@ -33,7 +33,7 @@ def banner(AMBER, CRIMSON, GREEN, INK, INK2, KICK, MIST, TEAL, mo):
     mo.Html(
         f"""
         <div style="line-height:0;border-radius:16px;overflow:hidden;">
-        <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Act 4 - Real documents">
+        <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Notebook 4 - Real documents">
           <defs>
             <linearGradient id="bg4" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0" stop-color="{INK}"/><stop offset="1" stop-color="{INK2}"/>
@@ -45,7 +45,7 @@ def banner(AMBER, CRIMSON, GREEN, INK, INK2, KICK, MIST, TEAL, mo):
           <rect x="1" y="1" width="958" height="208" rx="16" fill="url(#bg4)" stroke="#24404F"/>
           <text x="690" y="188" font-family="ui-monospace,Menlo,monospace" font-size="160" font-weight="700" fill="none" stroke="#26404F" stroke-width="2" opacity="0.5">04</text>
           <rect x="798" y="34" width="122" height="26" rx="13" fill="{INK2}" stroke="#2E5566"/>
-          <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="{KICK}">ACT 4 OF 7</text>
+          <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="{KICK}">NOTEBOOK 4 OF 7</text>
           <text x="40" y="54" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="3.5" fill="{KICK}">THE LAYA PHARMA SURVEILLANCE SERIES</text>
           <text x="40" y="112" font-family="-apple-system,Segoe UI,sans-serif" font-size="42" font-weight="800" fill="#EEF4FB">Real documents</text>
           <text x="40" y="148" font-family="ui-monospace,Menlo,monospace" font-size="14.5" fill="{MIST}">265 scraped pharma documents &#183; zero-shot &#183; and the failure gallery</text>
@@ -82,7 +82,7 @@ def goal(mo):
       categories perfectly,
     - watch it fail on exactly the edges: press about warning letters and
       spam dressed as science, and
-    - see why Act 5's 212 labeled documents matter.
+    - see why Notebook 5's 212 labeled documents matter.
     """)
     return
 
@@ -92,7 +92,7 @@ def pre_data(mo):
     mo.md("""
     ## The corpus
 
-    This act is 265 real documents: 50 hand-curated (five per category) plus
+    This notebook is 265 real documents: 50 hand-curated (five per category) plus
     215 fetched by script. The sources:
 
     - FDA warning letters - [fda.gov](https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/compliance-actions-and-activities/warning-letters)
@@ -100,7 +100,7 @@ def pre_data(mo):
     - Federal Register notices - [federalregister.gov](https://www.federalregister.gov/)
     - PubMed abstracts - [pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/)
     - SEC EDGAR filings and 10-K risk factors - [sec.gov](https://www.sec.gov/edgar/search/)
-    - DOJ False Claims Act settlements - [justice.gov](https://www.justice.gov/civil/false-claims-act)
+    - DOJ False Claims Notebook settlements - [justice.gov](https://www.justice.gov/civil/false-claims-notebook)
     - FiercePharma, BioPharma Dive, BioSpace press coverage - [fiercepharma.com](https://www.fiercepharma.com/)
     - Vendor press releases - [prnewswire.com](https://www.prnewswire.com/)
     - Docket comments (PhRMA, BIO, Public Citizen) - [regulations.gov](https://www.regulations.gov/)
@@ -189,7 +189,7 @@ def load_reading(ALL_DOCS4, FIRST50, LARGE, mo):
     **The corpus**: {len(FIRST50)} hand-curated + {len(LARGE)} script-fetched
     = **{len(ALL_DOCS4)} documents** across ten categories. The first 50
     carry zero-shot predictions from the model; the larger corpus carries
-    labels for the fine-tuning act.
+    labels for the fine-tuning notebook.
     """)
     return
 
@@ -303,7 +303,7 @@ def sweep_intro(mo):
                 Every document gets one forward pass with five questions: primary
                 category, secondary type, owning team, action required, and
                 urgency. Raw zero-shot: no training on this distribution, and
-                predictions cover only the 50 hand-curated documents. Act 5
+                predictions cover only the 50 hand-curated documents. Notebook 5
                 fine-tunes this exact schema; here it runs raw. The chart below
                 shows how often each answer matched the label.
                 """
@@ -446,7 +446,7 @@ def sweep_legend(mo):
     - **Primary category**: does the model's pick match the label out of
       **10 possible labels**? The four operational categories - regulatory
       guidance, inspection findings, safety communications, scientific
-      publications - are the routes a surveillance pipeline acts on; the
+      publications - are the routes a surveillance pipeline notebooks on; the
       other six are everything else. All 10 labels are real routing
       destinations, so this is a 10-way decision, not a spam filter.
     - **Owning team**: did the 8-way team assignment match the label?
@@ -545,7 +545,7 @@ def failure_reading(mo):
 @app.cell(hide_code=True)
 def takeaways(mo):
     mo.md("""
-    ## What to carry out of Act 4
+    ## What to carry out of Notebook 4
 
     1. Zero-shot covers the boring core: well-separated operational
        categories classify perfectly on real documents.

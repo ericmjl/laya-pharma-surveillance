@@ -74,7 +74,7 @@ def banner(CRIMSON, GREEN, INK, INK2, KICK, MIST, TEAL, mo):
     mo.Html(
         f"""
         <div style="line-height:0;border-radius:16px;overflow:hidden;">
-        <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Act 1 - One forward pass">
+        <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Notebook 1 - One forward pass">
           <defs>
             <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0" stop-color="{INK}"/><stop offset="1" stop-color="{INK2}"/>
@@ -86,7 +86,7 @@ def banner(CRIMSON, GREEN, INK, INK2, KICK, MIST, TEAL, mo):
           <rect x="1" y="1" width="958" height="208" rx="16" fill="url(#bg1)" stroke="#24404F"/>
           <text x="700" y="185" font-family="ui-monospace,Menlo,monospace" font-size="170" font-weight="700" fill="none" stroke="#26404F" stroke-width="2" opacity="0.5">01</text>
           <rect x="798" y="34" width="122" height="26" rx="13" fill="{INK2}" stroke="#2E5566"/>
-          <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="{KICK}">ACT 1 OF 7</text>
+          <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="{KICK}">NOTEBOOK 1 OF 7</text>
           <text x="40" y="54" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="3.5" fill="{KICK}">THE LAYA PHARMA SURVEILLANCE SERIES</text>
           <text x="40" y="112" font-family="-apple-system,Segoe UI,sans-serif" font-size="42" font-weight="800" fill="#EEF4FB">One forward pass</text>
           <text x="40" y="148" font-family="ui-monospace,Menlo,monospace" font-size="14.5" fill="{MIST}">Four typed questions &#183; one ~40 ms pass &#183; zero generated text</text>

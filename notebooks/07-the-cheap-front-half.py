@@ -29,7 +29,7 @@ def banner(CRIMSON, GREEN, INK, INK2, KICK, MIST, SLATE, TEAL, mo):
     mo.Html(
         f"""
         <div style="line-height:0;border-radius:16px;overflow:hidden;">
-        <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Act 7 - The cheap front half">
+        <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Notebook 7 - The deployment bill">
           <defs>
             <linearGradient id="bg7" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0" stop-color="{INK}"/><stop offset="1" stop-color="{INK2}"/>
@@ -41,9 +41,9 @@ def banner(CRIMSON, GREEN, INK, INK2, KICK, MIST, SLATE, TEAL, mo):
           <rect x="1" y="1" width="958" height="208" rx="16" fill="url(#bg7)" stroke="#24404F"/>
           <text x="700" y="185" font-family="ui-monospace,Menlo,monospace" font-size="170" font-weight="700" fill="none" stroke="#26404F" stroke-width="2" opacity="0.5">07</text>
           <rect x="798" y="34" width="122" height="26" rx="13" fill="{INK2}" stroke="#2E5566"/>
-          <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="{KICK}">ACT 7 OF 7</text>
+          <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="{KICK}">NOTEBOOK 7 OF 7</text>
           <text x="40" y="54" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="3.5" fill="{KICK}">THE LAYA PHARMA SURVEILLANCE SERIES</text>
-          <text x="40" y="112" font-family="-apple-system,Segoe UI,sans-serif" font-size="42" font-weight="800" fill="#EEF4FB">The cheap front half</text>
+          <text x="40" y="112" font-family="-apple-system,Segoe UI,sans-serif" font-size="42" font-weight="800" fill="#EEF4FB">The deployment bill</text>
           <text x="40" y="148" font-family="ui-monospace,Menlo,monospace" font-size="13.5" fill="{MIST}">CPU wins on cost &#183; the GPU buys latency &#183; a System 2 stays on the funnel</text>
           <g font-family="ui-monospace,Menlo,monospace" font-size="11">
             <rect x="640" y="52" width="74" height="21" rx="6" fill="{INK2}" stroke="#2E5566"/><text x="650" y="66" fill="{KICK}">cost</text>
@@ -84,7 +84,7 @@ def goal(mo):
     - see the one line of arithmetic that turns an hourly rate and a
       throughput into a cost per million requests, and
     - see the business email compromise attempt that the model waves
-      straight through, the reason the fast, cheap, auditable front half
+      straight through, the reason a fast, cheap model
       still needs a System 2 behind it.
     """)
     return
@@ -95,7 +95,7 @@ def pre_imports(mo):
     mo.md("""
     ## Benchmarks, inlined
 
-    Acts 1 through 6 ran on a laptop. This act prices the model as a service:
+    Notebooks 1 through 6 ran on a laptop. This notebook prices the model as a service:
     the English checkpoint behind an HTTP endpoint on Modal, weights baked into
     the image, both profiles scaling to zero, deploys gated on CI smoke tests.
     Every number below was measured by the benchmark harness in
@@ -171,8 +171,8 @@ def endpoint_call(mo):
         [
             mo.md(
                 """
-                Any HTTP client hits it the same way: one POST with the state and
-                the questions, JSON back. Generic client, nothing app-specific:
+                Calling the endpoint is just a POST request. You send the email
+                and the questions as JSON, and you get the answers back as JSON:
                 """
             ),
             mo.accordion(
@@ -263,8 +263,8 @@ def benchmarks(SLATE, TEAL, go, make_subplots):
         title=dict(
             text="two profiles, three ways that matter", font=dict(size=13)
         ),
-        height=360,
-        margin=dict(l=10, r=20, t=60, b=10),
+        height=460,
+        margin=dict(l=10, r=20, t=80, b=40),
         template="plotly_white",
         showlegend=True,
         legend=dict(orientation="h", yanchor="bottom", y=1.0, x=0),
@@ -302,15 +302,14 @@ def benchmarks(SLATE, TEAL, go, make_subplots):
 @app.cell(hide_code=True)
 def profiles_reading(CPU7, DLR, GPU7, mo):
     mo.md(f"""
-    Read the table top to bottom.
+    CPU against T4, measurement by measurement:
 
     - **Cold start**: {CPU7["cold start s"]:.1f} s on CPU against
       {GPU7["cold start s"]:.1f} s on the T4, about
       {GPU7["cold start s"] / CPU7["cold start s"]:.0f} times longer to wait for
       the first byte. The GPU image is heavier and the hardware is rarer.
     - **p50 latency**: {GPU7["p50 s"]:.2f} s on the T4 against
-      {CPU7["p50 s"]:.2f} s on CPU. Here the picture flips; hold that for two
-      cells.
+      {CPU7["p50 s"]:.2f} s on CPU. here the picture flips.
     - **Server-side inference**: {GPU7["server inference s"] * 1000:.0f} ms
       inside the model on the T4 against {CPU7["server inference s"]:.1f} s on
       CPU.
@@ -327,39 +326,12 @@ def profiles_reading(CPU7, DLR, GPU7, mo):
 
 @app.cell(hide_code=True)
 def cost_intro(mo):
-    mo.vstack(
-        [
-            mo.md(
-                """
-                ## What a million requests cost
+    mo.md("""
+    ## What a million requests cost
 
-                One line of arithmetic turns a measured hourly rate and a
-                measured throughput into a price per million requests: hourly
-                rate divided by throughput, times a million, divided by the
-                seconds in an hour.
-                """
-            ),
-            mo.accordion(
-                {
-                    "Click here to see the one line of arithmetic behind these numbers": mo.md(
-                        """
-                        ```python
-                        def cost_per_million7(rate7, req_s7):
-                            return rate7 / req_s7 * 1e6 / 3600
-
-                        cpu_cost7 = cost_per_million7(
-                            CPU7["$ per hour"], CPU7["throughput req/s"]
-                        )
-                        gpu_cost7 = cost_per_million7(
-                            GPU7["$ per hour"], GPU7["throughput req/s"]
-                        )
-                        ```
-                        """
-                    )
-                }
-            ),
-        ]
-    )
+    The arithmetic is simple: take the hourly rate, divide by the
+    throughput, and scale up to a million requests.
+    """)
     return
 
 
@@ -390,9 +362,8 @@ def cost_per_million(CPU7, DLR, GPU7, mo):
 def cost_plot_intro(DLR, cpu_cost7, gpu_cost7, mo):
     mo.md(
         f"""
-        Here is the price comparison the arithmetic implies: at full utilization,
-        a million requests cost about {DLR}{cpu_cost7:.0f} on the CPU profile and
-        about {DLR}{gpu_cost7:.0f} on the T4.
+        Plug the numbers in and a million requests cost about
+        {DLR}{cpu_cost7:.0f} on CPU versus {DLR}{gpu_cost7:.0f} on the T4:
         """
     )
     return
@@ -573,10 +544,11 @@ def ops_intro(CPU7, GPU7, mo):
 @app.cell(hide_code=True)
 def bec_intro(mo):
     mo.md("""
-    ## Why the front half is not the whole pipeline
+    ## Where the fast, cheap deployment breaks
 
-    The deployed endpoint is fast and cheap. Fast and cheap is not judgment.
-    Score this email with the English checkpoint's phishing question:
+    The endpoint is fast and cheap. Now let's point it at one specific
+    email and see how it does. This is one of the emails from the
+    earlier notebooks, scored with the phishing question:
     """)
     return
 
@@ -591,7 +563,9 @@ def bec_load(mo):
     import laya
 
     bec_load_ctx7 = (
-        mo.spinner("loading the English checkpoint (cached after Act 1) ...")
+        mo.spinner(
+            "loading the English checkpoint (cached after Notebook 1) ..."
+        )
         if hasattr(mo, "spinner")
         else contextlib.nullcontext()
     )
@@ -639,18 +613,22 @@ def bec_beat(MailViewer, agent7):
 
 
 @app.cell(hide_code=True)
-def bec_reading(BEC_PHISH7, DLR, cpu_cost7, mo):
+def bec_reading(BEC_PHISH7, mo):
     mo.md(
         f"""
-        This is business email compromise: no link, no urgency theater, just a
-        plausible voice asking for a routing change. The English checkpoint
-        scored it **P(phishing) = {BEC_PHISH7:.3f}**, and the confidence score,
-        as always in this series, said nothing.
+        The model scored it **P(phishing) = {BEC_PHISH7:.3f}** - completely
+        safe.
 
-        That is the honest boundary of this act. The front half can be fast,
-        cheap, and auditable, serve a million requests for about
-        {DLR}{cpu_cost7:.0f}, and still wave the most expensive email fraud on
-        the books straight through to the finance queue.
+        Read it again. Someone impersonating one of our vendors is asking us
+        to send payments to a new bank account. No links, no "urgent!!!"
+        subject line, nothing to trip a filter - and that's exactly why this
+        kind of scam works. It looks like something the finance team gets
+        every week.
+
+        So for a few dollars a day, this deployment will triage the inbox all
+        day long, and it will still wave this email straight through to the
+        finance team. Catching it takes something slower - a person who knows
+        the vendors, or a model that does.
         """
     )
     return
@@ -672,9 +650,9 @@ def series_recap(BEC_PHISH7, mo):
     7. The cheap deployment wins on cost; latency is the only reason to buy
        the GPU.
 
-    Laya earns its place as the fast, cheap, auditable front half of a
-    pipeline. The back half, the part that catches business email compromise
-    at P = {BEC_PHISH7:.3f}, still needs a System 2.
+    Laya earns its place as the fast, cheap, auditable first pass over an
+    inbox. Catching what it misses - the scam that looks like bookkeeping,
+    at P = {BEC_PHISH7:.3f} - still needs a System 2.
     """)
     return
 

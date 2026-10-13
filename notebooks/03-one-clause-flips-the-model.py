@@ -30,7 +30,7 @@ def banner(CRIMSON, GREEN, INK, INK2, KICK, MIST, TEAL, mo):
     mo.Html(
         f"""
         <div style="line-height:0;border-radius:16px;overflow:hidden;">
-        <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Act 3 - One clause flips the model">
+        <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Notebook 3 - One clause flips the model">
           <defs>
             <linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0" stop-color="{INK}"/><stop offset="1" stop-color="{INK2}"/>
@@ -42,7 +42,7 @@ def banner(CRIMSON, GREEN, INK, INK2, KICK, MIST, TEAL, mo):
           <rect x="1" y="1" width="958" height="208" rx="16" fill="url(#bg3)" stroke="#24404F"/>
           <text x="690" y="188" font-family="ui-monospace,Menlo,monospace" font-size="160" font-weight="700" fill="none" stroke="#26404F" stroke-width="2" opacity="0.5">03</text>
           <rect x="798" y="34" width="122" height="26" rx="13" fill="{INK2}" stroke="#2E5566"/>
-          <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="{KICK}">ACT 3 OF 7</text>
+          <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="{KICK}">NOTEBOOK 3 OF 7</text>
           <text x="40" y="54" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="3.5" fill="{KICK}">THE LAYA PHARMA SURVEILLANCE SERIES</text>
           <text x="40" y="112" font-family="-apple-system,Segoe UI,sans-serif" font-size="42" font-weight="800" fill="#EEF4FB">One clause flips the model</text>
           <text x="40" y="148" font-family="ui-monospace,Menlo,monospace" font-size="14.5" fill="{MIST}">0 of 38 adverse events detected. Then the question was rephrased.</text>
@@ -295,7 +295,7 @@ def run_intro(mo):
                 prompts, fifty posts. Under a minute on an M-series laptop. The
                 detection threshold is 0.5, and the Latin-script posts route to
                 the English checkpoint while the rest go multilingual, the
-                routing rule Act 2 justified.
+                routing rule Notebook 2 justified.
                 """
             ),
             mo.accordion(
@@ -584,7 +584,7 @@ def spotlights(CRIMSON, GREEN, LINE, PAPER, POSTS3, PREDS3, mo):
 @app.cell(hide_code=True)
 def takeaways(mo):
     mo.md("""
-    ## What to carry out of Act 3
+    ## What to carry out of Notebook 3
 
     1. Question schemas are code. They get review discipline in pull
        requests: keep decision questions short and positively phrased.

@@ -29,7 +29,7 @@ def banner(CRIMSON, GREEN, INK, INK2, KICK, MIST, TEAL, mo):
     mo.Html(
         f"""
         <div style="line-height:0;border-radius:16px;overflow:hidden;">
-        <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Act 2 - The confidence trap">
+        <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Notebook 2 - The confidence trap">
           <defs>
             <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0" stop-color="{INK}"/><stop offset="1" stop-color="{INK2}"/>
@@ -41,7 +41,7 @@ def banner(CRIMSON, GREEN, INK, INK2, KICK, MIST, TEAL, mo):
           <rect x="1" y="1" width="958" height="208" rx="16" fill="url(#bg2)" stroke="#24404F"/>
           <text x="690" y="188" font-family="ui-monospace,Menlo,monospace" font-size="160" font-weight="700" fill="none" stroke="#26404F" stroke-width="2" opacity="0.5">02</text>
           <rect x="798" y="34" width="122" height="26" rx="13" fill="{INK2}" stroke="#2E5566"/>
-          <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="{KICK}">ACT 2 OF 7</text>
+          <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="{KICK}">NOTEBOOK 2 OF 7</text>
           <text x="40" y="54" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="3.5" fill="{KICK}">THE LAYA PHARMA SURVEILLANCE SERIES</text>
           <text x="40" y="112" font-family="-apple-system,Segoe UI,sans-serif" font-size="42" font-weight="800" fill="#EEF4FB">The confidence trap</text>
           <text x="40" y="148" font-family="ui-monospace,Menlo,monospace" font-size="14.5" fill="{MIST}">Degradation you can see. Collapse you cannot.</text>
@@ -188,7 +188,7 @@ def load_reading(mo, n_en2, n_ml2):
     {n_ml2 / 1e6:.0f}M params (multilingual). Note the warning in the log:
     one English bucket ships a fitted temperature of 0.10, so far outside the
     sane range that the library clamps it and tells you the bucket is
-    uncalibrated. Remember that when calibration gets its own act.
+    uncalibrated. Remember that when calibration gets its own notebook.
     """)
     return
 
@@ -228,7 +228,7 @@ def mandarin_intro(mo):
     mo.md("""
     ## A Mandarin email I can verify
 
-    Here is the Act 1 billing complaint, in Mandarin. I read Mandarin, so I
+    Here is the Notebook 1 billing complaint, in Mandarin. I read Mandarin, so I
     can verify every word myself: a duplicate charge on invoice 4411, a
     refund demanded, an account cancelled if it is not fixed this week.
     Correct triage is department `billing`, urgency mid-scale, and a churn
@@ -342,7 +342,7 @@ def mandarin_reading(ZH_RESULTS2, mo):
       checkpoint barely registers it ({ZH_RESULTS2["multilingual"]["churn"]:.2f}).
       Same sentence, same semantics. When two checkpoints disagree that
       widely on a borderline case, that is not noise; it is a calibration
-      conversation, and it gets its own act.
+      conversation, and it gets its own notebook.
 
     The visible lesson: on a language you can check, the English checkpoint
     degrades gracefully. Keep that next to what follows.
@@ -558,7 +558,7 @@ def router_reading(mo):
     mo.md("""
     The design decision is the lesson: put the deterministic check **before**
     the model, and do not trust the model to self-report confusion. The
-    confidence score cannot warn you; this act started with proof of that.
+    confidence score cannot warn you; this notebook started with proof of that.
     """)
     return
 
@@ -963,7 +963,7 @@ def latency_reading(mo):
 @app.cell(hide_code=True)
 def takeaways(mo):
     mo.md("""
-    ## What to carry out of Act 2
+    ## What to carry out of Notebook 2
 
     1. Degrading is visible; collapse is not. On Mandarin the English
        checkpoint keeps the right answer and drops confidence. On Khmer,

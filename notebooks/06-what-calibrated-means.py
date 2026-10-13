@@ -70,7 +70,7 @@ def banner(CRIMSON, GREEN, INK, INK2, KICK, MIST, TEAL, mo):
     mo.Html(
         f"""
         <div style="line-height:0;border-radius:16px;overflow:hidden;">
-        <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Act 6 - What calibrated means">
+        <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Notebook 6 - What calibrated means">
           <defs>
             <linearGradient id="bg6" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0" stop-color="{INK}"/><stop offset="1" stop-color="{INK2}"/>
@@ -82,7 +82,7 @@ def banner(CRIMSON, GREEN, INK, INK2, KICK, MIST, TEAL, mo):
           <rect x="1" y="1" width="958" height="208" rx="16" fill="url(#bg6)" stroke="#24404F"/>
           <text x="700" y="185" font-family="ui-monospace,Menlo,monospace" font-size="170" font-weight="700" fill="none" stroke="#26404F" stroke-width="2" opacity="0.5">06</text>
           <rect x="798" y="34" width="122" height="26" rx="13" fill="{INK2}" stroke="#2E5566"/>
-          <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="{KICK}">ACT 6 OF 7</text>
+          <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="{KICK}">NOTEBOOK 6 OF 7</text>
           <text x="40" y="54" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="3.5" fill="{KICK}">THE LAYA PHARMA SURVEILLANCE SERIES</text>
           <text x="40" y="112" font-family="-apple-system,Segoe UI,sans-serif" font-size="42" font-weight="800" fill="#EEF4FB">What calibrated means</text>
           <text x="40" y="148" font-family="ui-monospace,Menlo,monospace" font-size="14.5" fill="{MIST}">T=100 on load &#183; 0.952 confidence &#183; says nothing</text>
@@ -166,7 +166,7 @@ def load_data_intro(mo):
                 f"""
                 Every number below renders from one committed file,
                 `data/finetune_experiment_results.json`: the 53 held-out documents
-                from the fine-tuning run in Act 5. No model loads and no downloads;
+                from the fine-tuning run in Notebook 5. No model loads and no downloads;
                 the notebook runs on the measured numbers alone.
                 """
             ),
@@ -262,7 +262,7 @@ def temps_section(mo):
     Temperature scaling divides a model's logits by one scalar per
     question-type bucket, fitted on labeled data. T > 1 means the fitter
     found over-confidence and is flattening opinions; T < 1 would sharpen.
-    Act 5's four buckets are choice questions grouped by how many options
+    Notebook 5's four buckets are choice questions grouped by how many options
     they offer (3-5, 6-10, 11+) and the yes/no `noul` head.
     """)
     return
@@ -628,7 +628,7 @@ def repair_section(mo):
     ## The two-step repair, measured
 
     The repair has two steps. Step one trains on a proper scoring rule, so
-    honest probabilities win during training; that was Act 5. Step two fits
+    honest probabilities win during training; that was Notebook 5. Step two fits
     a temperature per bucket on your own labeled documents:
     temperature scaling ([Guo et al., 2017](https://arxiv.org/abs/1706.04599)),
     the standard post-hoc fix. Here is what the two steps do to the yes/no head's ECE
@@ -821,7 +821,7 @@ def ece_figure_reading(
 @app.cell(hide_code=True)
 def takeaways(mo):
     mo.md("""
-    ## What to carry out of Act 6
+    ## What to carry out of Notebook 6
 
     1. Raw calibration numbers out of the box are not usable. Fit
        temperatures on your own labels before any threshold touches an
@@ -832,7 +832,7 @@ def takeaways(mo):
     3. The durable fix is the training objective, not the post-hoc patch:
        proper scoring rules make honesty the winning strategy.
 
-    One act left. Act 7 wraps the fine-tuned front half in an API and
+    One notebook left. Notebook 7 wraps the fine-tuned front half in an API and
     prices it: deployment.
     """)
     return

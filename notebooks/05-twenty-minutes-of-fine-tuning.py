@@ -87,7 +87,7 @@ def banner(
     mo.Html(
         f"""
         <div style="line-height:0;border-radius:16px;overflow:hidden;">
-        <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Act 5 - Twenty minutes of fine-tuning">
+        <svg viewBox="0 0 960 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Notebook 5 - Twenty minutes of fine-tuning">
           <defs>
             <linearGradient id="bg5" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0" stop-color="{INK}"/><stop offset="1" stop-color="{INK2}"/>
@@ -99,7 +99,7 @@ def banner(
           <rect x="1" y="1" width="958" height="208" rx="16" fill="url(#bg5)" stroke="#24404F"/>
           <text x="700" y="185" font-family="ui-monospace,Menlo,monospace" font-size="170" font-weight="700" fill="none" stroke="#26404F" stroke-width="2" opacity="0.5">05</text>
           <rect x="798" y="34" width="122" height="26" rx="13" fill="{INK2}" stroke="#2E5566"/>
-          <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="{KICK}">ACT 5 OF 7</text>
+          <text x="813" y="51" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="{KICK}">NOTEBOOK 5 OF 7</text>
           <text x="40" y="54" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="3.5" fill="{KICK}">THE LAYA PHARMA SURVEILLANCE SERIES</text>
           <text x="40" y="112" font-family="-apple-system,Segoe UI,sans-serif" font-size="40" font-weight="800" fill="#EEF4FB">Twenty minutes of fine-tuning</text>
           <text x="40" y="148" font-family="ui-monospace,Menlo,monospace" font-size="14.5" fill="{MIST}">212 labeled documents &#183; 3 epochs &#183; 0.26-0.58 to 0.89-0.96 held-out</text>
@@ -129,7 +129,7 @@ def banner(
 def goal(N_TEST5, N_TRAIN5, mo):
     mo.md(f"""
     In this notebook, we will show what twenty minutes of fine-tuning does to
-    the same checkpoint from the first four acts. No new model and no new
+    the same checkpoint from the first four notebooks. No new model and no new
     infrastructure: {N_TRAIN5} labeled documents and one small training loop
     sit between the before and the after.
 
@@ -146,9 +146,9 @@ def goal(N_TEST5, N_TRAIN5, mo):
 @app.cell(hide_code=True)
 def context_intro(N_TEST5, N_TRAIN5, mo):
     mo.md(f"""
-    ## Where the first four acts left off
+    ## Where the first four notebooks left off
 
-    Act 4 ended on the edges: spam dressed as science, press about warning
+    Notebook 4 ended on the edges: spam dressed as science, press about warning
     letters reading as warnings, and owning-team/action/urgency barely above
     coin-flip zero-shot.
 
@@ -308,7 +308,7 @@ def data_reading(N_TEST5, N_TRAIN5, QLABEL_JOINED5, mo):
     mo.md(f"""
         The file holds the split ({N_TRAIN5} training documents, {N_TEST5} test
         documents) and before/after metrics for five questions:
-        {QLABEL_JOINED5}. The "before" rows are the base checkpoint from Acts
+        {QLABEL_JOINED5}. The "before" rows are the base checkpoint from Notebooks
         1-4; the "after" rows are the same checkpoint after RLCD fine-tuning.
         Every number in the prose below is computed from this file, so the text
         cannot drift away from the charts.
@@ -597,7 +597,7 @@ def reward_reading(mo):
     The reward is the whole trick. Proper scoring rules have one property
     that matters: the only way to maximize expected reward is to report
     honest probabilities. Fine-tune against that reward and calibration
-    falls out as a side effect of the objective, which is exactly what Act 6
+    falls out as a side effect of the objective, which is exactly what Notebook 6
     measures.
     """)
     return
@@ -716,7 +716,7 @@ def price_of_lever(N_TRAIN5, mo):
 @app.cell(hide_code=True)
 def next_act(mo):
     mo.md(f"""
-    **Act 6:** accuracy was the easy part. The question that decides whether
+    **Notebook 6:** accuracy was the easy part. The question that decides whether
     you can wire a P = 0.9 threshold to an automated action is what the
     probabilities actually mean. That is a calibration question, and it is
     the whole subject of notebook 6.
