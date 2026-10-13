@@ -1,0 +1,21 @@
+data/modal_benchmarks.json
+  s_1c17499aff1e1a::t_88e68dba33ba81 1-22
+notebooks/07-the-cheap-front-half.py
+  s_1c17499aff1e1a::t_0eb8dffea9b46e 110,118,132,142,146,215-230,232-235,238,242-243,248-256,260,263,265,270,341-344,373-382,437-457,464,466-469,515-526,622-636
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "60a358e2c3cf21436e418f128a25f7a0526ad9a8",
+  "prompts": {},
+  "sessions": {
+    "s_1c17499aff1e1a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1301e-0dab-7497-ae10-ff9b523c662b",
+        "model": "glm-5.3-flash"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
