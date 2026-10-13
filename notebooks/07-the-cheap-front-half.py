@@ -95,13 +95,12 @@ def pre_imports(mo):
     mo.md("""
     ## Benchmarks, inlined
 
-    Notebooks 1 through 6 ran on a laptop. This notebook prices the model as a service:
-    the English checkpoint behind an HTTP endpoint on Modal, weights baked into
-    the image, both profiles scaling to zero, deploys gated on CI smoke tests.
-    Every number below was measured by the benchmark harness in
-    `nll-ai/laya-demo/modal/benchmark.py` and is inlined here as constants, so
-    this notebook loads no model and downloads nothing; the economics are the
-    story and the numbers stay stable.
+    Notebooks 1 through 6 ran on a laptop. This notebook prices the model
+    as a service: the English checkpoint behind an HTTP endpoint on Modal.
+    The image ships with the weights baked in, both profiles scale to zero
+    after 60 seconds idle, and CI gates every deploy with smoke tests. I
+    measured every number below with the benchmark harness in
+    `nll-ai/laya-demo/modal/benchmark.py` and inlined them as constants.
     """)
     return
 
@@ -155,8 +154,8 @@ def profiles_intro(mo):
 
     The deployment is serverless. A Modal app wraps the English checkpoint
     behind one POST endpoint and shuts each container down when traffic stops,
-    so the bill tracks requests rather than machines. Two hardware profiles were
-    benchmarked on the same endpoint: a CPU profile with 1 core and 3 GiB of
+    so the bill tracks requests rather than machines. I benchmarked two hardware profiles
+    on the same endpoint: a CPU profile with 1 core and 3 GiB of
     memory, and a T4 GPU profile with 2 cores and 8 GiB. The next cell lays the
     measurements side by side: cold start, median end-to-end latency,
     server-side inference time, sustained throughput, and the billable hourly

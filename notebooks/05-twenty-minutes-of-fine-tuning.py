@@ -144,21 +144,15 @@ def goal(N_TEST5, N_TRAIN5, mo):
 
 
 @app.cell(hide_code=True)
-def context_intro(N_TEST5, N_TRAIN5, mo):
+def context_intro(N_TRAIN5, mo):
     mo.md(f"""
-    ## Where the first four notebooks left off
+    ## Where Notebooks 1-6 left off
 
-    Notebook 4 ended on the edges: spam dressed as science, press about warning
-    letters reading as warnings, and owning-team/action/urgency barely above
-    coin-flip zero-shot.
-
-    The fix is not a bigger model. It is {N_TRAIN5} labeled documents from
-    your own distribution, and 20 minutes of the training loop below.
-
-    Everything in this notebook renders from one committed file,
-    `data/finetune_experiment_results.json`: before and after metrics for
-    five questions, evaluated on the same {N_TEST5} held-out documents.
-    Nothing here downloads a model.
+    Notebook 4 ended with three problems: spam classified as science, press
+    coverage about warning letters classified as the warning letters
+    themselves, and owning-team, action, and urgency assignments barely above
+    chance. The fix tested here is {N_TRAIN5} labeled documents and 20 minutes
+    of fine-tuning, not a larger model.
     """)
     return
 
@@ -319,20 +313,12 @@ def data_reading(N_TEST5, N_TRAIN5, QLABEL_JOINED5, mo):
 @app.cell(hide_code=True)
 def acc_plot_intro(N_TEST5, mo):
     mo.md(f"""
-    ## Accuracy: the headline
+    ## Held-out accuracy, before and after
 
-    ## Held-out results, before and after
-
-    {N_TEST5} test documents the model never trained on. Same schema, same
-    checkpoint, one fine-tuning run in between. The table shows accuracy,
-    Brier, and mean log score side by side; the charts after it plot the
-    same numbers as bars.
-
-    The chart carries the same numbers the table used to: accuracy before and after for all five questions.
-
-    Here is the accuracy comparison as a chart. Slate bars are the base
-    checkpoint, green bars are after RLCD fine-tuning, and every bar carries
-    its own value label.
+    {N_TEST5} test documents, held out from fine-tuning: same schema, same
+    checkpoint, one training run in between. Slate bars are the base
+    checkpoint from Notebooks 1-4; green bars are after RLCD fine-tuning. Each
+    bar carries its value.
     """)
     return
 
@@ -388,7 +374,6 @@ def acc_plot(
 @app.cell(hide_code=True)
 def acc_plot_reading(
     ACC_AFTER5,
-    ACC_BEFORE5,
     N_TEST5,
     ROUTE_AFTER5,
     ROUTE_BEFORE5,
@@ -397,23 +382,15 @@ def acc_plot_reading(
     mo,
 ):
     mo.md(f"""
-        Every question moved into the {min(ACC_AFTER5):.2f}-{max(ACC_AFTER5):.2f} band. The two weakest zero-shot
-        questions improved the most: secondary type went from {SEC_BEFORE5:.2f}
-        to {SEC_AFTER5:.2f}, and route-to went from {ROUTE_BEFORE5:.2f} to
-        {ROUTE_AFTER5:.2f}.
+    Every question lands in the {min(ACC_AFTER5):.2f}-{max(ACC_AFTER5):.2f}
+    band after fine-tuning. The two weakest zero-shot questions improved the
+    most: secondary type went from {SEC_BEFORE5:.2f} to {SEC_AFTER5:.2f} on an
+    11-way pick, and owning team went from {ROUTE_BEFORE5:.2f} to
+    {ROUTE_AFTER5:.2f} on 8.
 
-        One caveat keeps this honest: accuracy on {N_TEST5} documents is grainy,
-        and each document moves it by about {1 / N_TEST5:.3f}. That graininess is
-        exactly why the probability scores below carry the real story.
-
-
-    Read the table column by column. Before fine-tuning, accuracy runs from
-        {min(ACC_BEFORE5):.2f} to {max(ACC_BEFORE5):.2f} across the five
-        questions, and secondary type sits at {SEC_BEFORE5:.2f}, close to random
-        for an 11-way pick. After fine-tuning, every question lands between
-        {min(ACC_AFTER5):.2f} and {max(ACC_AFTER5):.2f}. The probability columns
-        move in the same direction on every question, which is what the next two
-        charts show.
+    Accuracy on {N_TEST5} documents is grainy; each document moves it by about
+    {1 / N_TEST5:.3f}. The probability metrics below are the more reliable
+    signal.
     """)
     return
 
@@ -526,13 +503,11 @@ def prob_scores_reading(
     mo,
 ):
     mo.md(f"""
-    Accuracy is the headline; the probability metrics are the story. Log
-    score and Brier measure the quality of the whole distribution, and both
-    improved by large factors: Brier dropped {BRIER_GAIN_LO5:.1f}x to
+    Accuracy understates the change. Brier dropped {BRIER_GAIN_LO5:.1f}x to
     {BRIER_GAIN_HI5:.1f}x across the five questions, and mean log score
-    {LOG_GAIN_LO5:.1f}x to {LOG_GAIN_HI5:.1f}x. A model can luck into argmax
-    accuracy. It cannot luck into a distribution this much sharper across
-    {N_TEST5} unseen documents.
+    improved {LOG_GAIN_LO5:.1f}x to {LOG_GAIN_HI5:.1f}x. Argmax accuracy can
+    improve by luck; a distribution this much sharper across {N_TEST5} unseen
+    documents cannot.
     """)
     return
 
@@ -594,11 +569,10 @@ def loop_anatomy(N_TRAIN5, mo):
 @app.cell(hide_code=True)
 def reward_reading(mo):
     mo.md("""
-    The reward is the whole trick. Proper scoring rules have one property
-    that matters: the only way to maximize expected reward is to report
-    honest probabilities. Fine-tune against that reward and calibration
-    falls out as a side effect of the objective, which is exactly what Notebook 6
-    measures.
+    The reward drives the result. Proper scoring rules are maximized in
+    expectation only by reporting true probabilities, so fine-tuning against
+    one produces calibrated probabilities as a direct consequence of the
+    objective. Notebook 6 quantifies that calibration.
     """)
     return
 
@@ -608,11 +582,10 @@ def curve_section(mo):
     mo.md("""
     ## The training curve
 
-    The run below is the same one that produced every number above, with one
-    addition: it now records per-epoch numbers as it trains. Mean training
-    reward (what the policy optimizes) on the left axis; mean held-out
-    accuracy and Brier across the five questions on the right axis. The
-    before-fine-tuning point sits at epoch zero.
+    The numbers above come from one run whose per-epoch curve was not
+    recorded at the time. The cell below re-runs the same fine-tuning with
+    curve recording and plots training reward and held-out metrics per
+    epoch. It takes about 20 minutes, so it is left unexecuted here.
     """)
     return
 
