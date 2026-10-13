@@ -74,17 +74,18 @@ def banner(CRIMSON, GREEN, INK, INK2, KICK, MIST, SLATE, TEAL, mo):
 def goal(mo):
     mo.md("""
     In this notebook, we will show what it costs to serve the English
-    checkpoint as a serverless API, and why the cheap profile is the right home
-    for batch triage.
+    checkpoint as a serverless API, and why the cheap profile is the right
+    home for batch triage.
 
     By the end of the notebook, you will:
 
-    - see the two measured deployment profiles, CPU and T4 GPU, side by side,
-    - see the one line of arithmetic that turns an hourly rate and a throughput
-      into a cost per million requests, and
-    - see the business email compromise attempt that scored P(phishing) = 0.000,
-      the reason the fast, cheap, auditable front half still needs a System 2
-      behind it.
+    - see the two measured deployment profiles, CPU and T4 GPU, side by
+      side,
+    - see the one line of arithmetic that turns an hourly rate and a
+      throughput into a cost per million requests, and
+    - see the business email compromise attempt that the model waves
+      straight through, the reason the fast, cheap, auditable front half
+      still needs a System 2 behind it.
     """)
     return
 
@@ -306,7 +307,7 @@ def profiles_reading(CPU7, DLR, GPU7, mo):
     - **Cold start**: {CPU7["cold start s"]:.1f} s on CPU against
       {GPU7["cold start s"]:.1f} s on the T4, about
       {GPU7["cold start s"] / CPU7["cold start s"]:.0f} times longer to wait for
-      the first byte. The GPU image is heavier and the hardware is scarcer.
+      the first byte. The GPU image is heavier and the hardware is rarer.
     - **p50 latency**: {GPU7["p50 s"]:.2f} s on the T4 against
       {CPU7["p50 s"]:.2f} s on CPU. Here the picture flips; hold that for two
       cells.
@@ -574,10 +575,8 @@ def bec_intro(mo):
     mo.md("""
     ## Why the front half is not the whole pipeline
 
-    Cost and latency describe the pipe, not the judgment inside it. Here is one
-    email from Act 1's sweep, run through the English checkpoint's phishing
-    question. Read it the way a busy accounts-payable clerk would, on a Friday,
-    with the invoice attached.
+    The deployed endpoint is fast and cheap. Fast and cheap is not judgment.
+    Score this email with the English checkpoint's phishing question:
     """)
     return
 
