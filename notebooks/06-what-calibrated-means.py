@@ -269,60 +269,11 @@ def temps_section(mo):
 
 @app.cell(hide_code=True)
 def temps_plot_intro(mo):
-    mo.vstack(
-        [
-            mo.md(
-                f"""
-                Here is what the fitter found, base model against fine-tuned model,
-                on a log scale. The base yes/no bucket is the reason a log scale is
-                necessary.
-                """
-            ),
-            mo.accordion(
-                {
-                    "Click here to see the code that draws the temperature chart": mo.md(
-                        """```python
-    fig_temp6 = go.Figure()
-    fig_temp6.add_trace(
-        go.Bar(
-            x=BUCKETS6,
-            y=TEMPS_BEFORE6,
-            name="base model",
-            marker_color=[CRIMSON if b6 == "noul:2" else SLATE for b6 in BUCKETS6],
-            text=[f"{t6:.2f}" for t6 in TEMPS_BEFORE6],
-            textposition="outside",
-        )
-    )
-    fig_temp6.add_trace(
-        go.Bar(
-            x=BUCKETS6,
-            y=TEMPS_AFTER6,
-            name="after RLCD fine-tuning",
-            marker_color=GREEN,
-            text=[f"{t6:.2f}" for t6 in TEMPS_AFTER6],
-            textposition="outside",
-        )
-    )
-    fig_temp6.add_hline(
-        y=1.0,
-        line_dash="dash",
-        line_color=TEAL,
-        annotation_text="T = 1: perfectly scaled",
-        annotation_position="top left",
-    )
-    fig_temp6.update_layout(
-        template="plotly_white",
-        yaxis=dict(type="log", title="fitted temperature (log scale)"),
-        xaxis=dict(title="question-type bucket"),
-        height=430,
-    )
-    fig_temp6
-    ```"""
-                    ),
-                }
-            ),
-        ]
-    )
+    mo.md(f"""
+    Here is what the fitter found, base model against fine-tuned model,
+    on a log scale. The base yes/no bucket is the reason a log scale is
+    necessary.
+    """)
     return
 
 
@@ -427,72 +378,13 @@ def flatten_section(mo):
 
 @app.cell(hide_code=True)
 def flatten_demo_intro(mo):
-    mo.vstack(
-        [
-            mo.md(
-                """
-                    Here is an illustration, not measured data: one made-up logits vector
-                    for a 10-way choice question, options ordered from strongest logit to
-                    weakest. Each panel divides the same logits by one of the fitted
-                    temperatures from the chart above. Watch the ranking, then watch the
-                    trust.
-            
-                """
-            ),
-            mo.accordion(
-                {
-                    "Click here to see the code that flattens the distribution": mo.md(
-                        """
-                        ```python
-    LOGITS6 = [5.5, 1.5, 1.2, 1.0, 0.8, 0.6, 0.4, 0.2, 0.0, -0.2]
-
-    def softmax6(z6, t6):
-        peak6 = max(z6)
-        exps6 = [math.exp((value6 - peak6) / t6) for value6 in z6]
-        total6 = sum(exps6)
-        return [value6 / total6 for value6 in exps6]
-
-    paired6 = sorted(zip(TEMPS_BEFORE6, BUCKETS6))
-    demo_temps6 = [1.0] + [pair6[0] for pair6 in paired6]
-    demo_labels6 = ["T = 1 (ideal)"] + [
-        f"T = {pair6[0]:.2f} ({pair6[1]})" for pair6 in paired6
-    ]
-
-    fig_flat6 = make_subplots(rows=1, cols=5, subplot_titles=demo_labels6)
-    panel_colors6 = [TEAL, SLATE, SLATE, SLATE, CRIMSON]
-    for col6 in range(5):
-        probs6 = softmax6(LOGITS6, demo_temps6[col6])
-        fig_flat6.add_trace(
-            go.Bar(
-                x=list(range(10)),
-                y=probs6,
-                marker_color=panel_colors6[col6],
-                showlegend=False,
-            ),
-            row=1,
-            col=col6 + 1,
-        )
-    fig_flat6.update_layout(
-        title=dict(
-            text="Illustration: one logits vector, five temperatures - ranking fixed, trust drained",
-            font=dict(size=13),
-        ),
-        template="plotly_white",
-        height=330,
-        margin=dict(l=10, r=30, t=90, b=10),
-    )
-    fig_flat6.update_annotations(font_size=10)
-    fig_flat6.update_xaxes(showticklabels=False)
-    fig_flat6.update_yaxes(range=[0, 1.0])
-    fig_flat6.update_yaxes(title_text="probability", row=1, col=1)
-    fig_flat6
-                        ```
-                        """
-                    ),
-                }
-            ),
-        ]
-    )
+    mo.md("""
+    Here is an illustration, not measured data: one made-up logits vector
+    for a 10-way choice question, options ordered from strongest logit to
+    weakest. Each panel divides the same logits by one of the fitted
+    temperatures from the chart above. Watch the ranking, then watch the
+    trust.
+    """)
     return
 
 
@@ -667,62 +559,10 @@ def repair_table(
 
 @app.cell(hide_code=True)
 def ece_figure_intro(mo):
-    mo.vstack(
-        [
-            mo.md(
-                """
-                    The same comparison as a picture, with the competitor's shipped number
-                    as the line to beat.
-            
-                """
-            ),
-            mo.accordion(
-                {
-                    "Click here to see the code that draws the ECE chart": mo.md(
-                        """
-                        ```python
-    fig_ece6 = go.Figure()
-    ece_values6 = [
-        RAW_ECE_BEFORE6,
-        REFIT_ECE_BEFORE6,
-        RAW_ECE_AFTER6,
-        REFIT_ECE_AFTER6,
-    ]
-    fig_ece6.add_trace(
-        go.Bar(
-            x=["base, raw", "base, refit", "fine-tuned, raw", "fine-tuned, refit"],
-            y=ece_values6,
-            marker_color=[CRIMSON, TEAL, SLATE, GREEN],
-            text=[f"{v6:.3f}" for v6 in ece_values6],
-            textposition="outside",
-            showlegend=False,
-        )
-    )
-    fig_ece6.add_hline(
-        y=JEV_ECE6,
-        line_dash="dash",
-        line_color=INK,
-        annotation_text=f"Jev ships {JEV_ECE6:.3f}",
-        annotation_position="top right",
-    )
-    fig_ece6.update_layout(
-        title=dict(
-            text="Action-required head: ECE, raw vs per-bucket refit (held-out n = 53)",
-            font=dict(size=13),
-        ),
-        template="plotly_white",
-        yaxis=dict(title="ECE", range=[0, 0.55]),
-        height=380,
-        margin=dict(l=10, r=30, t=60, b=10),
-    )
-    fig_ece6
-                        ```
-                        """
-                    ),
-                }
-            ),
-        ]
-    )
+    mo.md("""
+    The same comparison as a picture, with the competitor's shipped number
+    as the line to beat.
+    """)
     return
 
 
