@@ -107,6 +107,7 @@ def pre_imports(mo):
 
 @app.cell(hide_code=True)
 def imports():
+    import json
     import marimo as mo
     import plotly.graph_objects as go
     import sys
@@ -114,6 +115,7 @@ def imports():
 
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from mail_viewer import MailViewer
+    from plotly.subplots import make_subplots
 
     # Pharmacopeia theme (see .agents/skills/laya-pharma-theme/SKILL.md)
     INK = "#0F2233"  # clinical navy: banners, dark cards
@@ -127,9 +129,7 @@ def imports():
     KICK = "#8FB0B8"  # kicker text on ink
     LINE = "#D9D4CA"  # warm hairline
     PAPER = "#F7F5F1"  # light card background
-    DLR = "\\$"  # escaped dollar sign: a bare $...$ pair renders as math in markdown
-    from plotly.subplots import make_subplots
-
+    DLR = "\$"  # escaped dollar sign: a bare $...$ pair renders as math in markdown
     return (
         CRIMSON,
         DLR,
@@ -139,9 +139,11 @@ def imports():
         KICK,
         MIST,
         MailViewer,
+        Path,
         SLATE,
         TEAL,
         go,
+        json,
         make_subplots,
         mo,
     )
@@ -210,52 +212,62 @@ def endpoint_call(mo):
 
 
 @app.cell(hide_code=True)
-def benchmarks(SLATE, TEAL, make_subplots):
-    PROFILES7 = {
-        "CPU (1 core, 3 GiB)": {
-            "cold start s": 3.5,
-            "p50 s": 3.31,
-            "server inference s": 2.9,
-            "throughput req/s": 1.2,
-            "$ per hour": 0.071,
-        },
-        "T4 GPU (2 cores, 8 GiB)": {
-            "cold start s": 44.3,
-            "p50 s": 0.48,
-            "server inference s": 0.049,
-            "throughput req/s": 8.0,
-            "$ per hour": 0.749,
-        },
-    }
+def benchmarks(Path, SLATE, TEAL, json, make_subplots):
+    DATA7 = Path(__file__).resolve().parent.parent / "data"
+    with open(DATA7 / "modal_benchmarks.json", encoding="utf-8") as f7:
+        _raw7 = json.load(f7)["profiles"]
 
-    CPU7 = dict(PROFILES7["CPU (1 core, 3 GiB)"])
-    GPU7 = dict(PROFILES7["T4 GPU (2 cores, 8 GiB)"])
+    def _normalize7(raw7, name7, thr_key7):
+        normalized7 = dict(raw7)
+        normalized7["name"] = name7
+        normalized7["cold start s"] = normalized7.pop("cold_start_s")
+        normalized7["p50 s"] = normalized7.pop("p50_s")
+        normalized7["server inference s"] = normalized7.pop(
+            "server_inference_s"
+        )
+        normalized7["throughput req/s"] = normalized7.pop(thr_key7)
+        normalized7["$ per hour"] = normalized7.pop("usd_per_hour")
+        return normalized7
+
+    CPU7 = _normalize7(_raw7["cpu"], "CPU", "throughput_req_s_serial")
+    GPU7 = _normalize7(
+        _raw7["gpu_t4"], "T4 GPU", "throughput_req_s_8_concurrent"
+    )
 
     fig_prof4 = make_subplots(
-        rows=3,
+        rows=5,
         cols=1,
         subplot_titles=(
             "cold start (seconds)",
+            "median end-to-end latency, p50 (seconds)",
+            "server-side inference time (seconds)",
             "sustained throughput (req/s)",
             "billable rate ($/hour)",
         ),
     )
-    for row4, key4 in enumerate(
-        ["cold start s", "throughput req/s", "$ per hour"], start=1
+    for row7, key7 in enumerate(
+        [
+            "cold start s",
+            "p50 s",
+            "server inference s",
+            "throughput req/s",
+            "$ per hour",
+        ],
+        start=1,
     ):
         fig_prof4.add_bar(
             y=["CPU", "T4 GPU"],
-            x=[CPU7[key4], GPU7[key4]],
+            x=[CPU7[key7], GPU7[key7]],
             orientation="h",
             marker_color=[SLATE, TEAL],
-            text=[f"{CPU7[key4]:g}", f"{GPU7[key4]:g}"],
+            text=[f"{CPU7[key7]:g}", f"{GPU7[key7]:g}"],
             textposition="outside",
-            row=row4,
+            row=row7,
             col=1,
         )
 
     fig_prof4.update_layout(
-        height=600,
+        height=760,
         margin=dict(l=10, r=60, t=70, b=10),
         template="plotly_white",
         showlegend=False,
@@ -326,12 +338,10 @@ def cost_per_million(CPU7, DLR, GPU7, mo):
 
 @app.cell(hide_code=True)
 def cost_plot_intro(DLR, cpu_cost7, gpu_cost7, mo):
-    mo.md(
-        f"""
-        Plug the numbers in and a million requests cost about
-        {DLR}{cpu_cost7:.0f} on CPU versus {DLR}{gpu_cost7:.0f} on the T4:
-        """
-    )
+    mo.md(f"""
+    Plug the numbers in and a million requests cost about
+    {DLR}{cpu_cost7:.0f} on CPU versus {DLR}{gpu_cost7:.0f} on the T4:
+    """)
     return
 
 
@@ -357,6 +367,16 @@ def cost_plot(SLATE, TEAL, cpu_cost7, go, gpu_cost7):
         yaxis=dict(title="$ per 1M requests", range=[0, gpu_cost7 * 1.2]),
     )
     fig_cost7
+    return
+
+
+@app.cell(hide_code=True)
+def cost_plot_reading(DLR, cpu_cost7, gpu_cost7, mo):
+    mo.md(f"""
+    At full utilization, a million requests cost about
+    {DLR}{cpu_cost7:.0f} on CPU against {DLR}{gpu_cost7:.0f} on the T4.
+    The next chart plots the monthly bill as request volume grows.
+    """)
     return
 
 
@@ -414,30 +434,39 @@ def cost_crossover_reading(DLR, cpu_per_req7, gpu_per_req7, mo):
 
 @app.cell(hide_code=True)
 def cost_reading(DLR, cpu_cost7, gpu_cost7, mo):
-    mo.md(
-        f"""
-        The ordering is not close, and it never flips. At full utilization the
-        T4 costs about {gpu_cost7 / cpu_cost7:.1f} times as much per request as
-        the CPU profile. Below full utilization the ranges widen, because idle
-        seconds land on the bill: the blog post measured {DLR}17-68 per 1M for
-        CPU and {DLR}26-115 per 1M for T4 across real concurrency levels.
-        Stretch the ranges as wide as you like; at every concurrency measured,
-        batch triage is cheaper on the CPU profile. Cost is not the reason
-        anyone buys the GPU.
-        """
-    )
+    mo.md(f"""
+    The ordering is not close, and it never flips. At full utilization the
+    T4 costs about {gpu_cost7 / cpu_cost7:.1f} times as much per request as
+    the CPU profile. Below full utilization the ranges widen, because idle
+    seconds land on the bill: the blog post measured {DLR}17-68 per 1M for
+    CPU and {DLR}26-115 per 1M for T4 across real concurrency levels.
+    Stretch the ranges as wide as you like; at every concurrency measured,
+    batch triage is cheaper on the CPU profile. Cost is not the reason
+    anyone buys the GPU.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def cost_crossover_intro(mo):
+    mo.md("""
+    ## The monthly bill at scale
+
+    What does the difference mean at real volumes? The next chart plots
+    the monthly bill as request count grows.
+    """)
     return
 
 
 @app.cell(hide_code=True)
 def latency_intro(mo):
     mo.md("""
-    ## The GPU buys latency, not cost
+    ## Why would we consider using the GPU?
 
-    If the CPU wins on cost, why does the GPU profile exist? Latency. The same
-    benchmark ran the same request against both profiles and timed two things:
-    the p50 a caller experiences end to end, and the time the server spends
-    inside the model. The next figure puts both on a log scale, because the two
+    The real answer is latency. The same benchmark ran the same request
+    against both profiles and timed two things: the p50 a caller
+    experiences end to end, and the time the server spends inside the
+    model. The next figure puts both on a log scale, because the two
     profiles live an order of magnitude apart.
     """)
     return
@@ -483,20 +512,18 @@ def latency_plot(CPU7, GPU7, SLATE, TEAL, go):
 
 @app.cell(hide_code=True)
 def latency_reading(CPU7, DLR, GPU7, mo):
-    mo.md(
-        f"""
-        The median request finishes in {GPU7["p50 s"]:.2f} s on the T4 against
-        {CPU7["p50 s"]:.2f} s on CPU: a {CPU7["p50 s"] / GPU7["p50 s"]:.0f}x
-        latency win, which is the entire sales pitch for the GPU profile. Inside
-        the model the gap is wider still,
-        {GPU7["server inference s"] * 1000:.0f} ms against
-        {CPU7["server inference s"]:.1f} s. That is what
-        {DLR}{GPU7["$ per hour"]:.3f}/h buys: responsiveness for interactive
-        traffic. The cost ordering from the last figure survives untouched, so
-        the honest summary is the tagline: the CPU wins on cost, and the GPU
-        buys latency.
-        """
-    )
+    mo.md(f"""
+    The median request finishes in {GPU7["p50 s"]:.2f} s on the T4 against
+    {CPU7["p50 s"]:.2f} s on CPU: a {CPU7["p50 s"] / GPU7["p50 s"]:.0f}x
+    latency win, which is the entire sales pitch for the GPU profile. Inside
+    the model the gap is wider still,
+    {GPU7["server inference s"] * 1000:.0f} ms against
+    {CPU7["server inference s"]:.1f} s. That is what
+    {DLR}{GPU7["$ per hour"]:.3f}/h buys: responsiveness for interactive
+    traffic. The cost ordering from the last figure survives untouched, so
+    the honest summary is the tagline: the CPU wins on cost, and the GPU
+    buys latency.
+    """)
     return
 
 
@@ -592,23 +619,21 @@ def bec_beat(MailViewer, agent7):
 
 @app.cell(hide_code=True)
 def bec_reading(BEC_PHISH7, mo):
-    mo.md(
-        f"""
-        The model scored it **P(phishing) = {BEC_PHISH7:.3f}** - completely
-        safe.
+    mo.md(f"""
+    The model scored it **P(phishing) = {BEC_PHISH7:.3f}** - completely
+    safe.
 
-        Read it again. Someone impersonating one of our vendors is asking us
-        to send payments to a new bank account. No links, no "urgent!!!"
-        subject line, nothing to trip a filter - and that's exactly why this
-        kind of scam works. It looks like something the finance team gets
-        every week.
+    Read it again. Someone impersonating one of our vendors is asking us
+    to send payments to a new bank account. No links, no "urgent!!!"
+    subject line, nothing to trip a filter - and that's exactly why this
+    kind of scam works. It looks like something the finance team gets
+    every week.
 
-        So for a few dollars a day, this deployment will triage the inbox all
-        day long, and it will still wave this email straight through to the
-        finance team. Catching it takes something slower - a person who knows
-        the vendors, or a model that does.
-        """
-    )
+    So for a few dollars a day, this deployment will triage the inbox all
+    day long, and it will still wave this email straight through to the
+    finance team. Catching it takes something slower - a person who knows
+    the vendors, or a model that does.
+    """)
     return
 
 

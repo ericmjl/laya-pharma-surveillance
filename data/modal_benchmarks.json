@@ -1,0 +1,22 @@
+{
+ "endpoint": "Modal serverless HTTP endpoint, English checkpoint (convaiinnovations/laya), weights baked into the image",
+ "profiles": {
+  "cpu": {
+   "name": "CPU (1 core, 3 GiB)",
+   "cold_start_s": 3.5,
+   "p50_s": 3.31,
+   "server_inference_s": 2.9,
+   "throughput_req_s_serial": 1.2,
+   "usd_per_hour": 0.071
+  },
+  "gpu_t4": {
+   "name": "T4 GPU (2 cores, 8 GiB)",
+   "cold_start_s": 44.3,
+   "p50_s": 0.48,
+   "server_inference_s": 0.049,
+   "throughput_req_s_8_concurrent": 8.0,
+   "usd_per_hour": 0.749
+  }
+ },
+ "source": "measured with nll-ai/laya-demo/modal/benchmark.py"
+}
